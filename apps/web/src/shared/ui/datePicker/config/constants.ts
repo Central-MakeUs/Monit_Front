@@ -1,0 +1,2 @@
+export const DEFAULT_MIN_YEAR_OFFSET = 10;
+export const DEFAULT_MAX_YEAR_OFFSET = 10;
