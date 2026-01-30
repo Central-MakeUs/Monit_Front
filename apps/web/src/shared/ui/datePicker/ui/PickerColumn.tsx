@@ -6,6 +6,7 @@ import {
   pickerItem,
   highlightOverlay,
 } from '@/shared/ui/datePicker/styles/PickerColumn.css';
+import { usePickerScroll } from '@/shared/ui/datePicker/model/usePickerScroll';
 
 interface PickerColumnProps<T> {
   items: T[];
@@ -14,29 +15,27 @@ interface PickerColumnProps<T> {
   renderItem: (item: T) => string;
 }
 
-const ITEM_HEIGHT = 4; // rem
-
 export function PickerColumn<T>({
   items,
   selectedIndex,
   onChange,
   renderItem,
 }: PickerColumnProps<T>): React.JSX.Element {
-  const translateY = -selectedIndex * ITEM_HEIGHT;
+  const { listRef, handleScroll, handleClick } = usePickerScroll({
+    selectedIndex,
+    onChange,
+    itemsCount: items.length,
+  });
 
   return (
     <div className={pickerColumn}>
       <div className={pickerWrapper}>
-        <div
-          className={pickerList}
-          style={{
-            transform: `translateY(${translateY}rem)`,
-          }}>
+        <div ref={listRef} className={pickerList} onScroll={handleScroll}>
           {items.map((item, index) => (
             <div
               key={index}
               className={pickerItem({ isSelected: index === selectedIndex })}
-              onClick={() => onChange(index)}>
+              onClick={() => handleClick(index)}>
               {renderItem(item)}
             </div>
           ))}

@@ -13,17 +13,24 @@ export const pickerColumn = style({
 });
 
 export const pickerWrapper = style({
-  position: 'relative',
+  width: '100%',
   height: '100%',
+  position: 'relative',
 });
 
 export const pickerList = style({
-  position: 'absolute',
-  top: '8rem', // (20rem / 2) - (4rem / 2) = 8rem
-  left: 0,
-  right: 0,
-  transition: 'transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-  willChange: 'transform',
+  width: '100%',
+  height: '100%',
+  overflowY: 'auto',
+  scrollSnapType: 'y mandatory',
+  overscrollBehaviorY: 'contain',
+  paddingTop: '8rem',
+  paddingBottom: '8rem',
+  '::-webkit-scrollbar': {
+    display: 'none',
+  },
+  scrollbarWidth: 'none',
+  msOverflowStyle: 'none',
 });
 
 export const pickerItem = recipe({
@@ -33,9 +40,11 @@ export const pickerItem = recipe({
     alignItems: 'center',
     justifyContent: 'center',
     cursor: 'pointer',
+    scrollSnapAlign: 'center',
     transition: 'all 0.2s',
     ...typography.body.b5,
     color: vars.color.text.tertiary,
+    userSelect: 'none',
   },
   variants: {
     isSelected: {
