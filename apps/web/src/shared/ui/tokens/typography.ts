@@ -145,6 +145,12 @@ export const typography = {
       lineHeight: 'normal',
       letterSpacing: '-0.01rem',
     },
+    description: {
+      fontSize: '0.9rem',
+      fontWeight: 500,
+      lineHeight: 'normal',
+      letterSpacing: '-0.01rem',
+    },
   },
 } as const;
 

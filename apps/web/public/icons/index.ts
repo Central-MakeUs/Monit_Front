@@ -1,3 +1,4 @@
+export { default as IcAttention } from './ic-attention.svg';
 export { default as IcBell } from './ic-bell.svg';
 export { default as IcCheckCircle } from './ic-check-circle.svg';
 export { default as IcClear } from './ic-clear.svg';

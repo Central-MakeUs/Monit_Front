@@ -1,6 +1,5 @@
 import React from 'react';
-import { IcCheckCircle } from 'public/icons';
-import IcAttention from 'public/icons/ic-attention.svg';
+import { IcCheckCircle, IcAttention } from 'public/icons';
 import { toast, toastIcon, toastIconSvg, toastText } from './Toast.css';
 
 export interface ToastProps {

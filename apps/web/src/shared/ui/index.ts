@@ -45,3 +45,4 @@ export { InputField } from './inputField';
 export type { CategoryIconType } from './categoryButton';
 
 export { Toggle } from './toggle';
+export { Calendar } from './calendar';
