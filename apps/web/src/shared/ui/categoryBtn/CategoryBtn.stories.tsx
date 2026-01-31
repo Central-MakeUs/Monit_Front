@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
-import { CategoryButton } from './CategoryButton';
+import { CategoryBtn } from './CategoryBtn';
 import { getFigmaUrl } from '@/shared/config/figma';
 
-const meta: Meta<typeof CategoryButton> = {
-  title: 'Components/CategoryButton',
-  component: CategoryButton,
+const meta: Meta<typeof CategoryBtn> = {
+  title: 'Components/CategoryBtn',
+  component: CategoryBtn,
   parameters: {
     layout: 'centered',
     design: {
@@ -259,9 +259,9 @@ export const AllVariants: Story = {
           Small Size (without text)
         </h3>
         <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
-          <CategoryButton size='sm' type='primary' mode='default' hasText={false} icon='coin' />
-          <CategoryButton size='sm' type='primary' mode='default' hasText={false} icon='percent' />
-          <CategoryButton size='sm' type='primary' mode='default' hasText={false} icon='shopping' />
+          <CategoryBtn size='sm' type='primary' mode='default' hasText={false} icon='coin' />
+          <CategoryBtn size='sm' type='primary' mode='default' hasText={false} icon='percent' />
+          <CategoryBtn size='sm' type='primary' mode='default' hasText={false} icon='shopping' />
         </div>
       </div>
 
@@ -270,7 +270,7 @@ export const AllVariants: Story = {
           Primary - Medium
         </h3>
         <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
-          <CategoryButton
+          <CategoryBtn
             size='md'
             type='primary'
             mode='default'
@@ -278,7 +278,7 @@ export const AllVariants: Story = {
             icon='coin'
             label='카테고리명'
           />
-          <CategoryButton
+          <CategoryBtn
             size='md'
             type='primary'
             mode='active'
@@ -286,7 +286,7 @@ export const AllVariants: Story = {
             icon='coin'
             label='카테고리명'
           />
-          <CategoryButton size='md' type='primary' mode='plus' hasText icon='plus' label='더보기' />
+          <CategoryBtn size='md' type='primary' mode='plus' hasText icon='plus' label='더보기' />
         </div>
       </div>
 
@@ -295,7 +295,7 @@ export const AllVariants: Story = {
           Secondary - Medium
         </h3>
         <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
-          <CategoryButton
+          <CategoryBtn
             size='md'
             type='secondary'
             mode='default'
@@ -303,7 +303,7 @@ export const AllVariants: Story = {
             icon='percent'
             label='카테고리명'
           />
-          <CategoryButton
+          <CategoryBtn
             size='md'
             type='secondary'
             mode='active'
@@ -311,15 +311,8 @@ export const AllVariants: Story = {
             icon='percent'
             label='카테고리명'
           />
-          <CategoryButton
-            size='md'
-            type='secondary'
-            mode='plus'
-            hasText
-            icon='plus'
-            label='더보기'
-          />
-          <CategoryButton
+          <CategoryBtn size='md' type='secondary' mode='plus' hasText icon='plus' label='더보기' />
+          <CategoryBtn
             size='md'
             type='secondary'
             mode='edit'
@@ -335,8 +328,8 @@ export const AllVariants: Story = {
           Large Size (without text)
         </h3>
         <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
-          <CategoryButton size='lg' type='primary' mode='default' hasText={false} icon='coin' />
-          <CategoryButton size='lg' type='primary' mode='plus' hasText={false} icon='plus' />
+          <CategoryBtn size='lg' type='primary' mode='default' hasText={false} icon='coin' />
+          <CategoryBtn size='lg' type='primary' mode='plus' hasText={false} icon='plus' />
         </div>
       </div>
 
@@ -345,8 +338,8 @@ export const AllVariants: Story = {
           Size Comparison
         </h3>
         <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-          <CategoryButton size='sm' type='primary' mode='default' hasText={false} icon='coin' />
-          <CategoryButton
+          <CategoryBtn size='sm' type='primary' mode='default' hasText={false} icon='coin' />
+          <CategoryBtn
             size='md'
             type='primary'
             mode='default'
@@ -354,7 +347,7 @@ export const AllVariants: Story = {
             icon='coin'
             label='카테고리명'
           />
-          <CategoryButton size='lg' type='primary' mode='default' hasText={false} icon='coin' />
+          <CategoryBtn size='lg' type='primary' mode='default' hasText={false} icon='coin' />
         </div>
       </div>
     </div>

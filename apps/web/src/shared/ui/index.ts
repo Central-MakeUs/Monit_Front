@@ -10,8 +10,8 @@ export * from './tokens';
 export { Button } from './button';
 export type { ButtonProps } from './button';
 
-export { CategoryButton } from './categoryButton';
-export type { CategoryButtonProps } from './categoryButton';
+export { CategoryBtn } from './categoryBtn';
+export type { CategoryBtnProps } from './categoryBtn';
 
 export { ViewToggle } from './viewToggle';
 export { StepIndicator } from './stepIndicator';
@@ -33,7 +33,7 @@ export type { BottomNavProps } from './bottomNav';
 export { NavToggle } from './navToggle';
 export type { NavToggleProps, NavToggleOption } from './navToggle';
 
-export { PlusButton } from './plusButton';
+export { PlusBtn } from './plusBtn';
 
 export { BottomSheet } from './bottomSheet';
 export type { BottomSheetProps } from './bottomSheet';
@@ -42,7 +42,7 @@ export { BaseBottomSheetTemplate } from './bottomSheet';
 
 export { EditableTextInput, TextInput } from './textInput';
 export { InputField } from './inputField';
-export type { CategoryIconType } from './categoryButton';
+export type { CategoryIconType } from './categoryBtn';
 
 export { Toggle } from './toggle';
 export { Calendar } from './calendar';

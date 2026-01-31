@@ -1,6 +1,6 @@
 import React from 'react';
 import * as styles from './CategoryBottomSheet.css';
-import { BaseBottomSheetTemplate, CategoryButton, CategoryIconType } from '@/shared/ui';
+import { BaseBottomSheetTemplate, CategoryBtn, CategoryIconType } from '@/shared/ui';
 
 // TODO: 타입 수정
 export interface Category {
@@ -35,7 +35,7 @@ export const IconPickerBottomSheetTemplate = ({
       <BaseBottomSheetTemplate.Content>
         <div className={styles.categoryGrid}>
           {categories.map((category) => (
-            <CategoryButton
+            <CategoryBtn
               key={category.id}
               icon={category.icon}
               mode={selectedId === category.id ? 'active' : 'default'}

@@ -1,16 +1,16 @@
 'use client';
 
 import React, { ButtonHTMLAttributes } from 'react';
-import { EditCategoryButton } from './EditCategoryButton';
+import { EditCategoryBtn } from './EditCategoryBtn';
 import { CATEGORY_ICON_MAP, CategoryIconType } from './categoryIcons';
 import {
   categoryButtonWrapper,
   categoryIconContainer,
   categoryIconSvg,
   categoryLabel,
-} from './CategoryButton.css';
+} from './CategoryBtn.css';
 
-export interface CategoryButtonProps extends Omit<
+export interface CategoryBtnProps extends Omit<
   ButtonHTMLAttributes<HTMLButtonElement>,
   'className' | 'type'
 > {
@@ -30,7 +30,7 @@ export interface CategoryButtonProps extends Omit<
   onEditClick?: (e: React.MouseEvent<HTMLElement>) => void;
 }
 
-export const CategoryButton = ({
+export const CategoryBtn = ({
   size = 'md',
   type = 'primary',
   mode = 'default',
@@ -40,14 +40,14 @@ export const CategoryButton = ({
   onEditClick,
   onClick,
   ...props
-}: CategoryButtonProps): React.JSX.Element => {
+}: CategoryBtnProps): React.JSX.Element => {
   const { component: IconComponent, color } = CATEGORY_ICON_MAP[icon];
 
   return (
     <button className={categoryButtonWrapper()} onClick={onClick} {...props}>
       <div className={categoryIconContainer({ size, type, mode })} style={{ color }}>
         <IconComponent className={categoryIconSvg({ size })} />
-        {mode === 'edit' && <EditCategoryButton size={size} onClick={onEditClick} />}
+        {mode === 'edit' && <EditCategoryBtn size={size} onClick={onEditClick} />}
       </div>
       {hasText && label && <span className={categoryLabel({ mode })}>{label}</span>}
     </button>

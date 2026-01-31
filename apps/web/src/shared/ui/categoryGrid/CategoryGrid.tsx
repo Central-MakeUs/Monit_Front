@@ -1,7 +1,6 @@
 import React from 'react';
-import { Text, CategoryButton } from '@/shared/ui';
+import { Text, CategoryBtn, CategoryIconType } from '@/shared/ui';
 import { vars } from '@/shared/ui/theme.css';
-import { CategoryIconType } from '@/shared/ui/categoryButton/categoryIcons';
 import * as styles from './CategoryGrid.css';
 
 export interface CategoryItem {
@@ -47,7 +46,7 @@ export const CategoryGrid = ({
       </div>
       <div className={styles.grid}>
         {visibleCategories.map((category) => (
-          <CategoryButton
+          <CategoryBtn
             key={category.id}
             icon={category.icon}
             label={category.label}
@@ -56,7 +55,7 @@ export const CategoryGrid = ({
           />
         ))}
         {(hasMoreCategories || categories.length > 0) && (
-          <CategoryButton icon='plus' label='더보기' mode='default' onClick={onMoreClick} />
+          <CategoryBtn icon='plus' label='더보기' mode='default' onClick={onMoreClick} />
         )}
       </div>
     </div>
