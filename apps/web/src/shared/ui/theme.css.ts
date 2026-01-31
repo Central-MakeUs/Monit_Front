@@ -64,6 +64,7 @@ export const vars = createGlobalTheme(':root', {
         hover: semanticColors.bg.brand.hover,
         active: semanticColors.bg.brand.active,
         subtle: semanticColors.bg.brand.subtle,
+        unread: semanticColors.bg.brand.unread,
       },
       neutral: {
         default: semanticColors.bg.neutral.default,
