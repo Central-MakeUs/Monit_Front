@@ -3,7 +3,7 @@
 import React from 'react';
 import * as styles from './BottomNav.css';
 import { NavToggle, NavToggleOption } from '../navToggle';
-import { PlusButton } from '../plusButton';
+import { PlusBtn } from '../plusBtn';
 
 export interface BottomNavProps {
   activeTab?: NavToggleOption;
@@ -22,7 +22,7 @@ export const BottomNav = ({
     <nav className={styles.container} aria-label='bottom-navigation'>
       <NavToggle value={activeTab} defaultValue={defaultTab} onChange={onTabChange} />
       <div className={styles.plusButtonWrapper}>
-        <PlusButton onClick={onPlusClick} />
+        <PlusBtn onClick={onPlusClick} />
       </div>
     </nav>
   );

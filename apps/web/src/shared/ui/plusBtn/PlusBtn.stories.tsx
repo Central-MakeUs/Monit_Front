@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
-import { PlusButton } from './PlusButton';
+import { PlusBtn } from './PlusBtn';
 import { getFigmaUrl } from '@/shared/config/figma';
 
-const meta: Meta<typeof PlusButton> = {
+const meta: Meta<typeof PlusBtn> = {
   title: 'Components/PlusButton',
-  component: PlusButton,
+  component: PlusBtn,
 
   parameters: {
     layout: 'centered',
