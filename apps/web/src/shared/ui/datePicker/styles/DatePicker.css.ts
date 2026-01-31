@@ -1,13 +1,13 @@
 import { style } from '@vanilla-extract/css';
-import { vars } from '@/shared/ui/theme.css';
+import { spacing, vars } from '@/shared/ui/theme.css';
 
 export const pickerContainer = style({
   position: 'relative',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  gap: '0.8rem',
-  padding: '1.6rem',
+  gap: spacing.sm,
+  padding: spacing.lg2,
   userSelect: 'none',
 });
 

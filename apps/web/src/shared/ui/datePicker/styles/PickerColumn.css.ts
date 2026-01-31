@@ -1,10 +1,13 @@
 import { style } from '@vanilla-extract/css';
 import { recipe } from '@vanilla-extract/recipes';
 import { vars, typography } from '@/shared/ui/theme.css';
+import { PICKER_COLUMN_HEIGHT, PICKER_ITEM_HEIGHT } from '@/shared/ui/datePicker/config/constants';
+
+const CROSS_PADDING = (PICKER_COLUMN_HEIGHT - PICKER_ITEM_HEIGHT) / 2;
 
 export const pickerColumn = style({
   position: 'relative',
-  height: '20rem',
+  height: `${PICKER_COLUMN_HEIGHT}rem`,
   overflow: 'hidden',
   flex: 1,
   minWidth: '6rem',
@@ -24,8 +27,8 @@ export const pickerList = style({
   overflowY: 'auto',
   scrollSnapType: 'y mandatory',
   overscrollBehaviorY: 'contain',
-  paddingTop: '8rem',
-  paddingBottom: '8rem',
+  paddingTop: `${CROSS_PADDING}rem`,
+  paddingBottom: `${CROSS_PADDING}rem`,
   '::-webkit-scrollbar': {
     display: 'none',
   },
@@ -35,7 +38,7 @@ export const pickerList = style({
 
 export const pickerItem = recipe({
   base: {
-    height: '4rem',
+    height: `${PICKER_ITEM_HEIGHT}rem`,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -64,7 +67,7 @@ export const highlightOverlay = style({
   top: '50%',
   left: 0,
   right: 0,
-  height: '4rem',
+  height: `${PICKER_ITEM_HEIGHT}rem`,
   transform: 'translateY(-50%)',
   pointerEvents: 'none',
 });

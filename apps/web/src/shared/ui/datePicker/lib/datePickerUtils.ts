@@ -1,4 +1,4 @@
-import { DatePickerFormatters, defaultFormatters } from '../config/formatters';
+import { DatePickerFormatters, koFormatter } from '../config/formatters';
 export type { DatePickerFormatters };
 
 export interface DatePickerValue {
@@ -29,5 +29,5 @@ export const getInitialDateValue = (value?: DatePickerValue): DatePickerValue =>
 };
 
 export const mergeFormatters = (custom?: DatePickerFormatters): Required<DatePickerFormatters> => {
-  return { ...defaultFormatters, ...custom };
+  return { ...koFormatter, ...custom };
 };
