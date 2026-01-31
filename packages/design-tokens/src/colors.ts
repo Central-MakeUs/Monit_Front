@@ -10,6 +10,7 @@
  */
 export const primitiveColors = {
   primary: {
+    25: '#fff8f4',
     50: '#ffe4e0',
     100: '#ffcec7',
     200: '#ffb6ac',

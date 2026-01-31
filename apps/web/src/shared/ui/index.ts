@@ -46,3 +46,8 @@ export type { CategoryIconType } from './categoryBtn';
 
 export { Toggle } from './toggle';
 export { Calendar } from './calendar';
+
+export { PageIndicator } from './pageIndicator';
+export type { PageIndicatorProps } from './pageIndicator';
+
+export { CategoryGrid } from './categoryGrid';
