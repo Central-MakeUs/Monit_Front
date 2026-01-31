@@ -1,4 +1,5 @@
 import { BaseBottomSheetTemplate } from '@/shared/ui';
+import { DatePicker } from '@/shared/ui/datePicker';
 import React from 'react';
 
 export interface DatePickerBottomSheetTemplateProps {
@@ -19,7 +20,7 @@ export const DatePickerBottomSheetTemplate = ({
   return (
     <BaseBottomSheetTemplate>
       <BaseBottomSheetTemplate.Header type='close' text='월 선택' onClose={onClose} />
-      <div>{/* TODO: 달력 컴포넌트 */}</div>
+      <DatePicker />
       <BaseBottomSheetTemplate.Button label='선택' onClick={onConfirm} />
     </BaseBottomSheetTemplate>
   );
