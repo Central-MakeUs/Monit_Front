@@ -259,15 +259,28 @@ export interface components {
             /** @enum {string} */
             emotionType: "기분 전환" | "그냥 저냥" | "필수템" | "홀린 듯이" | "살기 위해";
         };
-        ApiResponseLong: {
+        ApiResponseIdResponse: {
             isSuccess?: boolean;
             code?: string;
             message?: string;
+            result?: components["schemas"]["IdResponse"];
+        };
+        IdResponse: {
             /** Format: int64 */
-            result?: number;
+            id?: number;
         };
         CategoryDetailsDTO: {
             name?: string;
+        };
+        ApiResponseCategoryIdResponseDTO: {
+            isSuccess?: boolean;
+            code?: string;
+            message?: string;
+            result?: components["schemas"]["CategoryIdResponseDTO"];
+        };
+        CategoryIdResponseDTO: {
+            /** Format: int64 */
+            id?: number;
         };
         ExpenseRemindRequestDTO: {
             /** Format: int64 */
@@ -277,6 +290,12 @@ export interface components {
         };
         CategoryUpdateRequestDTO: {
             name: string;
+        };
+        ApiResponseWeeklyDetailReportResponse: {
+            isSuccess?: boolean;
+            code?: string;
+            message?: string;
+            result?: components["schemas"]["WeeklyDetailReportResponse"];
         };
         EmotionSummary: {
             emotionDescription?: string;
@@ -311,6 +330,12 @@ export interface components {
             /** Format: int64 */
             weeklyTotalAmount?: number;
         };
+        ApiResponseSummaryRecordResponse: {
+            isSuccess?: boolean;
+            code?: string;
+            message?: string;
+            result?: components["schemas"]["SummaryRecordResponse"];
+        };
         MonthlyReportSummaryResponse: {
             month?: string;
             /** Format: int64 */
@@ -333,6 +358,12 @@ export interface components {
             code?: string;
             message?: string;
             result?: string;
+        };
+        ApiResponseDailyExpenseResponseDTO: {
+            isSuccess?: boolean;
+            code?: string;
+            message?: string;
+            result?: components["schemas"]["DailyExpenseResponseDTO"];
         };
         DailyExpenseResponseDTO: {
             /** Format: date */
@@ -363,6 +394,12 @@ export interface components {
             /** Format: int64 */
             id?: number;
             name?: string;
+        };
+        ApiResponseAuthResponse: {
+            isSuccess?: boolean;
+            code?: string;
+            message?: string;
+            result?: components["schemas"]["AuthResponse"];
         };
         AuthResponse: {
             accessToken?: string;
@@ -406,7 +443,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ApiResponseLong"];
+                    "*/*": components["schemas"]["ApiResponseIdResponse"];
                 };
             };
         };
@@ -430,7 +467,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ApiResponseLong"];
+                    "*/*": components["schemas"]["ApiResponseCategoryIdResponseDTO"];
                 };
             };
         };
@@ -456,7 +493,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ApiResponseLong"];
+                    "*/*": components["schemas"]["ApiResponseIdResponse"];
                 };
             };
         };
@@ -480,7 +517,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ApiResponseLong"];
+                    "*/*": components["schemas"]["ApiResponseIdResponse"];
                 };
             };
         };
@@ -506,7 +543,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ApiResponseLong"];
+                    "*/*": components["schemas"]["ApiResponseCategoryIdResponseDTO"];
                 };
             };
         };
@@ -528,7 +565,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["WeeklyDetailReportResponse"];
+                    "*/*": components["schemas"]["ApiResponseWeeklyDetailReportResponse"];
                 };
             };
         };
@@ -548,7 +585,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["SummaryRecordResponse"];
+                    "*/*": components["schemas"]["ApiResponseSummaryRecordResponse"];
                 };
             };
         };
@@ -594,7 +631,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["DailyExpenseResponseDTO"];
+                    "*/*": components["schemas"]["ApiResponseDailyExpenseResponseDTO"];
                 };
             };
         };
@@ -636,7 +673,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["AuthResponse"];
+                    "*/*": components["schemas"]["ApiResponseAuthResponse"];
                 };
             };
         };
@@ -655,7 +692,9 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "*/*": components["schemas"]["ApiResponseString"];
+                };
             };
         };
     };
