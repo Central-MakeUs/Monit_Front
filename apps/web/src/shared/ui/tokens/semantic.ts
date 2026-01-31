@@ -56,6 +56,7 @@ export const semanticColors = {
       hover: primitiveColors.primary[600],
       active: primitiveColors.primary[700],
       subtle: primitiveColors.primary[50],
+      unread: primitiveColors.primary[25],
     },
     neutral: {
       primary: primitiveColors.gray[100],
