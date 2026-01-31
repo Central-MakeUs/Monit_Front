@@ -2,17 +2,17 @@
 
 import React from 'react';
 import IcEditCategory from 'public/icons/ic-edit-category.svg';
-import { editButton, editIcon } from './CategoryButton.css';
+import { editButton, editIcon } from './CategoryBtn.css';
 
-export interface EditCategoryButtonProps {
+export interface EditCategoryBtnProps {
   size?: 'sm' | 'md' | 'lg';
   onClick?: (e: React.MouseEvent<HTMLElement>) => void;
 }
 
-export const EditCategoryButton = ({
+export const EditCategoryBtn = ({
   size = 'md',
   onClick,
-}: EditCategoryButtonProps): React.JSX.Element => {
+}: EditCategoryBtnProps): React.JSX.Element => {
   const handleClick = (e: React.MouseEvent<HTMLElement>) => {
     e.stopPropagation();
     onClick?.(e);

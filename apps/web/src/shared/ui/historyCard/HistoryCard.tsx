@@ -2,7 +2,7 @@
 
 import React, { HTMLAttributes } from 'react';
 import * as styles from './HistoryCard.css';
-import { CategoryButton, CategoryIconType } from '../categoryButton';
+import { CategoryBtn, CategoryIconType } from '../categoryBtn';
 import { Text } from '../text';
 import { Badge } from '../badge';
 import { vars } from '../theme.css';
@@ -42,7 +42,7 @@ export const HistoryCard = ({
       aria-disabled={disabled}
       {...props}>
       <div className={styles.contentWrapper}>
-        <CategoryButton size='sm' icon={category} hasText={false} />
+        <CategoryBtn size='sm' icon={category} hasText={false} />
         <div className={styles.labelWrapper}>
           <div className={styles.textWrapper}>
             <Text variant='b3' color={vars.color.text.primary}>

@@ -9,11 +9,11 @@ import {
   InputField,
   TextInput,
   CategoryIconType,
+  CategoryGrid,
 } from '@/shared/ui';
 
 import { IcPlusCircle, IcRightChevron, IcTrash } from 'public/icons';
 import { InfoSection } from './infoSection';
-import { CategoryGrid } from '@/widgets';
 import { formatDate } from '@/shared/utils';
 export interface Category {
   id: string;
