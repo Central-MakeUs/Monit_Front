@@ -10,7 +10,8 @@ import type {
   SatisfactionStepType,
   SubmitStepType,
 } from '../model/expenseFunnelContext';
-import { StepIndicator, TopBar, Text, vars } from '@/shared/ui';
+import { StepIndicator, TopBar, Text, vars, AlertDialog } from '@/shared/ui';
+import { useModal } from '@/shared/hooks';
 import { IcLeftChevron } from 'public/icons';
 import { AmountDateStep, SatisfactionStep, UsageCategoryStep } from '@/features/expense/ui/steps';
 
@@ -23,6 +24,7 @@ const STEP_NUMBER = {
 
 export const ExpenseRecordFunnel = () => {
   const router = useRouter();
+  const { isOpen, openModal, closeModal } = useModal();
   const funnel = useFunnel<{
     금액날짜입력: AmountDateStepType;
     사용처카테고리: UsageCategoryStepType;
@@ -45,7 +47,7 @@ export const ExpenseRecordFunnel = () => {
     <div className={styles.container}>
       <div className={styles.header}>
         <TopBar
-          left={<IcLeftChevron onClick={() => router.back()} />}
+          left={<IcLeftChevron onClick={openModal} />}
           center={
             <Text variant='t1' color={vars.color.text.primary}>
               소비기록
@@ -80,6 +82,16 @@ export const ExpenseRecordFunnel = () => {
           handleSubmit(context);
           return null;
         }}
+      />
+      <AlertDialog
+        isOpen={isOpen}
+        onClose={closeModal}
+        variant='left'
+        title='지출 기록을 그만둘까요?'
+        description='지금 나가면 작성한 내용은 저장되지 않아요.'
+        cancelText='나중에 하기'
+        confirmText='계속 하기'
+        onCancel={() => router.push('/')}
       />
     </div>
   );
