@@ -34,7 +34,7 @@ export const AmountDateStep = ({ onNext }: AmountDateStepProps) => {
   return (
     <>
       <div className={styles.container}>
-        <InputField label='소비금액'>
+        <InputField label='소비금액' className={styles.amountInputField}>
           <TextInput
             placeholder='0'
             fieldType='number'

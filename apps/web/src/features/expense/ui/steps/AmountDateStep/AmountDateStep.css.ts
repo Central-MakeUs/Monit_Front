@@ -9,3 +9,7 @@ export const container = style({
   marginTop: '4rem',
   gap: spacing.sm,
 });
+
+export const amountInputField = style({
+  margin: '0 1.8rem',
+});
