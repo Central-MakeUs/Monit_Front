@@ -10,7 +10,8 @@
     "lint": "eslint --max-warnings 0",
     "check-types": "next typegen && tsc --noEmit",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "openapi": "pnpx dotenv-cli -e .env -- bash -c 'openapi-typescript \"$SWAGGER_URL\" -o src/shared/api/schema.d.ts'"
   },
   "dependencies": {
     "@repo/design-tokens": "workspace:*",
@@ -46,8 +47,10 @@
     "@vanilla-extract/recipes": "^0.5.7",
     "@vanilla-extract/vite-plugin": "^5.1.4",
     "@vanilla-extract/webpack-plugin": "^2.3.25",
+    "dotenv-cli": "^11.0.0",
     "eslint": "^9.39.1",
     "eslint-plugin-storybook": "10.2.0-alpha.14",
+    "openapi-typescript": "^7.10.1",
     "storybook": "10.2.0-alpha.14",
     "typescript": "5.9.2",
     "webpack": "^5.104.1"
