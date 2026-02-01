@@ -5,7 +5,7 @@ export const fieldWrapper = style({
   display: 'flex',
   gap: spacing['2xl'],
   alignItems: 'center',
-  padding: `${spacing.md} ${spacing.xl}`,
+  padding: `${spacing.md} 0`,
 });
 
 export const dateWrapper = style({

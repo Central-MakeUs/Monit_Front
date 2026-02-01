@@ -40,7 +40,7 @@ export const CategoryGrid = ({
   return (
     <div className={styles.wrapper}>
       <div className={styles.header}>
-        <Text variant='h3' color={vars.color.text.primary}>
+        <Text variant='b3' color={vars.color.text.secondary}>
           {label}
         </Text>
       </div>

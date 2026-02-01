@@ -1,18 +1,17 @@
 import React from 'react';
 import * as styles from './ExpenseFormBottomSheet.css';
 import {
-  Text,
   Button,
   BaseBottomSheetTemplate,
-  vars,
   EditableTextInput,
   InputField,
   TextInput,
   CategoryIconType,
   CategoryGrid,
+  DateInfoField,
 } from '@/shared/ui';
 
-import { IcPlusCircle, IcRightChevron, IcTrash } from 'public/icons';
+import { IcPlusCircle, IcTrash } from 'public/icons';
 import { InfoSection } from './infoSection';
 import { formatDate } from '@/shared/utils';
 export interface Category {
@@ -72,7 +71,6 @@ export const ExpenseFormBottomSheet = ({
   usage,
   onUsageChange,
   selectedDate = new Date(),
-  onDateClick,
   selectedCategoryId,
   onCategorySelect,
   onMoreCategoryClick,
@@ -105,17 +103,7 @@ export const ExpenseFormBottomSheet = ({
       </div>
 
       {/* 소비일 - TODO: List Header 컴포넌트로 바꾸기*/}
-      <div className={styles.dateSection}>
-        <Text variant='h3' color={vars.color.text.secondary}>
-          소비일
-        </Text>
-        <button className={styles.dateButton} onClick={onDateClick}>
-          <Text variant='b3' color={vars.color.text.primary}>
-            {formatDate(selectedDate)}
-          </Text>
-          <IcRightChevron className={styles.dateChevron} color={vars.color.icon.subtle} />
-        </button>
-      </div>
+      <DateInfoField label='소비일' value={formatDate(selectedDate)} onClick={() => {}} />
 
       {/* 카테고리 */}
       <CategoryGrid
