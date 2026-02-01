@@ -161,30 +161,28 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
           </button>
         </div>
 
-        {(errorMessage || (showMaxLength && maxLength)) && (
-          <div className={styles.descriptionContainer}>
-            {errorMessage ? (
-              <Text
-                variant='h1'
-                color={
-                  hasValidationError || error ? vars.color.border.error : vars.color.text.secondary
-                }>
-                {errorMessage}
-              </Text>
-            ) : (
-              <span />
-            )}
-            {showMaxLength && maxLength && fieldType === 'text' && (
-              <Text
-                variant='b1'
-                color={
-                  hasValidationError || error ? vars.color.border.error : vars.color.text.secondary
-                }>
-                {String(currentValue).length}/{maxLength}
-              </Text>
-            )}
-          </div>
-        )}
+        <div className={styles.descriptionContainer}>
+          {errorMessage ? (
+            <Text
+              variant='h1'
+              color={
+                hasValidationError || error ? vars.color.border.error : vars.color.text.secondary
+              }>
+              {errorMessage}
+            </Text>
+          ) : (
+            <Text variant='h1'>{'\u00A0'}</Text>
+          )}
+          {showMaxLength && maxLength && fieldType === 'text' && (
+            <Text
+              variant='b1'
+              color={
+                hasValidationError || error ? vars.color.border.error : vars.color.text.secondary
+              }>
+              {String(currentValue).length}/{maxLength}
+            </Text>
+          )}
+        </div>
       </div>
     );
   }
