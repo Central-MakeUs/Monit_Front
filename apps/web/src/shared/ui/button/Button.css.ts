@@ -26,7 +26,7 @@ export const button = recipe({
     justifyContent: 'center',
     alignItems: 'center',
     gap: spacing.sm2,
-    borderRadius: vars.radius.sm,
+    borderRadius: vars.radius.sm2,
     border: 'none',
     cursor: 'pointer',
     transition:
@@ -91,6 +91,7 @@ export const button = recipe({
         fontWeight: 700,
         lineHeight: 'normal',
         letterSpacing: '-0.01rem',
+        borderRadius: 0,
       },
     },
     disabled: {
