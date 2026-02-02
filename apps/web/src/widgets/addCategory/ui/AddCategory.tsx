@@ -9,6 +9,8 @@ import {
   BottomFixedArea,
   Button,
   BottomSheet,
+  useToast,
+  AlertDialog,
 } from '@/shared/ui';
 import { IcLeftChevron } from 'public/icons';
 import React, { useState } from 'react';
@@ -16,6 +18,7 @@ import * as styles from './AddCategory.css';
 import { IconPickerBottomSheetTemplate } from '@/features/expense';
 import type { Category } from '@/features/expense';
 import { useModal } from '@/shared/hooks';
+import { useRouter } from 'next/navigation';
 
 const ICON_OPTIONS: Category[] = [
   //TODO: 확정되면 수정
@@ -25,7 +28,14 @@ const ICON_OPTIONS: Category[] = [
 ];
 
 export const AddCategory = () => {
-  const { isOpen, openModal, closeModal } = useModal();
+  const {
+    isOpen: isBottomSheetOpen,
+    openModal: openBottomSheet,
+    closeModal: closeBottomSheet,
+  } = useModal();
+  const { isOpen: isAlertOpen, openModal: openAlert, closeModal: closeAlert } = useModal();
+  const toast = useToast();
+  const router = useRouter();
 
   const [categoryName, setCategoryName] = useState('');
   const [selectedIcon, setSelectedIcon] = useState<Category | null>(null);
@@ -33,18 +43,24 @@ export const AddCategory = () => {
 
   const handleOpenIconPicker = () => {
     setTempIcon(selectedIcon);
-    openModal();
+    openBottomSheet();
   };
 
   const handleConfirm = () => {
     setSelectedIcon(tempIcon);
-    closeModal();
+    closeBottomSheet();
+  };
+
+  const handleSubmit = () => {
+    // TODO: API 호출
+    toast.success('카테고리가 추가되었어요!');
+    router.push('/');
   };
 
   return (
     <div>
       <TopBar
-        left={<IcLeftChevron />}
+        left={<IcLeftChevron onClick={openAlert} />}
         center={
           <Text variant='t1' color={vars.color.text.primary}>
             카테고리 추가
@@ -72,20 +88,34 @@ export const AddCategory = () => {
           />
         </InputField>
       </div>
-      <BottomSheet isOpen={isOpen} onClose={closeModal}>
+      <BottomSheet isOpen={isBottomSheetOpen} onClose={closeBottomSheet}>
         <IconPickerBottomSheetTemplate
           categories={ICON_OPTIONS}
           selectedId={tempIcon?.id}
           onSelect={setTempIcon}
           onConfirm={handleConfirm}
-          onClose={closeModal}
+          onClose={closeBottomSheet}
         />
       </BottomSheet>
       <BottomFixedArea zIndex={-1}>
-        <Button variant='primary' disabled={!categoryName || !selectedIcon} size='lg'>
+        <Button
+          variant='primary'
+          disabled={!categoryName || !selectedIcon}
+          size='lg'
+          onClick={handleSubmit}>
           추가하기
         </Button>
       </BottomFixedArea>
+      <AlertDialog
+        isOpen={isAlertOpen}
+        onClose={closeAlert}
+        variant='left'
+        title='카테고리 추가를 그만둘까요?'
+        description='지금 나가면 카테고리는 추가되지 않아요'
+        cancelText='나중에 하기'
+        confirmText='계속 하기'
+        onCancel={() => router.back()}
+      />
     </div>
   );
 };
