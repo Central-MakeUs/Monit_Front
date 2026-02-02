@@ -54,7 +54,7 @@ export const AddCategory = () => {
   const handleSubmit = () => {
     // TODO: API 호출
     toast.success('카테고리가 추가되었어요!');
-    router.push('/');
+    router.back();
   };
 
   return (

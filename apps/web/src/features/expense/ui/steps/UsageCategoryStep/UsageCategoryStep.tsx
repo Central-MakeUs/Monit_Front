@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   Button,
   InputField,
@@ -12,6 +13,7 @@ import {
 import { CategoryBottomSheetTemplate, type Category } from '../../expenseBottomSheet';
 import * as styles from './UsageCategoryStep.css';
 import { useModal } from '@/shared/hooks';
+import { useExpenseFormStore } from '@/widgets/expenseRecordFunnel/model/useExpenseFormStore';
 
 const MAX_LENGTH = 20;
 
@@ -38,6 +40,7 @@ export const UsageCategoryStep = ({
   defaultCategoryId,
 }: UsageCategoryStepProps) => {
   const { isOpen, openModal, closeModal } = useModal();
+  const router = useRouter();
 
   const [usageHistory, setUsageHistory] = useState<string>(defaultUsageHistory ?? '');
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
@@ -61,6 +64,14 @@ export const UsageCategoryStep = ({
   const handleConfirm = () => {
     setSelectedCategory(tempCategory);
     closeModal();
+  };
+
+  const handleAddCategory = () => {
+    useExpenseFormStore.setState({
+      usageHistory,
+      ...(selectedCategory && { categoryId: Number(selectedCategory.id) }),
+    });
+    router.push('/expense/category');
   };
 
   return (
@@ -89,6 +100,7 @@ export const UsageCategoryStep = ({
           selectedId={tempCategory?.id}
           onSelect={setTempCategory}
           onConfirm={handleConfirm}
+          onAddClick={handleAddCategory}
         />
       </BottomSheet>
       <BottomFixedArea zIndex={1}>

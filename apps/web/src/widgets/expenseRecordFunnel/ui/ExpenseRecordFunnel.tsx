@@ -10,18 +10,11 @@ import type {
   SatisfactionStepType,
   SubmitStepType,
 } from '../model/expenseFunnelContext';
+import { useExpenseFormStore } from '../model/useExpenseFormStore';
 import { StepIndicator, TopBar, Text, vars, AlertDialog, useToast } from '@/shared/ui';
 import { useModal } from '@/shared/hooks';
 import { IcLeftChevron } from 'public/icons';
 import { AmountDateStep, SatisfactionStep, UsageCategoryStep } from '@/features/expense/ui/steps';
-
-interface SavedFormData {
-  amount?: number;
-  expendedAt?: string;
-  usageHistory?: string;
-  categoryId?: number;
-  emotionType?: string;
-}
 
 const STEP_NUMBER = {
   금액날짜입력: 1,
@@ -35,7 +28,7 @@ export const ExpenseRecordFunnel = () => {
   const toast = useToast();
   const { isOpen, openModal, closeModal } = useModal();
   const isSubmitted = useRef(false);
-  const savedData = useRef<SavedFormData>({});
+  const formStore = useExpenseFormStore();
   const funnel = useFunnel<{
     금액날짜입력: AmountDateStepType;
     사용처카테고리: UsageCategoryStepType;
@@ -62,6 +55,7 @@ export const ExpenseRecordFunnel = () => {
       isSubmitted.current = true;
       // TODO: API 호출
       console.log('제출:', funnel.context);
+      formStore.reset();
       toast.success('소비 기록이 저장되었어요.');
       router.push('/');
     }
@@ -84,29 +78,29 @@ export const ExpenseRecordFunnel = () => {
       <funnel.Render
         금액날짜입력={({ history }) => (
           <AmountDateStep
-            defaultAmount={savedData.current.amount}
-            defaultDate={savedData.current.expendedAt}
+            defaultAmount={formStore.amount}
+            defaultDate={formStore.expendedAt}
             onNext={(amount: number, expendedAt: string) => {
-              savedData.current = { ...savedData.current, amount, expendedAt };
+              formStore.setAmountDate(amount, expendedAt);
               history.push('사용처카테고리', { amount, expendedAt });
             }}
           />
         )}
         사용처카테고리={({ history }) => (
           <UsageCategoryStep
-            defaultUsageHistory={savedData.current.usageHistory}
-            defaultCategoryId={savedData.current.categoryId}
+            defaultUsageHistory={formStore.usageHistory}
+            defaultCategoryId={formStore.categoryId}
             onNext={(usageHistory: string, categoryId: number) => {
-              savedData.current = { ...savedData.current, usageHistory, categoryId };
+              formStore.setUsageCategory(usageHistory, categoryId);
               history.push('만족도입력', { usageHistory, categoryId });
             }}
           />
         )}
         만족도입력={({ history }) => (
           <SatisfactionStep
-            defaultEmotionType={savedData.current.emotionType}
+            defaultEmotionType={formStore.emotionType}
             onNext={(emotionType: string) => {
-              savedData.current = { ...savedData.current, emotionType };
+              formStore.setEmotionType(emotionType);
               history.push('제출', { emotionType });
             }}
           />
