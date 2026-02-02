@@ -6,4 +6,3 @@
 
 export * from './dateUtils';
 export * from './constants';
-export type { CalendarDate } from './dateUtils';

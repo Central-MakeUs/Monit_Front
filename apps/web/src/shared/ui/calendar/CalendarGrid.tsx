@@ -22,7 +22,7 @@ export const CalendarGrid = ({
   showText = false,
   renderDateText,
   onDateSelect,
-  disableFutureDates = false,
+  disableFutureDates = true,
 }: CalendarGridProps) => {
   return (
     <div className={grid({ size })}>

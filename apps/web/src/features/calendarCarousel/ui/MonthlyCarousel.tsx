@@ -64,7 +64,6 @@ export const MonthlyCarousel = ({
             showText={showText}
             renderDateText={renderDateText}
             onDateSelect={onDateSelect}
-            disableFutureDates={true}
           />
         </div>
 
@@ -76,7 +75,6 @@ export const MonthlyCarousel = ({
             showText={showText}
             renderDateText={renderDateText}
             onDateSelect={onDateSelect}
-            disableFutureDates={true}
           />
         </div>
 
@@ -88,7 +86,6 @@ export const MonthlyCarousel = ({
             showText={showText}
             renderDateText={renderDateText}
             onDateSelect={onDateSelect}
-            disableFutureDates={true}
           />
         </div>
       </div>
