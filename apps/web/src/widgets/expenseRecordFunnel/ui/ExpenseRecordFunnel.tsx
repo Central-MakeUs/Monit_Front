@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useFunnel } from '@use-funnel/browser';
 import * as styles from './ExpenseRecordFunnel.css';
@@ -15,6 +15,14 @@ import { useModal } from '@/shared/hooks';
 import { IcLeftChevron } from 'public/icons';
 import { AmountDateStep, SatisfactionStep, UsageCategoryStep } from '@/features/expense/ui/steps';
 
+interface SavedFormData {
+  amount?: number;
+  expendedAt?: string;
+  usageHistory?: string;
+  categoryId?: number;
+  emotionType?: string;
+}
+
 const STEP_NUMBER = {
   금액날짜입력: 1,
   사용처카테고리: 2,
@@ -27,6 +35,7 @@ export const ExpenseRecordFunnel = () => {
   const toast = useToast();
   const { isOpen, openModal, closeModal } = useModal();
   const isSubmitted = useRef(false);
+  const savedData = useRef<SavedFormData>({});
   const funnel = useFunnel<{
     금액날짜입력: AmountDateStepType;
     사용처카테고리: UsageCategoryStepType;
@@ -39,6 +48,14 @@ export const ExpenseRecordFunnel = () => {
       context: {},
     },
   });
+
+  const handleBack = useCallback(() => {
+    if (funnel.step === '금액날짜입력') {
+      openModal();
+    } else {
+      window.history.back();
+    }
+  }, [funnel.step, openModal]);
 
   useEffect(() => {
     if (funnel.step === '제출' && !isSubmitted.current) {
@@ -55,7 +72,7 @@ export const ExpenseRecordFunnel = () => {
     <div className={styles.container}>
       <div className={styles.header}>
         <TopBar
-          left={<IcLeftChevron onClick={openModal} />}
+          left={<IcLeftChevron onClick={handleBack} />}
           center={
             <Text variant='t1' color={vars.color.text.primary}>
               소비기록
@@ -67,21 +84,29 @@ export const ExpenseRecordFunnel = () => {
       <funnel.Render
         금액날짜입력={({ history }) => (
           <AmountDateStep
-            onNext={(amount: number, expendedAt: string) =>
-              history.push('사용처카테고리', { amount, expendedAt })
-            }
+            defaultAmount={savedData.current.amount}
+            defaultDate={savedData.current.expendedAt}
+            onNext={(amount: number, expendedAt: string) => {
+              savedData.current = { ...savedData.current, amount, expendedAt };
+              history.push('사용처카테고리', { amount, expendedAt });
+            }}
           />
         )}
         사용처카테고리={({ history }) => (
           <UsageCategoryStep
-            onNext={(usageHistory: string, categoryId: number) =>
-              history.push('만족도입력', { usageHistory, categoryId })
-            }
+            defaultUsageHistory={savedData.current.usageHistory}
+            defaultCategoryId={savedData.current.categoryId}
+            onNext={(usageHistory: string, categoryId: number) => {
+              savedData.current = { ...savedData.current, usageHistory, categoryId };
+              history.push('만족도입력', { usageHistory, categoryId });
+            }}
           />
         )}
         만족도입력={({ history }) => (
           <SatisfactionStep
+            defaultEmotionType={savedData.current.emotionType}
             onNext={(emotionType: string) => {
+              savedData.current = { ...savedData.current, emotionType };
               history.push('제출', { emotionType });
             }}
           />

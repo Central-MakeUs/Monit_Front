@@ -16,11 +16,15 @@ import { formatDate } from '@/shared/utils';
 
 export interface AmountDateStepProps {
   onNext: (amount: number, expendedAt: string) => void;
+  defaultAmount?: number;
+  defaultDate?: string;
 }
 
-export const AmountDateStep = ({ onNext }: AmountDateStepProps) => {
-  const [amount, setAmount] = useState('');
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+export const AmountDateStep = ({ onNext, defaultAmount, defaultDate }: AmountDateStepProps) => {
+  const [amount, setAmount] = useState(defaultAmount != null ? String(defaultAmount) : '');
+  const [selectedDate, setSelectedDate] = useState<Date>(
+    defaultDate ? new Date(defaultDate) : new Date()
+  );
   const { isOpen, openModal, closeModal } = useModal();
 
   // 0원일경우

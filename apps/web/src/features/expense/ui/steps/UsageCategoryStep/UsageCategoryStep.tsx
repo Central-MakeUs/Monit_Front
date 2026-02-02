@@ -28,13 +28,23 @@ const expenseCategories: Category[] = [
 
 export interface UsageCategoryStepProps {
   onNext: (usageHistory: string, categoryId: number) => void;
+  defaultUsageHistory?: string;
+  defaultCategoryId?: number;
 }
 
-export const UsageCategoryStep = ({ onNext }: UsageCategoryStepProps) => {
+export const UsageCategoryStep = ({
+  onNext,
+  defaultUsageHistory,
+  defaultCategoryId,
+}: UsageCategoryStepProps) => {
   const { isOpen, openModal, closeModal } = useModal();
 
-  const [usageHistory, setUsageHistory] = useState<string>('');
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+  const [usageHistory, setUsageHistory] = useState<string>(defaultUsageHistory ?? '');
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
+    defaultCategoryId != null
+      ? (expenseCategories.find((c) => c.id === String(defaultCategoryId)) ?? null)
+      : null
+  );
   const [tempCategory, setTempCategory] = useState<Category | null>(null);
   const isValid = usageHistory.trim() !== '' && selectedCategory !== null;
 

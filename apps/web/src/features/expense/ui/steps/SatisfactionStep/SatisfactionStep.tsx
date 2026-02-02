@@ -9,10 +9,20 @@ import * as styles from './SatisfactionStep.css';
 
 export interface SatisfactionStepProps {
   onNext: (emotionType: string) => void;
+  defaultEmotionType?: string;
 }
 
-export const SatisfactionStep = ({ onNext }: SatisfactionStepProps): React.JSX.Element => {
-  const [selectedIndex, setSelectedIndex] = useState(1);
+export const SatisfactionStep = ({
+  onNext,
+  defaultEmotionType,
+}: SatisfactionStepProps): React.JSX.Element => {
+  const [selectedIndex, setSelectedIndex] = useState(() => {
+    if (defaultEmotionType) {
+      const idx = emotions.findIndex((e) => e.value === defaultEmotionType);
+      return idx !== -1 ? idx : 1;
+    }
+    return 1;
+  });
 
   const handleChange = (_value: EmotionValue, index: number) => {
     setSelectedIndex(index);
