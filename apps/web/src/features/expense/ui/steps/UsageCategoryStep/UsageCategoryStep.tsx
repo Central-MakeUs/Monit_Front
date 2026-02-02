@@ -1,9 +1,17 @@
 'use client';
 
 import React, { useState, useRef, useCallback } from 'react';
-import { Button, InputField, TextInput, CategoryGrid, BottomFixedArea } from '@/shared/ui';
-import type { Category } from '../../expenseBottomSheet';
+import {
+  Button,
+  InputField,
+  TextInput,
+  CategoryGrid,
+  BottomFixedArea,
+  BottomSheet,
+} from '@/shared/ui';
+import { CategoryBottomSheetTemplate, type Category } from '../../expenseBottomSheet';
 import * as styles from './UsageCategoryStep.css';
+import { useModal } from '@/shared/hooks';
 
 const MAX_LENGTH = 20;
 
@@ -23,8 +31,11 @@ export interface UsageCategoryStepProps {
 }
 
 export const UsageCategoryStep = ({ onNext }: UsageCategoryStepProps) => {
-  const [usageHistory, setUsageHistory] = useState('');
+  const { isOpen, openModal, closeModal } = useModal();
+
+  const [usageHistory, setUsageHistory] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+  const [tempCategory, setTempCategory] = useState<Category | null>(null);
   const [showError, setShowError] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -33,6 +44,16 @@ export const UsageCategoryStep = ({ onNext }: UsageCategoryStepProps) => {
   const handleNext = () => {
     if (!isValid || !selectedCategory) return;
     onNext(usageHistory, Number(selectedCategory.id));
+  };
+
+  const handleOpenBottomSheet = () => {
+    setTempCategory(selectedCategory);
+    openModal();
+  };
+
+  const handleConfirm = () => {
+    setSelectedCategory(tempCategory);
+    closeModal();
   };
 
   // TODO: 만약 다른 TextInput 에도 똑같은 로직일 경우 수정하기
@@ -65,7 +86,17 @@ export const UsageCategoryStep = ({ onNext }: UsageCategoryStepProps) => {
         categories={expenseCategories}
         selectedId={selectedCategory?.id}
         onSelect={setSelectedCategory}
+        onMoreClick={handleOpenBottomSheet}
       />
+
+      <BottomSheet isOpen={isOpen} onClose={closeModal}>
+        <CategoryBottomSheetTemplate
+          categories={expenseCategories}
+          selectedId={tempCategory?.id}
+          onSelect={setTempCategory}
+          onConfirm={handleConfirm}
+        />
+      </BottomSheet>
       <BottomFixedArea zIndex={1}>
         <Button variant='primary' onClick={handleNext} disabled={!isValid} size='lg'>
           다음

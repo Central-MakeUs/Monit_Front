@@ -48,15 +48,15 @@ const BottomSheetHeader = ({
 }: BottomSheetHeaderProps) => {
   return (
     <div className={bottomSheetHeaderWrapper}>
-      <Text variant='h4' color={vars.color.text.primary}>
+      <Text variant='t1' color={vars.color.text.primary}>
         {text}
       </Text>
       {type === 'close' ? (
         <IcClear className={headerIcon} color={vars.color.icon.subtle} onClick={onClose} />
       ) : (
         <div className={BottomSheetHeaderBtn} onClick={onClickAddBtn}>
-          <IcPlusSimple className={headerIcon} color={vars.color.icon.subtle} />
-          <Text variant='h4' color={vars.color.text.tertiary}>
+          <IcPlusSimple className={headerIcon} color={vars.color.icon.tertiary} />
+          <Text variant='b4' color={vars.color.text.tertiary}>
             추가
           </Text>
         </div>
