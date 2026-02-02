@@ -8,7 +8,7 @@ const CENTER_CIRCLE_SIZE = '16.2rem';
 export const wheelContainer = style({
   position: 'relative',
   width: '18rem', // WHEEL_SIZE / 2 -> 휠이 보이는 영역(현재는 절반만)
-  height: '40rem',
+  height: '36rem',
   overflow: 'visible',
 });
 

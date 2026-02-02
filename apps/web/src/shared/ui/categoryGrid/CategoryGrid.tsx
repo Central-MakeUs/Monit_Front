@@ -10,6 +10,7 @@ export interface CategoryItem {
 }
 
 export interface CategoryGridProps {
+  type?: 'bottomSheet' | 'expense';
   /** 섹션 라벨 */
   label?: string;
   /** 전체 카테고리 개수 (뱃지에 표시) */
@@ -27,6 +28,7 @@ export interface CategoryGridProps {
 }
 
 export const CategoryGrid = ({
+  type = 'bottomSheet',
   label = '카테고리',
   categories,
   selectedId,
@@ -36,11 +38,14 @@ export const CategoryGrid = ({
 }: CategoryGridProps) => {
   const visibleCategories = categories.slice(0, maxVisible);
   const hasMoreCategories = categories.length > maxVisible;
+  const btnType = type === 'expense' ? 'neutral' : 'primary';
 
   return (
-    <div className={styles.wrapper}>
+    <div className={type === 'expense' ? styles.expenseWrapper : styles.wrapper}>
       <div className={styles.header}>
-        <Text variant='h3' color={vars.color.text.primary}>
+        <Text
+          variant={type === 'expense' ? 'h3' : 'b3'}
+          color={type === 'expense' ? vars.color.text.primary : vars.color.text.secondary}>
           {label}
         </Text>
       </div>
@@ -50,12 +55,19 @@ export const CategoryGrid = ({
             key={category.id}
             icon={category.icon}
             label={category.label}
+            type={btnType}
             mode={selectedId === category.id ? 'active' : 'default'}
             onClick={() => onSelect?.(category)}
           />
         ))}
         {(hasMoreCategories || categories.length > 0) && (
-          <CategoryBtn icon='plus' label='더보기' mode='default' onClick={onMoreClick} />
+          <CategoryBtn
+            icon='plus'
+            label='더보기'
+            type={btnType}
+            mode='default'
+            onClick={onMoreClick}
+          />
         )}
       </div>
     </div>

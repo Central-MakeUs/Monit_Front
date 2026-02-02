@@ -1,10 +1,4 @@
-export type EmotionValue =
-  | 'stress'
-  | 'impulse'
-  | 'survival'
-  | 'habit'
-  | 'self-reward'
-  | 'investment';
+export type EmotionValue = 'soso' | 'necessary' | 'impulse' | 'survival' | 'refresh';
 
 export interface Emotion {
   label: string;

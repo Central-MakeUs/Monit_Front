@@ -6,7 +6,6 @@ export const descriptionContainer = style({
   flexDirection: 'column',
   alignItems: 'center',
   gap: vars.spacing.md,
-  padding: `${vars.spacing.xl} ${vars.spacing.lg}`,
 });
 
 export const tagsContainer = style({

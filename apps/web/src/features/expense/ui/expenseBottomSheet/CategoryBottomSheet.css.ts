@@ -12,4 +12,5 @@ export const categoryGrid = style({
   '::-webkit-scrollbar': {
     display: 'none',
   },
+  paddingBottom: '2.5rem',
 });
