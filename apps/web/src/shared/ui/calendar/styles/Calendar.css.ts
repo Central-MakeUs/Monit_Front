@@ -132,3 +132,22 @@ export const weeklyCarouselSlide = style({
 export const footer = style({
   paddingTop: spacing.md,
 });
+
+export const monthlyCarouselContainer = style({
+  width: '100%',
+  overflow: 'hidden',
+  position: 'relative',
+});
+
+export const monthlyCarouselTrack = style({
+  display: 'flex',
+  gap: 0,
+  willChange: 'transform',
+  backfaceVisibility: 'hidden',
+});
+
+export const monthlyCarouselSlide = style({
+  width: '100%',
+  minWidth: '100%',
+  flexShrink: 0,
+});

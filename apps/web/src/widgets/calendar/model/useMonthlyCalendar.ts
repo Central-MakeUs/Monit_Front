@@ -7,10 +7,12 @@ import {
   subMonths,
   formatYearMonth,
 } from '@/shared/ui/calendar/lib';
+import { useMonthlyCarousel } from '@/shared/ui/calendar/model/useMonthlyCarousel';
 
 interface UseMonthlyCalendarProps {
   currentDate: Date;
   selectedDate?: Date | null;
+  variant: 'modal' | 'home';
   onDateSelect?: (date: Date) => void;
   onMonthChange?: (newDate: Date) => void;
 }
@@ -18,6 +20,7 @@ interface UseMonthlyCalendarProps {
 export const useMonthlyCalendar = ({
   currentDate,
   selectedDate,
+  variant,
   onDateSelect,
   onMonthChange,
 }: UseMonthlyCalendarProps) => {
@@ -57,6 +60,13 @@ export const useMonthlyCalendar = ({
 
   const formattedMonth = formatYearMonth(internalCurrentDate);
 
+  const carousel = useMonthlyCarousel({
+    dates,
+    currentDate: internalCurrentDate,
+    onSwipeLeft: handleNextMonth,
+    onSwipeRight: handlePrevMonth,
+  });
+
   return {
     currentDate: internalCurrentDate,
     effectiveSelectedDate,
@@ -65,5 +75,7 @@ export const useMonthlyCalendar = ({
     handleDateSelect,
     handlePrevMonth,
     handleNextMonth,
+
+    carousel: variant === 'home' ? carousel : null,
   };
 };

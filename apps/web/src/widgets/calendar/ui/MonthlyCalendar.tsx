@@ -4,6 +4,7 @@ import React from 'react';
 import { useMonthlyCalendar } from '../model/useMonthlyCalendar';
 import { CalendarHeader } from '@/shared/ui/calendar/CalendarHeader';
 import { CalendarGrid } from '@/shared/ui/calendar/CalendarGrid';
+import { MonthlyCarousel } from '@/shared/ui/calendar/ui/MonthlyCarousel';
 
 interface MonthlyCalendarProps {
   currentDate: Date;
@@ -31,9 +32,11 @@ export const MonthlyCalendar = ({
     handlePrevMonth,
     handleNextMonth,
     handleDateSelect,
+    carousel,
   } = useMonthlyCalendar({
     currentDate,
     selectedDate,
+    variant,
     onDateSelect,
     onMonthChange,
   });
@@ -50,14 +53,32 @@ export const MonthlyCalendar = ({
           onNextMonth={handleNextMonth}
         />
       )}
-      <CalendarGrid
-        dates={dates}
-        selectedDate={effectiveSelectedDate}
-        size={size}
-        showText={shouldShowText}
-        renderDateText={renderDateText}
-        onDateSelect={handleDateSelect}
-      />
+      {variant === 'home' && carousel ? (
+        <MonthlyCarousel
+          prevMonth={carousel.prevMonth}
+          currentMonth={carousel.currentMonth}
+          nextMonth={carousel.nextMonth}
+          selectedDate={effectiveSelectedDate}
+          size={size}
+          showText={shouldShowText}
+          renderDateText={renderDateText}
+          onDateSelect={handleDateSelect}
+          trackRef={carousel.trackRef}
+          handlers={carousel.handlers}
+          transform={carousel.getTransform()}
+          transition={carousel.getTransition()}
+          onTransitionEnd={carousel.handleTransitionEnd}
+        />
+      ) : (
+        <CalendarGrid
+          dates={dates}
+          selectedDate={effectiveSelectedDate}
+          size={size}
+          showText={shouldShowText}
+          renderDateText={renderDateText}
+          onDateSelect={handleDateSelect}
+        />
+      )}
     </>
   );
 };

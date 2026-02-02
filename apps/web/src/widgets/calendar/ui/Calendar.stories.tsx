@@ -4,7 +4,7 @@ import { getFigmaUrl } from '@/shared/config/figma';
 import { fn } from '@storybook/test';
 
 const meta: Meta<typeof Calendar> = {
-  title: 'Widgets/Calendar',
+  title: 'Calendar',
   component: Calendar,
   parameters: {
     layout: 'centered',
