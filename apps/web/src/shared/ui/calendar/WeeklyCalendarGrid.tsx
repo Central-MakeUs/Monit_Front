@@ -1,16 +1,10 @@
 'use client';
 
 import React from 'react';
-import {
-  weeklyGrid,
-  weeklyColumn,
-  weeklyWeekdayCell,
-} from '@/shared/ui/calendar/styles/Calendar.css';
-import { DateCell } from '@/shared/ui/calendar/DateCell';
-import { WEEKDAYS } from '@/shared/ui/calendar/model/constants';
-import { isSameDate, isToday } from '@/shared/ui/calendar/lib/calendarUtils';
-import { useSwipeGesture } from '@/shared/ui/calendar/model/useSwipeGesture';
-import type { CalendarDate } from '@/shared/ui/calendar/lib/calendarUtils';
+import { useWeeklyCarousel } from './model/useWeeklyCarousel';
+import { WeeklyHeader } from './ui/WeeklyHeader';
+import { WeeklyCarousel } from './ui/WeeklyCarousel';
+import type { CalendarDate } from './lib';
 
 interface WeeklyCalendarGridProps {
   dates: CalendarDate[];
@@ -27,40 +21,27 @@ export const WeeklyCalendarGrid = ({
   onSwipeLeft,
   onSwipeRight,
 }: WeeklyCalendarGridProps) => {
-  const { handleTouchStart, handleTouchEnd } = useSwipeGesture({
+  const carousel = useWeeklyCarousel({
+    dates,
     onSwipeLeft,
     onSwipeRight,
   });
 
-  const isSelectedDateInCurrentWeek = selectedDate
-    ? dates.some((dateObj) => isSameDate(dateObj.date, selectedDate))
-    : false;
-
-  const selectedDayIndex =
-    isSelectedDateInCurrentWeek && selectedDate ? (selectedDate.getDay() + 6) % 7 : -1;
-
   return (
-    <div className={weeklyGrid} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
-      {dates.map((dateObj, index) => {
-        const { date, isCurrentMonth } = dateObj;
-        const dayName = WEEKDAYS[index];
-
-        const isSelectedDay = isSelectedDateInCurrentWeek && index === selectedDayIndex;
-
-        return (
-          <div key={index} className={weeklyColumn}>
-            <div className={weeklyWeekdayCell({ isSelected: isSelectedDay })}>{dayName}</div>
-            <DateCell
-              date={date}
-              isSelected={selectedDate ? isSameDate(date, selectedDate) : false}
-              isToday={isToday(date)}
-              isOutsideMonth={!isCurrentMonth}
-              size='weekly'
-              onClick={onDateSelect}
-            />
-          </div>
-        );
-      })}
+    <div>
+      <WeeklyHeader currentWeek={carousel.currentWeek} selectedDate={selectedDate} />
+      <WeeklyCarousel
+        prevWeek={carousel.prevWeek}
+        currentWeek={carousel.currentWeek}
+        nextWeek={carousel.nextWeek}
+        selectedDate={selectedDate}
+        onDateSelect={onDateSelect}
+        trackRef={carousel.trackRef}
+        handlers={carousel.handlers}
+        transform={carousel.getTransform()}
+        transition={carousel.getTransition()}
+        onTransitionEnd={carousel.handleTransitionEnd}
+      />
     </div>
   );
 };

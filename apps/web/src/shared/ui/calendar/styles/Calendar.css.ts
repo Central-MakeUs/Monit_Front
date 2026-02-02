@@ -95,6 +95,7 @@ export const weeklyWeekdayCell = recipe({
     ...typography.body.b1,
     color: vars.color.text.tertiary,
     textAlign: 'center',
+    width: '4.4rem',
   },
   variants: {
     isSelected: {
@@ -106,6 +107,26 @@ export const weeklyWeekdayCell = recipe({
   defaultVariants: {
     isSelected: false,
   },
+});
+
+export const weeklyCarouselContainer = style({
+  width: '39rem',
+  margin: '0 auto',
+  overflow: 'hidden',
+  position: 'relative',
+});
+
+export const weeklyCarouselTrack = style({
+  display: 'flex',
+  gap: 0,
+  willChange: 'transform',
+  backfaceVisibility: 'hidden',
+});
+
+export const weeklyCarouselSlide = style({
+  width: '39rem',
+  minWidth: '39rem',
+  flexShrink: 0,
 });
 
 export const footer = style({

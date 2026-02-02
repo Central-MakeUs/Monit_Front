@@ -11,7 +11,7 @@ import {
   formatYearMonth,
 } from '@/shared/ui/calendar/lib/calendarUtils';
 
-interface UseCalendarProps {
+export interface UseCalendarProps {
   /** 초기 표시 날짜. 기본값: 오늘 */
   currentDate?: Date;
   /** 선택된 날짜. 제어 컴포넌트로 사용 시 지정 */
