@@ -1,11 +1,15 @@
+/**
+ * @module features/calendar-carousel
+ * @description 주간 캘린더 캐러셀 UI 컴포넌트
+ * FSD: features layer
+ */
+
+'use client';
+
 import React from 'react';
-import {
-  weeklyCarouselContainer,
-  weeklyCarouselTrack,
-  weeklyCarouselSlide,
-} from '../styles/Calendar.css';
-import { WeeklyDateGrid } from './WeeklyDateGrid';
-import type { CalendarDate } from '../lib';
+import { weeklyCarouselContainer, weeklyCarouselTrack, weeklyCarouselSlide } from './Carousel.css';
+import { WeeklyDateGrid } from '@/shared/ui/calendar';
+import type { CalendarDate } from '@/shared/lib/calendar';
 
 interface WeeklyCarouselProps {
   prevWeek: CalendarDate[];

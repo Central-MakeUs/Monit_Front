@@ -1,9 +1,20 @@
+/**
+ * @module features/calendar-carousel
+ * @description 월간 캘린더 캐러셀 기능
+ * FSD: features layer - 스와이프로 월 이동 기능
+ */
+
 'use client';
 
 import { useState, useMemo, useEffect, useRef } from 'react';
 import { useSwipeable } from 'react-swipeable';
-import { generateCalendarDates, subMonths, addMonths } from '../lib';
-import type { CalendarDate } from '../lib';
+import {
+  generateCalendarDates,
+  subMonths,
+  addMonths,
+  SWIPE_THRESHOLD_RATIO,
+} from '@/shared/lib/calendar';
+import type { CalendarDate } from '@/shared/lib/calendar';
 
 interface UseMonthlyCarouselProps {
   dates: CalendarDate[];
@@ -26,8 +37,6 @@ export interface UseMonthlyCarouselReturn {
   getTransform: () => string;
   getTransition: () => string;
 }
-
-const SWIPE_THRESHOLD_RATIO = 0.25;
 
 export const useMonthlyCarousel = ({
   dates,
@@ -67,10 +76,8 @@ export const useMonthlyCarousel = ({
       }
     };
 
-    // 초기 측정
     updateWidth();
 
-    // resize 이벤트 리스너
     window.addEventListener('resize', updateWidth);
     return () => window.removeEventListener('resize', updateWidth);
   }, []);
@@ -96,7 +103,6 @@ export const useMonthlyCarousel = ({
     onSwiping: (eventData) => {
       if (!isTransitioning && slideWidth > 0) {
         setIsDragging(true);
-        // disableNext가 true이고 왼쪽으로 스와이프(다음 달)하려는 경우 제한
         const delta = eventData.deltaX;
         const clampedOffset =
           disableNext && delta < 0
@@ -112,7 +118,6 @@ export const useMonthlyCarousel = ({
       if (slideWidth > 0) {
         const swipeThreshold = slideWidth * SWIPE_THRESHOLD_RATIO;
 
-        // disableNext가 true면 왼쪽 스와이프(다음 달) 방지
         if (delta < -swipeThreshold && !disableNext) {
           setIsTransitioning(true);
           pendingActionRef.current = 'left';

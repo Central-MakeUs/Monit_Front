@@ -109,45 +109,6 @@ export const weeklyWeekdayCell = recipe({
   },
 });
 
-export const weeklyCarouselContainer = style({
-  width: '39rem',
-  margin: '0 auto',
-  overflow: 'hidden',
-  position: 'relative',
-});
-
-export const weeklyCarouselTrack = style({
-  display: 'flex',
-  gap: 0,
-  willChange: 'transform',
-  backfaceVisibility: 'hidden',
-});
-
-export const weeklyCarouselSlide = style({
-  width: '39rem',
-  minWidth: '39rem',
-  flexShrink: 0,
-});
-
 export const footer = style({
   paddingTop: spacing.md,
-});
-
-export const monthlyCarouselContainer = style({
-  width: '100%',
-  overflow: 'hidden',
-  position: 'relative',
-});
-
-export const monthlyCarouselTrack = style({
-  display: 'flex',
-  gap: 0,
-  willChange: 'transform',
-  backfaceVisibility: 'hidden',
-});
-
-export const monthlyCarouselSlide = style({
-  width: '100%',
-  minWidth: '100%',
-  flexShrink: 0,
 });

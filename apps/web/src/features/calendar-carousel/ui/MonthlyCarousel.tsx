@@ -1,3 +1,9 @@
+/**
+ * @module features/calendar-carousel
+ * @description 월간 캘린더 캐러셀 UI 컴포넌트
+ * FSD: features layer
+ */
+
 'use client';
 
 import React from 'react';
@@ -5,9 +11,9 @@ import {
   monthlyCarouselContainer,
   monthlyCarouselTrack,
   monthlyCarouselSlide,
-} from '../styles/Calendar.css';
-import { CalendarGrid } from '../CalendarGrid';
-import type { CalendarDate } from '../lib';
+} from './Carousel.css';
+import { CalendarGrid } from '@/shared/ui/calendar';
+import type { CalendarDate } from '@/shared/lib/calendar';
 
 interface MonthlyCarouselProps {
   prevMonth: CalendarDate[];

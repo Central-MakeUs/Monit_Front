@@ -1,8 +1,8 @@
 import React from 'react';
 import { weeklyGrid, weeklyColumn } from '../styles/Calendar.css';
 import { DateCell } from '../DateCell';
-import { isSameDate, isToday, isAfterToday } from '../lib';
-import type { CalendarDate } from '../lib';
+import { isSameDate, isToday, isAfterToday } from '@/shared/lib/calendar';
+import type { CalendarDate } from '@/shared/lib/calendar';
 
 interface WeeklyDateGridProps {
   weekDates: CalendarDate[];

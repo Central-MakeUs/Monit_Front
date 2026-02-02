@@ -2,9 +2,8 @@
 
 import React from 'react';
 import { useMonthlyCalendar } from '../model/useMonthlyCalendar';
-import { CalendarHeader } from '@/shared/ui/calendar/CalendarHeader';
-import { CalendarGrid } from '@/shared/ui/calendar/CalendarGrid';
-import { MonthlyCarousel } from '@/shared/ui/calendar/ui/MonthlyCarousel';
+import { CalendarHeader, CalendarGrid } from '@/shared/ui/calendar';
+import { MonthlyCarousel } from '@/features/calendar-carousel';
 
 interface MonthlyCalendarProps {
   currentDate: Date;

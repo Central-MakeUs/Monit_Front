@@ -1,13 +1,7 @@
 import React from 'react';
-import {
-  weeklyGrid,
-  weeklyColumn,
-  weeklyWeekdayCell,
-  weeklyCarouselContainer,
-} from '../styles/Calendar.css';
-import { WEEKDAYS } from '../model/constants';
-import { isSameDate } from '../lib';
-import type { CalendarDate } from '../lib';
+import { weeklyGrid, weeklyColumn, weeklyWeekdayCell } from '../styles/Calendar.css';
+import { WEEKDAYS, isSameDate } from '@/shared/lib/calendar';
+import type { CalendarDate } from '@/shared/lib/calendar';
 
 interface WeeklyHeaderProps {
   currentWeek: CalendarDate[];
@@ -23,18 +17,16 @@ export const WeeklyHeader = ({ currentWeek, selectedDate }: WeeklyHeaderProps) =
     isSelectedDateInCurrentWeek && selectedDate ? (selectedDate.getDay() + 6) % 7 : -1;
 
   return (
-    <div className={weeklyCarouselContainer}>
-      <div className={weeklyGrid}>
-        {WEEKDAYS.map((dayName, index) => {
-          const isSelectedDay = isSelectedDateInCurrentWeek && index === selectedDayIndex;
+    <div className={weeklyGrid}>
+      {WEEKDAYS.map((dayName, index) => {
+        const isSelectedDay = isSelectedDateInCurrentWeek && index === selectedDayIndex;
 
-          return (
-            <div key={dayName} className={weeklyColumn}>
-              <div className={weeklyWeekdayCell({ isSelected: isSelectedDay })}>{dayName}</div>
-            </div>
-          );
-        })}
-      </div>
+        return (
+          <div key={dayName} className={weeklyColumn}>
+            <div className={weeklyWeekdayCell({ isSelected: isSelectedDay })}>{dayName}</div>
+          </div>
+        );
+      })}
     </div>
   );
 };

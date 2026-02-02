@@ -7,8 +7,8 @@ import {
   subMonths,
   formatYearMonth,
   isAfterCurrentMonth,
-} from '@/shared/ui/calendar/lib';
-import { useMonthlyCarousel } from '@/shared/ui/calendar/model/useMonthlyCarousel';
+} from '@/shared/lib/calendar';
+import { useMonthlyCarousel } from '@/features/calendar-carousel';
 
 interface UseMonthlyCalendarProps {
   currentDate: Date;

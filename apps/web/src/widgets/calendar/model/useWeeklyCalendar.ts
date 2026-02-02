@@ -1,8 +1,8 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { generateWeeklyDates, addDays, subDays, isCurrentWeek } from '@/shared/ui/calendar/lib';
-import { useWeeklyCarousel } from '@/shared/ui/calendar/model';
+import { generateWeeklyDates, addDays, subDays, isCurrentWeek } from '@/shared/lib/calendar';
+import { useWeeklyCarousel } from '@/features/calendar-carousel';
 
 interface UseWeeklyCalendarProps {
   currentDate: Date;

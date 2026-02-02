@@ -1,10 +1,9 @@
 'use client';
 
 import React from 'react';
-import { grid, weekdayCell } from '@/shared/ui/calendar/styles/Calendar.css';
-import { DateCell } from '@/shared/ui/calendar/DateCell';
-import { WEEKDAYS } from '@/shared/ui/calendar/model/constants';
-import { isSameDate, isToday, isAfterToday } from '@/shared/ui/calendar/lib/calendarUtils';
+import { grid, weekdayCell } from './styles/Calendar.css';
+import { DateCell } from './DateCell';
+import { WEEKDAYS, isSameDate, isToday, isAfterToday } from '@/shared/lib/calendar';
 
 interface CalendarGridProps {
   dates: Array<{ date: Date; isCurrentMonth: boolean }>;
