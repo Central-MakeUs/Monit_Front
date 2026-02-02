@@ -13,7 +13,7 @@ import {
   AlertDialog,
 } from '@/shared/ui';
 import { IcLeftChevron } from 'public/icons';
-import React, { useState } from 'react';
+import React, { useState, useTransition } from 'react';
 import * as styles from './AddCategory.css';
 import { IconPickerBottomSheetTemplate } from '@/features/expense';
 import type { Category } from '@/features/expense';
@@ -40,6 +40,7 @@ export const AddCategory = () => {
   const [categoryName, setCategoryName] = useState('');
   const [selectedIcon, setSelectedIcon] = useState<Category | null>(null);
   const [tempIcon, setTempIcon] = useState<Category | null>(null);
+  const [isPending, startTransition] = useTransition();
 
   const handleOpenIconPicker = () => {
     setTempIcon(selectedIcon);
@@ -52,9 +53,11 @@ export const AddCategory = () => {
   };
 
   const handleSubmit = () => {
-    // TODO: API 호출
-    toast.success('카테고리가 추가되었어요!');
-    router.back();
+    startTransition(async () => {
+      // TODO: API 호출
+      toast.success('카테고리가 추가되었어요!');
+      router.back();
+    });
   };
 
   return (
@@ -100,7 +103,7 @@ export const AddCategory = () => {
       <BottomFixedArea zIndex={-1}>
         <Button
           variant='primary'
-          disabled={!categoryName || !selectedIcon}
+          disabled={!categoryName || !selectedIcon || isPending}
           size='lg'
           onClick={handleSubmit}>
           추가하기
