@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useFunnel } from '@use-funnel/browser';
 import * as styles from './ExpenseRecordFunnel.css';
@@ -10,7 +10,7 @@ import type {
   SatisfactionStepType,
   SubmitStepType,
 } from '../model/expenseFunnelContext';
-import { StepIndicator, TopBar, Text, vars, AlertDialog } from '@/shared/ui';
+import { StepIndicator, TopBar, Text, vars, AlertDialog, useToast } from '@/shared/ui';
 import { useModal } from '@/shared/hooks';
 import { IcLeftChevron } from 'public/icons';
 import { AmountDateStep, SatisfactionStep, UsageCategoryStep } from '@/features/expense/ui/steps';
@@ -24,7 +24,9 @@ const STEP_NUMBER = {
 
 export const ExpenseRecordFunnel = () => {
   const router = useRouter();
+  const toast = useToast();
   const { isOpen, openModal, closeModal } = useModal();
+  const isSubmitted = useRef(false);
   const funnel = useFunnel<{
     금액날짜입력: AmountDateStepType;
     사용처카테고리: UsageCategoryStepType;
@@ -38,10 +40,16 @@ export const ExpenseRecordFunnel = () => {
     },
   });
 
-  const handleSubmit = (context: SubmitStepType) => {
-    // TODO: API 호출
-    console.log('제출:', context);
-  };
+  useEffect(() => {
+    if (funnel.step === '제출' && !isSubmitted.current) {
+      isSubmitted.current = true;
+      // TODO: API 호출
+      console.log('제출:', funnel.context);
+      toast.success('소비 기록이 저장되었어요.');
+      router.push('/');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [funnel.step]);
 
   return (
     <div className={styles.container}>
@@ -78,10 +86,7 @@ export const ExpenseRecordFunnel = () => {
             }}
           />
         )}
-        제출={({ context }) => {
-          handleSubmit(context);
-          return null;
-        }}
+        제출={() => null}
       />
       <AlertDialog
         isOpen={isOpen}
