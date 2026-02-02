@@ -2,40 +2,36 @@ import { Emotion } from '../types';
 
 export const emotions: readonly Emotion[] = [
   {
-    label: '스트레스',
-    value: 'stress',
-    tags: ['#스트레스 해소', '#기분전환'],
-    description: '스트레스를 풀기 위해 한 소비입니다.\n잠깐의 해소감을 위해 이루어진 선택입니다.',
+    label: '그냥저냥',
+    value: 'soso',
+    tags: ['#이유 없음', '#무심코'],
+    description:
+      '딱히 소비해야 할 이유는 없었어요.\n특별한 이유를 찾기보다는 그냥 재밌고 즐겁게 소비했어요.',
+  },
+  {
+    label: '필수템',
+    value: 'necessary',
+    tags: ['#생산성 향상', '#이유 확실'],
+    description:
+      '내가 하는 일의 효율을 높여줄 확실한 투자예요.\n내가 하려는 일을 더 기분 좋고 완벽하게 시작하기 위해 갖춰야 했어요.',
   },
   {
     label: '홀린듯이',
     value: 'impulse',
-    tags: ['#충동 소비', '#무계획'],
-    description:
-      '계획 없이 충동적으로 시도한 소비입니다.\n그 순간의 분위기와 감정에 반응해 이루어진 선택입니다.',
+    tags: ['#이유 없음', '#무계획'],
+    description: '처음부터 소비 할 생각은 아니었어요.\n보다가, 누르다 보니 결제가 끝나 있었어요.',
   },
   {
-    label: '살기 위해',
+    label: '살기위해',
     value: 'survival',
-    tags: ['#필수 소비', '#생존'],
-    description: '생활에 꼭 필요한 소비입니다.\n없으면 안 되는 것들을 위한 선택입니다.',
+    tags: ['#현실', '#일상 생활'],
+    description:
+      '지금의 나를 유지하려면 필요했어요.\n거창한 이유 없이, 일상을 이어가기 위한 소비였어요.',
   },
   {
-    label: '습관처럼',
-    value: 'habit',
-    tags: ['#습관', '#반복'],
-    description: '특별한 이유 없이 습관적으로 한 소비입니다.\n늘 하던 대로 이루어진 선택입니다.',
-  },
-  {
-    label: '나를 위해',
-    value: 'self-reward',
-    tags: ['#자기보상', '#힐링'],
-    description: '나 자신을 위한 보상 소비입니다.\n스스로에게 주는 선물 같은 선택입니다.',
-  },
-  {
-    label: '투자',
-    value: 'investment',
-    tags: ['#자기계발', '#미래'],
-    description: '미래를 위한 투자성 소비입니다.\n더 나은 내일을 위한 선택입니다.',
+    label: '기분전환',
+    value: 'refresh',
+    tags: ['#힐링 타임', '#소확행'],
+    description: '기분이 가라앉아 있거나 답답했어요.\n스트레스를 풀고 마음을 환기하고 싶었어요.',
   },
 ] as const;
