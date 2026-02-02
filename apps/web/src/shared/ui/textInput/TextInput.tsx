@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useLayoutEffect, useState } from 'react';
+import React, { useRef, useLayoutEffect, useState, useEffect } from 'react';
 import { IcClear } from 'public/icons';
 import * as styles from './TextInput.css';
 import { vars } from '../theme.css';
@@ -59,6 +59,15 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
     const [isFocused, setIsFocused] = useState(false);
     const [inputWidth, setInputWidth] = useState<number | undefined>(undefined);
 
+    const [showOverflowError, setShowOverflowError] = useState(false);
+    const overflowTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    useEffect(() => {
+      return () => {
+        if (overflowTimerRef.current) clearTimeout(overflowTimerRef.current);
+      };
+    }, []);
+
     const hasValidationError = (() => {
       if (fieldType === 'text' && maxLength && String(currentValue).length > maxLength) {
         return true;
@@ -75,7 +84,7 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
     const getFieldState = (): TextInputState => {
       if (externalState) return externalState;
       if (disabled) return 'disabled';
-      if (error || hasValidationError) return 'error';
+      if (error || hasValidationError || showOverflowError) return 'error';
       if (isFocused) return 'active';
       return 'default';
     };
@@ -102,6 +111,15 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
 
       if (fieldType === 'number') {
         newValue = normalizeNumberValue(newValue);
+      }
+
+      if (fieldType === 'text' && maxLength && newValue.length > maxLength) {
+        setCurrentValue(newValue.slice(0, maxLength));
+        setShowOverflowError(true);
+        if (overflowTimerRef.current) clearTimeout(overflowTimerRef.current);
+        overflowTimerRef.current = setTimeout(() => setShowOverflowError(false), 2000);
+        onChange?.(e);
+        return;
       }
 
       setCurrentValue(newValue);
@@ -166,7 +184,9 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
             <Text
               variant='h1'
               color={
-                hasValidationError || error ? vars.color.border.error : vars.color.text.secondary
+                hasValidationError || error || showOverflowError
+                  ? vars.color.border.error
+                  : vars.color.text.secondary
               }>
               {errorMessage}
             </Text>
@@ -177,7 +197,9 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
             <Text
               variant='b1'
               color={
-                hasValidationError || error ? vars.color.border.error : vars.color.text.secondary
+                hasValidationError || error || showOverflowError
+                  ? vars.color.border.error
+                  : vars.color.text.secondary
               }>
               {String(currentValue).length}/{maxLength}
             </Text>
