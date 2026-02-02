@@ -3,7 +3,7 @@
 import React from 'react';
 import { useWeeklyCalendar } from '../model/useWeeklyCalendar';
 import { WeeklyHeader } from '@/shared/ui/calendar';
-import { WeeklyCarousel } from '@/features/calendar-carousel';
+import { WeeklyCarousel } from '@/features/calendarCarousel';
 
 interface WeeklyCalendarProps {
   currentDate: Date;

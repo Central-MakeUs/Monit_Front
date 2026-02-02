@@ -8,7 +8,7 @@ import {
   formatYearMonth,
   isAfterCurrentMonth,
 } from '@/shared/lib/calendar';
-import { useMonthlyCarousel } from '@/features/calendar-carousel';
+import { useMonthlyCarousel } from '@/features/calendarCarousel';
 
 interface UseMonthlyCalendarProps {
   currentDate: Date;

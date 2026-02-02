@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { generateWeeklyDates, addDays, subDays, isCurrentWeek } from '@/shared/lib/calendar';
-import { useWeeklyCarousel } from '@/features/calendar-carousel';
+import { useWeeklyCarousel } from '@/features/calendarCarousel';
 
 interface UseWeeklyCalendarProps {
   currentDate: Date;
