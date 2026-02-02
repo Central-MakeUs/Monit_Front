@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useFunnel } from '@use-funnel/browser';
 import * as styles from './ExpenseRecordFunnel.css';
@@ -27,7 +27,6 @@ export const ExpenseRecordFunnel = () => {
   const router = useRouter();
   const toast = useToast();
   const { isOpen, openModal, closeModal } = useModal();
-  const isSubmitted = useRef(false);
   const formStore = useExpenseFormStore();
   const funnel = useFunnel<{
     금액날짜입력: AmountDateStepType;
@@ -50,17 +49,32 @@ export const ExpenseRecordFunnel = () => {
     }
   }, [funnel.step, openModal]);
 
-  useEffect(() => {
-    if (funnel.step === '제출' && !isSubmitted.current) {
-      isSubmitted.current = true;
-      // TODO: API 호출
-      console.log('제출:', funnel.context);
-      formStore.reset();
-      toast.success('소비 기록이 저장되었어요.');
-      router.push('/');
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [funnel.step]);
+  const handleAmountDateNext =
+    (history: {
+      push: (step: '사용처카테고리', context: { amount: number; expendedAt: string }) => void;
+    }) =>
+    (amount: number, expendedAt: string) => {
+      formStore.setAmountDate(amount, expendedAt);
+      history.push('사용처카테고리', { amount, expendedAt });
+    };
+
+  const handleUsageCategoryNext =
+    (history: {
+      push: (step: '만족도입력', context: { usageHistory: string; categoryId: number }) => void;
+    }) =>
+    (usageHistory: string, categoryId: number) => {
+      formStore.setUsageCategory(usageHistory, categoryId);
+      history.push('만족도입력', { usageHistory, categoryId });
+    };
+
+  const handleSubmit = (emotionType: string) => {
+    formStore.setEmotionType(emotionType);
+    // TODO: API 호출
+    console.log('제출:', { ...funnel.context, emotionType });
+    formStore.reset();
+    toast.success('소비 기록이 저장되었어요.');
+    router.push('/');
+  };
 
   return (
     <div className={styles.container}>
@@ -80,30 +94,18 @@ export const ExpenseRecordFunnel = () => {
           <AmountDateStep
             defaultAmount={formStore.amount}
             defaultDate={formStore.expendedAt}
-            onNext={(amount: number, expendedAt: string) => {
-              formStore.setAmountDate(amount, expendedAt);
-              history.push('사용처카테고리', { amount, expendedAt });
-            }}
+            onNext={handleAmountDateNext(history)}
           />
         )}
         사용처카테고리={({ history }) => (
           <UsageCategoryStep
             defaultUsageHistory={formStore.usageHistory}
             defaultCategoryId={formStore.categoryId}
-            onNext={(usageHistory: string, categoryId: number) => {
-              formStore.setUsageCategory(usageHistory, categoryId);
-              history.push('만족도입력', { usageHistory, categoryId });
-            }}
+            onNext={handleUsageCategoryNext(history)}
           />
         )}
-        만족도입력={({ history }) => (
-          <SatisfactionStep
-            defaultEmotionType={formStore.emotionType}
-            onNext={(emotionType: string) => {
-              formStore.setEmotionType(emotionType);
-              history.push('제출', { emotionType });
-            }}
-          />
+        만족도입력={() => (
+          <SatisfactionStep defaultEmotionType={formStore.emotionType} onNext={handleSubmit} />
         )}
         제출={() => null}
       />
