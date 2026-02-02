@@ -20,7 +20,10 @@ export const MenuItem = ({
   onToggleChange,
 }: MenuItemProps) => {
   return (
-    <button className={styles.container} onClick={type !== 'toggle' ? onClick : undefined}>
+    <button
+      type='button'
+      className={styles.container}
+      onClick={type !== 'toggle' ? onClick : undefined}>
       <Text variant='h3' color={vars.color.text.primary}>
         {label}
       </Text>
