@@ -37,7 +37,10 @@ export const ExpenseRecordFunnel = () => {
     id: 'expense-record',
     initial: {
       step: '금액날짜입력',
-      context: {},
+      context: {
+        amount: formStore.amount || 0,
+        expendedAt: formStore.expendedAt || new Date().toISOString(),
+      } satisfies AmountDateStepType,
     },
   });
 
@@ -83,7 +86,7 @@ export const ExpenseRecordFunnel = () => {
           left={<IcLeftChevron onClick={handleBack} />}
           center={
             <Text variant='t1' color={vars.color.text.primary}>
-              소비기록
+              소비 기록
             </Text>
           }
         />
