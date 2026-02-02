@@ -8,6 +8,9 @@ export {
   subMonths,
   addDays,
   subDays,
+  isAfterCurrentMonth,
+  isCurrentWeek,
+  isAfterToday,
 } from './calendarUtils';
 
 export type { CalendarDate } from './calendarUtils';

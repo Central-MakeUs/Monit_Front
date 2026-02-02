@@ -6,6 +6,7 @@ import {
   addMonths,
   subMonths,
   formatYearMonth,
+  isAfterCurrentMonth,
 } from '@/shared/ui/calendar/lib';
 import { useMonthlyCarousel } from '@/shared/ui/calendar/model/useMonthlyCarousel';
 
@@ -54,17 +55,25 @@ export const useMonthlyCalendar = ({
 
   const handleNextMonth = () => {
     const newDate = addMonths(internalCurrentDate, 1);
+    // 미래 월로 이동 방지
+    if (isAfterCurrentMonth(newDate)) {
+      return;
+    }
     setInternalCurrentDate(newDate);
     onMonthChange?.(newDate);
   };
 
   const formattedMonth = formatYearMonth(internalCurrentDate);
 
+  // 다음 달이 미래인지 확인
+  const isNextMonthDisabled = isAfterCurrentMonth(addMonths(internalCurrentDate, 1));
+
   const carousel = useMonthlyCarousel({
     dates,
     currentDate: internalCurrentDate,
     onSwipeLeft: handleNextMonth,
     onSwipeRight: handlePrevMonth,
+    disableNext: isNextMonthDisabled,
   });
 
   return {
@@ -75,7 +84,7 @@ export const useMonthlyCalendar = ({
     handleDateSelect,
     handlePrevMonth,
     handleNextMonth,
-
+    isNextMonthDisabled,
     carousel: variant === 'home' ? carousel : null,
   };
 };

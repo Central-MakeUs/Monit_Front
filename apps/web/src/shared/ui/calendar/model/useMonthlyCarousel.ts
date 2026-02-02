@@ -10,6 +10,7 @@ interface UseMonthlyCarouselProps {
   currentDate: Date;
   onSwipeLeft?: () => void;
   onSwipeRight?: () => void;
+  disableNext?: boolean;
 }
 
 export interface UseMonthlyCarouselReturn {
@@ -33,6 +34,7 @@ export const useMonthlyCarousel = ({
   currentDate,
   onSwipeLeft,
   onSwipeRight,
+  disableNext = false,
 }: UseMonthlyCarouselProps): UseMonthlyCarouselReturn => {
   const [currentMonth, setCurrentMonth] = useState(dates);
   const [dragOffset, setDragOffset] = useState(0);
@@ -94,7 +96,12 @@ export const useMonthlyCarousel = ({
     onSwiping: (eventData) => {
       if (!isTransitioning && slideWidth > 0) {
         setIsDragging(true);
-        const clampedOffset = Math.max(-slideWidth, Math.min(slideWidth, eventData.deltaX));
+        // disableNext가 true이고 왼쪽으로 스와이프(다음 달)하려는 경우 제한
+        const delta = eventData.deltaX;
+        const clampedOffset =
+          disableNext && delta < 0
+            ? Math.max(0, Math.min(slideWidth, delta))
+            : Math.max(-slideWidth, Math.min(slideWidth, delta));
         setDragOffset(clampedOffset);
       }
     },
@@ -105,7 +112,8 @@ export const useMonthlyCarousel = ({
       if (slideWidth > 0) {
         const swipeThreshold = slideWidth * SWIPE_THRESHOLD_RATIO;
 
-        if (delta < -swipeThreshold) {
+        // disableNext가 true면 왼쪽 스와이프(다음 달) 방지
+        if (delta < -swipeThreshold && !disableNext) {
           setIsTransitioning(true);
           pendingActionRef.current = 'left';
           setDragOffset(-slideWidth);

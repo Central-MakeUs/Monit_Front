@@ -32,6 +32,7 @@ export const MonthlyCalendar = ({
     handlePrevMonth,
     handleNextMonth,
     handleDateSelect,
+    isNextMonthDisabled,
     carousel,
   } = useMonthlyCalendar({
     currentDate,
@@ -51,6 +52,7 @@ export const MonthlyCalendar = ({
           formattedMonth={formattedMonth}
           onPrevMonth={handlePrevMonth}
           onNextMonth={handleNextMonth}
+          hideNextButton={isNextMonthDisabled}
         />
       )}
       {variant === 'home' && carousel ? (
@@ -77,6 +79,7 @@ export const MonthlyCalendar = ({
           showText={shouldShowText}
           renderDateText={renderDateText}
           onDateSelect={handleDateSelect}
+          disableFutureDates={variant === 'modal'}
         />
       )}
     </>

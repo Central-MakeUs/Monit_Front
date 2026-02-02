@@ -9,6 +9,7 @@ interface UseWeeklyCarouselProps {
   dates: CalendarDate[];
   onSwipeLeft?: () => void;
   onSwipeRight?: () => void;
+  disableNext?: boolean;
 }
 
 export interface UseWeeklyCarouselReturn {
@@ -32,6 +33,7 @@ export const useWeeklyCarousel = ({
   dates,
   onSwipeLeft,
   onSwipeRight,
+  disableNext = false,
 }: UseWeeklyCarouselProps): UseWeeklyCarouselReturn => {
   const [currentWeek, setCurrentWeek] = useState(dates);
   const [dragOffset, setDragOffset] = useState(0);
@@ -85,7 +87,12 @@ export const useWeeklyCarousel = ({
     onSwiping: (eventData) => {
       if (!isTransitioning) {
         setIsDragging(true);
-        const clampedOffset = Math.max(-SLIDE_WIDTH, Math.min(SLIDE_WIDTH, eventData.deltaX));
+        // disableNext가 true이고 왼쪽으로 스와이프(다음 주)하려는 경우 제한
+        const delta = eventData.deltaX;
+        const clampedOffset =
+          disableNext && delta < 0
+            ? Math.max(0, Math.min(SLIDE_WIDTH, delta))
+            : Math.max(-SLIDE_WIDTH, Math.min(SLIDE_WIDTH, delta));
         setDragOffset(clampedOffset);
       }
     },
@@ -93,7 +100,8 @@ export const useWeeklyCarousel = ({
       const delta = eventData.deltaX;
       setIsDragging(false);
 
-      if (delta < -SWIPE_THRESHOLD) {
+      // disableNext가 true면 왼쪽 스와이프(다음 주) 방지
+      if (delta < -SWIPE_THRESHOLD && !disableNext) {
         setIsTransitioning(true);
         pendingActionRef.current = 'left';
         setDragOffset(-SLIDE_WIDTH);

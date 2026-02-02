@@ -12,12 +12,14 @@ interface CalendarHeaderProps {
   formattedMonth: string;
   onPrevMonth: () => void;
   onNextMonth: () => void;
+  hideNextButton?: boolean;
 }
 
 export const CalendarHeader = ({
   formattedMonth,
   onPrevMonth,
   onNextMonth,
+  hideNextButton = false,
 }: CalendarHeaderProps) => {
   return (
     <div className={header}>
@@ -26,9 +28,12 @@ export const CalendarHeader = ({
           <IcRightChevron className={iconRotate} />
         </button>
         <span className={navText}>{formattedMonth}</span>
-        <button type='button' onClick={onNextMonth} className={navButton}>
-          <IcRightChevron />
-        </button>
+        {!hideNextButton && (
+          <button type='button' onClick={onNextMonth} className={navButton}>
+            <IcRightChevron />
+          </button>
+        )}
+        {hideNextButton && <div style={{ width: '32px' }} />}
       </div>
     </div>
   );

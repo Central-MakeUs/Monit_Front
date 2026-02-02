@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
-import { generateWeeklyDates, addDays, subDays } from '@/shared/ui/calendar/lib';
+import { generateWeeklyDates, addDays, subDays, isCurrentWeek } from '@/shared/ui/calendar/lib';
 import { useWeeklyCarousel } from '@/shared/ui/calendar/model';
 
 interface UseWeeklyCalendarProps {
@@ -44,6 +44,10 @@ export const useWeeklyCalendar = ({
   };
 
   const handleNextWeek = () => {
+    // 현재 주에서는 다음 주로 이동 방지
+    if (isCurrentWeek(internalCurrentDate)) {
+      return;
+    }
     const newDate = addDays(internalCurrentDate, 7);
     setInternalCurrentDate(newDate);
     onWeekChange?.(newDate);
@@ -55,10 +59,14 @@ export const useWeeklyCalendar = ({
     }
   };
 
+  // 현재 주인지 확인
+  const isNextWeekDisabled = isCurrentWeek(internalCurrentDate);
+
   const carousel = useWeeklyCarousel({
     dates,
     onSwipeLeft: handleNextWeek,
     onSwipeRight: handlePrevWeek,
+    disableNext: isNextWeekDisabled,
   });
 
   return {

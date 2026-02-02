@@ -1,7 +1,7 @@
 import React from 'react';
 import { weeklyGrid, weeklyColumn } from '../styles/Calendar.css';
 import { DateCell } from '../DateCell';
-import { isSameDate, isToday } from '../lib';
+import { isSameDate, isToday, isAfterToday } from '../lib';
 import type { CalendarDate } from '../lib';
 
 interface WeeklyDateGridProps {
@@ -24,6 +24,7 @@ export const WeeklyDateGrid = ({ weekDates, selectedDate, onDateSelect }: Weekly
               isSelected={selectedDate ? isSameDate(date, selectedDate) : false}
               isToday={isToday(date)}
               isOutsideMonth={!isCurrentMonth}
+              isDisabled={isAfterToday(date)}
               size='weekly'
               onClick={onDateSelect}
             />

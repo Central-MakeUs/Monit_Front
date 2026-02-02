@@ -18,6 +18,48 @@ export { isSameDay as isSameDate };
 export { dateFnsIsToday as isToday };
 
 /**
+ * 주어진 날짜가 오늘 이후인지 확인 (미래 날짜인지)
+ */
+export const isAfterToday = (date: Date): boolean => {
+  const today = new Date();
+  const todayTime = today.setHours(0, 0, 0, 0);
+  const dateTime = new Date(date).setHours(0, 0, 0, 0);
+
+  return dateTime > todayTime;
+};
+
+/**
+ * 주어진 날짜가 현재 월 이후인지 확인
+ */
+export const isAfterCurrentMonth = (date: Date): boolean => {
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const currentMonth = now.getMonth();
+  const targetYear = date.getFullYear();
+  const targetMonth = date.getMonth();
+
+  return targetYear > currentYear || (targetYear === currentYear && targetMonth > currentMonth);
+};
+
+/**
+ * 주어진 날짜(baseDate)가 포함된 주가 오늘을 포함하는지 확인
+ * @param baseDate 확인할 주의 기준 날짜
+ * @returns 해당 주가 오늘을 포함하면 true
+ */
+export const isCurrentWeek = (baseDate: Date): boolean => {
+  const today = new Date();
+  const weekStart = startOfWeek(baseDate, { weekStartsOn: 1 });
+  const weekEnd = addDays(weekStart, 6);
+
+  // 오늘이 해당 주의 시작일과 종료일 사이에 있는지 확인
+  const todayTime = today.setHours(0, 0, 0, 0);
+  const weekStartTime = weekStart.setHours(0, 0, 0, 0);
+  const weekEndTime = weekEnd.setHours(23, 59, 59, 999);
+
+  return todayTime >= weekStartTime && todayTime <= weekEndTime;
+};
+
+/**
  * 년/월을 "YYYY년 M월" 형식으로 포맷
  */
 export const formatYearMonth = (date: Date): string => {
