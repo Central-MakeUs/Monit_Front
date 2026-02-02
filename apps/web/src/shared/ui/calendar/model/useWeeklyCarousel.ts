@@ -11,7 +11,7 @@ interface UseWeeklyCarouselProps {
   onSwipeRight?: () => void;
 }
 
-interface UseWeeklyCarouselReturn {
+export interface UseWeeklyCarouselReturn {
   currentWeek: CalendarDate[];
   prevWeek: CalendarDate[];
   nextWeek: CalendarDate[];

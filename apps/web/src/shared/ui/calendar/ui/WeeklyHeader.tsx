@@ -5,7 +5,7 @@ import {
   weeklyWeekdayCell,
   weeklyCarouselContainer,
 } from '../styles/Calendar.css';
-import { WEEKDAYS } from '../model';
+import { WEEKDAYS } from '../model/constants';
 import { isSameDate } from '../lib';
 import type { CalendarDate } from '../lib';
 

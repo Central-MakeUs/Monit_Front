@@ -1,7 +1,8 @@
 // CalendarBottomSheetTemplate
 'use client';
 
-import { BaseBottomSheetTemplate, Calendar, Button } from '@/shared/ui';
+import { BaseBottomSheetTemplate, Button } from '@/shared/ui';
+import { Calendar } from '@/widgets/calendar';
 import React, { useState } from 'react';
 
 export interface CalendarBottomSheetTemplateProps {

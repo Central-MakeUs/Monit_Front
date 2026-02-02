@@ -4,7 +4,7 @@ import { getFigmaUrl } from '@/shared/config/figma';
 import { fn } from '@storybook/test';
 
 const meta: Meta<typeof Calendar> = {
-  title: 'Components/Calendar',
+  title: 'Widgets/Calendar',
   component: Calendar,
   parameters: {
     layout: 'centered',
@@ -15,13 +15,13 @@ const meta: Meta<typeof Calendar> = {
     docs: {
       description: {
         component:
-          '홈 화면과 바텀시트에 쓰이는 날짜 선택 캘린더 컴포넌트입니다. 기본값은 home입니다. modal 설정 시 바텀시트에서 사용되는 날짜 선택 캘린더로 전환됩니다.',
+          '홈 화면과 바텀시트에 쓰이는 날짜 선택 캘린더 위젯입니다. 월간/주간 뷰를 지원합니다.',
       },
     },
   },
   decorators: [
     (Story) => (
-      <div style={{ width: '390px', padding: '1rem' }}>
+      <div style={{ maxWidth: '600px', padding: '1rem', margin: '0 auto' }}>
         <Story />
       </div>
     ),

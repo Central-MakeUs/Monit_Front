@@ -1,74 +1,48 @@
 'use client';
 
 import React from 'react';
-import { container } from '@/shared/ui/calendar/styles/Calendar.css';
+import { useMonthlyCalendar } from '../model/useMonthlyCalendar';
 import { CalendarHeader } from '@/shared/ui/calendar/CalendarHeader';
 import { CalendarGrid } from '@/shared/ui/calendar/CalendarGrid';
-import { WeeklyCalendarGrid } from '@/shared/ui/calendar/WeeklyCalendarGrid';
-import { useCalendar } from '@/shared/ui/calendar/model/useCalendar';
 
-export interface CalendarProps {
-  currentDate?: Date;
+interface MonthlyCalendarProps {
+  currentDate: Date;
   selectedDate?: Date | null;
-  variant?: 'modal' | 'home';
-  viewMode?: 'monthly' | 'weekly';
-  showText?: boolean;
+  variant: 'modal' | 'home';
+  showText: boolean;
   renderDateText?: (date: Date) => string | undefined;
   onDateSelect?: (date: Date) => void;
-  onWeekChange?: (newDate: Date) => void;
   onMonthChange?: (newDate: Date) => void;
 }
 
-export const Calendar = ({
-  currentDate = new Date(),
+export const MonthlyCalendar = ({
+  currentDate,
   selectedDate,
-  variant = 'home',
-  viewMode = 'monthly',
-  showText = false,
+  variant,
+  showText,
   renderDateText,
   onDateSelect,
-  onWeekChange,
   onMonthChange,
-}: CalendarProps) => {
+}: MonthlyCalendarProps) => {
   const {
     formattedMonth,
     dates,
     effectiveSelectedDate,
     handlePrevMonth,
     handleNextMonth,
-    handlePrevWeek,
-    handleNextWeek,
     handleDateSelect,
-  } = useCalendar({
+  } = useMonthlyCalendar({
     currentDate,
     selectedDate,
-    viewMode,
     onDateSelect,
-    onWeekChange,
     onMonthChange,
   });
 
   const size = variant === 'home' ? 'lg' : 'md';
   const shouldShowText = variant === 'home' && showText;
 
-  // 주간 모드
-  if (viewMode === 'weekly') {
-    return (
-      <div className={container}>
-        <WeeklyCalendarGrid
-          dates={dates}
-          selectedDate={effectiveSelectedDate}
-          onDateSelect={handleDateSelect}
-          onSwipeLeft={handleNextWeek}
-          onSwipeRight={handlePrevWeek}
-        />
-      </div>
-    );
-  }
-
-  // 월간 모드
   return (
-    <div className={container}>
+    <>
       {variant === 'modal' && (
         <CalendarHeader
           formattedMonth={formattedMonth}
@@ -84,6 +58,6 @@ export const Calendar = ({
         renderDateText={renderDateText}
         onDateSelect={handleDateSelect}
       />
-    </div>
+    </>
   );
 };
