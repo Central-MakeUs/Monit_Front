@@ -18,3 +18,7 @@ globalStyle('a', {
   color: 'inherit',
   textDecoration: 'none',
 });
+
+globalStyle('body', {
+  background: '#F6F7F9',
+});
