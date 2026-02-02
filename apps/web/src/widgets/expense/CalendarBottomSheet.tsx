@@ -1,4 +1,9 @@
-// CalendarBottomSheetTemplate
+/**
+ * @module widgets/expense
+ * @description 소비일 선택을 위한 캘린더 바텀시트 위젯
+ *
+ * widgets/calendar를 조합하여 완성된 UI 블록을 제공합니다.
+ */
 'use client';
 
 import { BaseBottomSheetTemplate, Button } from '@/shared/ui';

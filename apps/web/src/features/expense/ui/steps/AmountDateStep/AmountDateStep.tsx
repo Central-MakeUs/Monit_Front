@@ -9,7 +9,7 @@ import {
   InputField,
   TextInput,
 } from '@/shared/ui';
-import { CalendarBottomSheetTemplate } from '../../expenseBottomSheet';
+import { CalendarBottomSheetTemplate } from '@/widgets/expense';
 import { useModal } from '@/shared/hooks';
 import * as styles from './AmountDateStep.css';
 import { formatDate } from '@/shared/utils';
