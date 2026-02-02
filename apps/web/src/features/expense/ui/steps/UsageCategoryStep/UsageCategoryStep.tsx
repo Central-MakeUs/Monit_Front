@@ -1,9 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import { Button, InputField, TextInput, CategoryGrid, BottomFixedArea } from '@/shared/ui';
 import type { Category } from '../../expenseBottomSheet';
 import * as styles from './UsageCategoryStep.css';
+
+const MAX_LENGTH = 20;
 
 // TODO: 임시 데이터 교체해야함
 const expenseCategories: Category[] = [
@@ -23,6 +25,8 @@ export interface UsageCategoryStepProps {
 export const UsageCategoryStep = ({ onNext }: UsageCategoryStepProps) => {
   const [usageHistory, setUsageHistory] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+  const [showError, setShowError] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const isValid = usageHistory.trim() !== '' && selectedCategory !== null;
 
@@ -31,15 +35,28 @@ export const UsageCategoryStep = ({ onNext }: UsageCategoryStepProps) => {
     onNext(usageHistory, Number(selectedCategory.id));
   };
 
+  // TODO: 만약 다른 TextInput 에도 똑같은 로직일 경우 수정하기
+  const handleValueChange = useCallback((value: string) => {
+    if (value.length > MAX_LENGTH) {
+      setUsageHistory(value.slice(0, MAX_LENGTH));
+      setShowError(true);
+      if (timerRef.current) clearTimeout(timerRef.current);
+      timerRef.current = setTimeout(() => setShowError(false), 2000);
+      return;
+    }
+    setUsageHistory(value);
+  }, []);
+
   return (
     <div className={styles.container}>
       <InputField label='사용처'>
         <TextInput
           placeholder='사용처를 입력해주세요'
           value={usageHistory}
-          onValueChange={setUsageHistory}
-          errorMessage='한글, 영문, 숫자만 20자 이내로 입력가능해요.'
-          maxLength={20}
+          onValueChange={handleValueChange}
+          errorMessage={showError ? '한글, 영문, 숫자만 20자 이내로 입력가능해요.' : undefined}
+          error={showError}
+          maxLength={MAX_LENGTH}
         />
       </InputField>
 
