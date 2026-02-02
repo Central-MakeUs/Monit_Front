@@ -6,4 +6,6 @@ export const container = style({
   margin: `${spacing.md} ${spacing.xl}`,
   justifyItems: 'center',
   justifyContent: 'space-between',
+  border: 'none',
+  backgroundColor: 'transparent',
 });
