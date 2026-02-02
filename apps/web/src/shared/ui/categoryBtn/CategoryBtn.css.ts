@@ -55,6 +55,9 @@ export const categoryIconContainer = recipe({
       secondary: {
         backgroundColor: vars.color.bg.neutral.subtle,
       },
+      neutral: {
+        backgroundColor: vars.color.bg.neutral.subtle,
+      },
     },
     mode: {
       default: {

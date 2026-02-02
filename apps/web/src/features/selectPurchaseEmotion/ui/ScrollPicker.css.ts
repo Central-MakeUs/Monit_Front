@@ -11,7 +11,6 @@ export const pickerContainer = style({
   position: 'relative',
   height: `${TOTAL_ITEM_HEIGHT * VISIBLE_ITEMS}px`,
   overflow: 'hidden',
-  flex: 1,
 });
 
 export const pickerList = style({
@@ -32,7 +31,7 @@ export const pickerPadding = style({
 
 export const pickerItem = recipe({
   base: {
-    maxWidth: '19.2rem',
+    width: '17rem',
     padding: '1.2rem 2rem',
     display: 'flex',
     alignItems: 'center',

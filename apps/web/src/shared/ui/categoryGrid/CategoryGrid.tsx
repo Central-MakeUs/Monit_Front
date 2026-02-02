@@ -38,6 +38,7 @@ export const CategoryGrid = ({
 }: CategoryGridProps) => {
   const visibleCategories = categories.slice(0, maxVisible);
   const hasMoreCategories = categories.length > maxVisible;
+  const btnType = type === 'expense' ? 'neutral' : 'primary';
 
   return (
     <div className={type === 'expense' ? styles.expenseWrapper : styles.wrapper}>
@@ -54,12 +55,19 @@ export const CategoryGrid = ({
             key={category.id}
             icon={category.icon}
             label={category.label}
+            type={btnType}
             mode={selectedId === category.id ? 'active' : 'default'}
             onClick={() => onSelect?.(category)}
           />
         ))}
         {(hasMoreCategories || categories.length > 0) && (
-          <CategoryBtn icon='plus' label='더보기' mode='default' onClick={onMoreClick} />
+          <CategoryBtn
+            icon='plus'
+            label='더보기'
+            type={btnType}
+            mode='default'
+            onClick={onMoreClick}
+          />
         )}
       </div>
     </div>

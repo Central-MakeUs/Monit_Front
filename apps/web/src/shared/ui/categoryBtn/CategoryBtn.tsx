@@ -17,7 +17,7 @@ export interface CategoryBtnProps extends Omit<
   /** 버튼 크기 */
   size?: 'sm' | 'md' | 'lg';
   /** 버튼 타입 */
-  type?: 'primary' | 'secondary';
+  type?: 'primary' | 'secondary' | 'neutral';
   /** 버튼 모드 */
   mode?: 'default' | 'active' | 'plus' | 'edit';
   /** 라벨 표시 여부 */
