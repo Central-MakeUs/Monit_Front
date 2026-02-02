@@ -35,12 +35,24 @@ export const useWeeklyCalendar = ({
     const newDate = subDays(internalCurrentDate, 7);
     setInternalCurrentDate(newDate);
     onWeekChange?.(newDate);
+
+    if (effectiveSelectedDate) {
+      const newSelectedDate = subDays(effectiveSelectedDate, 7);
+      setInternalSelectedDate(newSelectedDate);
+      onDateSelect?.(newSelectedDate);
+    }
   };
 
   const handleNextWeek = () => {
     const newDate = addDays(internalCurrentDate, 7);
     setInternalCurrentDate(newDate);
     onWeekChange?.(newDate);
+
+    if (effectiveSelectedDate) {
+      const newSelectedDate = addDays(effectiveSelectedDate, 7);
+      setInternalSelectedDate(newSelectedDate);
+      onDateSelect?.(newSelectedDate);
+    }
   };
 
   const carousel = useWeeklyCarousel({

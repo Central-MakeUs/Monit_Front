@@ -43,6 +43,19 @@ export const useMonthlyCarousel = ({
   const trackRef = useRef<HTMLDivElement>(null);
   const pendingActionRef = useRef<'left' | 'right' | null>(null);
 
+  useEffect(() => {
+    if (!isTransitioning && !isDragging) {
+      setCurrentMonth(dates);
+    }
+  }, [dates, isTransitioning, isDragging]);
+
+  const { prevMonth, nextMonth } = useMemo(() => {
+    return {
+      prevMonth: generateCalendarDates(subMonths(currentDate, 1)),
+      nextMonth: generateCalendarDates(addMonths(currentDate, 1)),
+    };
+  }, [currentDate]);
+
   // 클라이언트에서 실제 너비 측정
   useEffect(() => {
     const updateWidth = () => {
@@ -59,21 +72,6 @@ export const useMonthlyCarousel = ({
     window.addEventListener('resize', updateWidth);
     return () => window.removeEventListener('resize', updateWidth);
   }, []);
-
-  const SWIPE_THRESHOLD = slideWidth * SWIPE_THRESHOLD_RATIO;
-
-  useEffect(() => {
-    if (!isTransitioning && !isDragging) {
-      setCurrentMonth(dates);
-    }
-  }, [dates, isTransitioning, isDragging]);
-
-  const { prevMonth, nextMonth } = useMemo(() => {
-    return {
-      prevMonth: generateCalendarDates(subMonths(currentDate, 1)),
-      nextMonth: generateCalendarDates(addMonths(currentDate, 1)),
-    };
-  }, [currentDate]);
 
   const handleTransitionEnd = () => {
     if (pendingActionRef.current && isTransitioning) {
@@ -94,7 +92,7 @@ export const useMonthlyCarousel = ({
 
   const handlers = useSwipeable({
     onSwiping: (eventData) => {
-      if (!isTransitioning) {
+      if (!isTransitioning && slideWidth > 0) {
         setIsDragging(true);
         const clampedOffset = Math.max(-slideWidth, Math.min(slideWidth, eventData.deltaX));
         setDragOffset(clampedOffset);
@@ -104,14 +102,20 @@ export const useMonthlyCarousel = ({
       const delta = eventData.deltaX;
       setIsDragging(false);
 
-      if (delta < -SWIPE_THRESHOLD) {
-        setIsTransitioning(true);
-        pendingActionRef.current = 'left';
-        setDragOffset(-slideWidth);
-      } else if (delta > SWIPE_THRESHOLD) {
-        setIsTransitioning(true);
-        pendingActionRef.current = 'right';
-        setDragOffset(slideWidth);
+      if (slideWidth > 0) {
+        const swipeThreshold = slideWidth * SWIPE_THRESHOLD_RATIO;
+
+        if (delta < -swipeThreshold) {
+          setIsTransitioning(true);
+          pendingActionRef.current = 'left';
+          setDragOffset(-slideWidth);
+        } else if (delta > swipeThreshold) {
+          setIsTransitioning(true);
+          pendingActionRef.current = 'right';
+          setDragOffset(slideWidth);
+        } else {
+          setDragOffset(0);
+        }
       } else {
         setDragOffset(0);
       }
