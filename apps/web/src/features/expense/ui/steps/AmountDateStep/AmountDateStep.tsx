@@ -34,18 +34,16 @@ export const AmountDateStep = ({ onNext }: AmountDateStepProps) => {
   return (
     <>
       <div className={styles.container}>
-        <div className={styles.amountInputField}>
-          <InputField label='소비금액'>
-            <TextInput
-              placeholder='0'
-              fieldType='number'
-              suffix='원'
-              value={amount}
-              onValueChange={setAmount}
-            />
-          </InputField>
-          <DateInfoField label='소비일' value={formatDate(selectedDate)} onClick={openModal} />
-        </div>
+        <InputField label='소비금액'>
+          <TextInput
+            placeholder='0'
+            fieldType='number'
+            suffix='원'
+            value={amount}
+            onValueChange={setAmount}
+          />
+        </InputField>
+        <DateInfoField label='소비일' value={formatDate(selectedDate)} onClick={openModal} />
       </div>
       <BottomSheet isOpen={isOpen} onClose={closeModal}>
         <CalendarBottomSheetTemplate

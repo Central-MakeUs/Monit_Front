@@ -10,6 +10,7 @@ export interface CategoryItem {
 }
 
 export interface CategoryGridProps {
+  type?: 'bottomSheet' | 'expense';
   /** 섹션 라벨 */
   label?: string;
   /** 전체 카테고리 개수 (뱃지에 표시) */
@@ -27,6 +28,7 @@ export interface CategoryGridProps {
 }
 
 export const CategoryGrid = ({
+  type = 'bottomSheet',
   label = '카테고리',
   categories,
   selectedId,
@@ -38,9 +40,11 @@ export const CategoryGrid = ({
   const hasMoreCategories = categories.length > maxVisible;
 
   return (
-    <div className={styles.wrapper}>
+    <div className={type === 'expense' ? styles.expenseWrapper : styles.wrapper}>
       <div className={styles.header}>
-        <Text variant='b3' color={vars.color.text.secondary}>
+        <Text
+          variant={type === 'expense' ? 'h3' : 'b3'}
+          color={type === 'expense' ? vars.color.text.primary : vars.color.text.secondary}>
           {label}
         </Text>
       </div>

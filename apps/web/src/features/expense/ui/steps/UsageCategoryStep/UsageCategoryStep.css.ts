@@ -1,4 +1,3 @@
-import { spacing } from '@/shared/ui/tokens';
 import { style } from '@vanilla-extract/css';
 
 export const container = style({
@@ -8,5 +7,5 @@ export const container = style({
   height: '100%',
   padding: '0 1.8rem',
   marginTop: '4rem',
-  gap: spacing.sm,
+  gap: '4rem',
 });
