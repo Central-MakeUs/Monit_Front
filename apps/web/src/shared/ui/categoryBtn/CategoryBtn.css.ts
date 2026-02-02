@@ -8,7 +8,6 @@ export const categoryButtonWrapper = recipe({
     flexDirection: 'column',
     alignItems: 'center',
     gap: spacing.sm2,
-    padding: spacing.sm,
     cursor: 'pointer',
     position: 'relative',
     border: 'none',
@@ -53,6 +52,9 @@ export const categoryIconContainer = recipe({
         backgroundColor: vars.color.bg.base,
       },
       secondary: {
+        backgroundColor: vars.color.bg.neutral.subtle,
+      },
+      neutral: {
         backgroundColor: vars.color.bg.neutral.subtle,
       },
     },

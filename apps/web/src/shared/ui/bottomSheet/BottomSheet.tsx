@@ -20,8 +20,8 @@ export const BottomSheet = ({
   transparent = false,
   children,
 }: PropsWithChildren<BottomSheetProps>): React.JSX.Element | null => {
-  const [shouldRender, setShouldRender] = useState(false);
-  const [isAnimating, setIsAnimating] = useState(false);
+  const [shouldRender, setShouldRender] = useState<boolean>();
+  const [isAnimating, setIsAnimating] = useState<boolean>();
   const prevOverflow = useRef<string | null>(null);
 
   useEffect(() => {
