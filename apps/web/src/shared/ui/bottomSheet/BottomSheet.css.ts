@@ -5,7 +5,7 @@ import { vars, radius, spacing, shadows } from '../theme.css';
 export const container = style({
   position: 'fixed',
   inset: 0,
-  zIndex: 50,
+  zIndex: 200,
 });
 
 export const backdrop = recipe({
