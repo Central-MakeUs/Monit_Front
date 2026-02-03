@@ -1,7 +1,7 @@
 'use client';
 
-import { MenuItem, MenuLabel, Divider } from '@/features/my';
-import { TopBar, vars, Text } from '@/shared/ui';
+import { MenuItem, MenuLabel } from '@/features/my';
+import { TopBar, vars, Text, Divider } from '@/shared/ui';
 import { IcLeftChevron } from 'public/icons';
 import React from 'react';
 import * as styles from './myPage.css';
@@ -30,7 +30,10 @@ export const MyPage = () => {
           label='카테고리 편집'
           onClick={() => router.push('/expense/category')}
         />
-        <Divider />
+        <div className={styles.dividerWrapper}>
+          <Divider />
+        </div>
+
         {/* 약관 */}
         <MenuLabel label='약관' />
         <MenuItem type='arrow' label='서비스 이용약관' onClick={() => router.push('/')} />
@@ -40,7 +43,9 @@ export const MyPage = () => {
           onClick={() => router.push('/')}
         />
         <MenuItem type='toggle' label='개인정보 수집 및 이용 동의' />
-        <Divider />
+        <div className={styles.dividerWrapper}>
+          <Divider />
+        </div>
 
         {/* 계정 설정 */}
         <MenuLabel label='계정 설정' />

@@ -60,3 +60,5 @@ export { BottomFixedArea } from './bottomFixedArea';
 export { DateLabel } from './dateLabel';
 
 export { RatingBtn } from './ratingBtn';
+
+export { Divider } from './divider';
