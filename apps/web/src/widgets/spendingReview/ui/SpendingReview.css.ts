@@ -19,6 +19,18 @@ export const reviewCardContainer = style({
   borderRadius: radius.lg,
   boxShadow: shadows.shadow1,
   width: '100%',
+  position: 'relative',
+});
+
+export const pageCount = style({
+  display: 'flex',
+  position: 'absolute',
+  top: spacing.xl,
+  right: spacing.xl,
+  padding: `${spacing.xs} ${spacing.sm2}`,
+  borderRadius: radius.full,
+  backgroundColor: vars.color.bg.neutral.subtle,
+  gap: '0.1rem',
 });
 
 export const textWrapper = style({
@@ -49,4 +61,26 @@ export const pageIndicatorWrapper = style({
   marginTop: '1.4rem',
   display: 'flex',
   justifyContent: 'center',
+});
+
+export const carouselContainer = style({
+  width: '100%',
+  overflow: 'hidden',
+  position: 'relative',
+});
+
+export const carouselTrack = style({
+  display: 'flex',
+  gap: 0,
+  willChange: 'transform',
+  backfaceVisibility: 'hidden',
+});
+
+export const carouselSlide = style({
+  width: '100%',
+  minWidth: '100%',
+  flexShrink: 0,
+  padding: `0 ${spacing.xl}`,
+  marginTop: '1.25rem',
+  boxSizing: 'border-box',
 });
