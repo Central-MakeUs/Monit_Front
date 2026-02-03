@@ -4,9 +4,6 @@ export type { ExpenseFormBottomSheetProps, Category } from './ExpenseFormBottomS
 export { CategoryBottomSheetTemplate } from './CategoryBottomSheet';
 export type { CategoryBottomSheetTemplateProps } from './CategoryBottomSheet';
 
-export { CalendarBottomSheetTemplate } from './CalendarBottomSheet';
-export type { CalendarBottomSheetTemplateProps } from './CalendarBottomSheet';
-
 export { DatePickerBottomSheetTemplate } from './DatePickerBottomSheet';
 export type { DatePickerBottomSheetTemplateProps } from './DatePickerBottomSheet';
 

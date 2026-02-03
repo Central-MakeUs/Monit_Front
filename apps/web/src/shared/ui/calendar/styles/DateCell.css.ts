@@ -33,10 +33,19 @@ export const dateCellWrapper = recipe({
       },
       false: {},
     },
+    disabled: {
+      true: {
+        cursor: 'not-allowed',
+        opacity: 0.4,
+        pointerEvents: 'none',
+      },
+      false: {},
+    },
   },
   defaultVariants: {
     size: 'md',
     showText: false,
+    disabled: false,
   },
 });
 
@@ -83,6 +92,12 @@ export const dateBadge = recipe({
         color: vars.color.text.tertiary,
       },
     },
+    disabled: {
+      true: {
+        color: vars.color.text.disabled,
+      },
+      false: {},
+    },
   },
   compoundVariants: [
     {
@@ -116,6 +131,7 @@ export const dateBadge = recipe({
     selected: false,
     today: false,
     size: 'md',
+    disabled: false,
   },
 });
 

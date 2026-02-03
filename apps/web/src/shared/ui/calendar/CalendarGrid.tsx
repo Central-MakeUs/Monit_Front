@@ -1,10 +1,9 @@
 'use client';
 
 import React from 'react';
-import { grid, weekdayCell } from '@/shared/ui/calendar/styles/Calendar.css';
-import { DateCell } from '@/shared/ui/calendar/DateCell';
-import { WEEKDAYS } from '@/shared/ui/calendar/model/constants';
-import { isSameDate, isToday } from '@/shared/ui/calendar/lib/calendarUtils';
+import { grid, weekdayCell } from './styles/Calendar.css';
+import { DateCell } from './DateCell';
+import { WEEKDAYS, isSameDate, isToday, isAfterToday } from '@/shared/lib/calendar';
 
 interface CalendarGridProps {
   dates: Array<{ date: Date; isCurrentMonth: boolean }>;
@@ -13,6 +12,7 @@ interface CalendarGridProps {
   showText?: boolean;
   renderDateText?: (date: Date) => string | undefined;
   onDateSelect: (date: Date) => void;
+  disableFutureDates?: boolean;
 }
 
 export const CalendarGrid = ({
@@ -22,6 +22,7 @@ export const CalendarGrid = ({
   showText = false,
   renderDateText,
   onDateSelect,
+  disableFutureDates = true,
 }: CalendarGridProps) => {
   return (
     <div className={grid({ size })}>
@@ -37,6 +38,7 @@ export const CalendarGrid = ({
           isSelected={selectedDate ? isSameDate(date, selectedDate) : false}
           isToday={isToday(date)}
           isOutsideMonth={!isCurrentMonth}
+          isDisabled={disableFutureDates && isAfterToday(date)}
           size={size}
           showText={showText}
           text={showText ? renderDateText?.(date) : undefined}
