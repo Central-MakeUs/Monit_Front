@@ -56,3 +56,5 @@ export { DateInfoField } from './dateInfoField';
 export { BottomFixedArea } from './bottomFixedArea';
 
 export { DateLabel } from './dateLabel';
+
+export { RatingBtn } from './ratingBtn';
