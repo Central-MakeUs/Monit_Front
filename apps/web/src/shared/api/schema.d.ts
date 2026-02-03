@@ -64,6 +64,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/auth/logout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * 공통 로그아웃
+         * @description 카카오/애플 로그인 방식에 관계없이 현재 사용자를 로그아웃 처리합니다.
+         */
+        post: operations["logout"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/auth/apple/login": {
         parameters: {
             query?: never;
@@ -204,6 +224,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/expense/retrospect-list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * 회고 필요 지출 내역 조회
+         * @description 특정 날짜의 지출 중 아직 회고(만족도 조사)가 완료되지 않은 내역만 리스트로 조회합니다.
+         */
+        get: operations["getRetrospectList"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/expense/daily_satisfaction": {
         parameters: {
             query?: never;
@@ -232,7 +272,7 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * 일별 지출 내역 조회
+         * 메인화면 일별 지출내역 조회
          * @description 특정 날짜의 지출 내역과 월간 총액을 조회합니다.
          */
         get: operations["getDailyExpense"];
@@ -356,6 +396,12 @@ export interface components {
         TokenReissueResultDTO: {
             accessToken?: string;
         };
+        ApiResponseString: {
+            isSuccess?: boolean;
+            code?: string;
+            message?: string;
+            result?: string;
+        };
         ApiResponseMapStringObject: {
             isSuccess?: boolean;
             code?: string;
@@ -363,12 +409,6 @@ export interface components {
             result?: {
                 [key: string]: Record<string, never>;
             };
-        };
-        ApiResponseString: {
-            isSuccess?: boolean;
-            code?: string;
-            message?: string;
-            result?: string;
         };
         ExpenseRemindRequestDTO: {
             /** Format: int64 */
@@ -443,6 +483,25 @@ export interface components {
             topEmotion?: components["schemas"]["EmotionSummary"];
             emotionDetails?: components["schemas"]["EmotionSummary"][];
         };
+        ApiResponseListExpenseResponseDTO: {
+            isSuccess?: boolean;
+            code?: string;
+            message?: string;
+            result?: components["schemas"]["ExpenseResponseDTO"][];
+        };
+        ExpenseResponseDTO: {
+            /** Format: int64 */
+            expenseId?: number;
+            /** Format: date */
+            date?: string;
+            /** @enum {string} */
+            categoryIconType?: "coin" | "percent" | "shopping" | "plus";
+            usageHistory?: string;
+            categoryName?: string;
+            /** Format: int64 */
+            amount?: number;
+            emotionType?: string;
+        };
         ApiResponseDailyExpenseResponseDTO: {
             isSuccess?: boolean;
             code?: string;
@@ -454,7 +513,10 @@ export interface components {
             date?: string;
             /** Format: int64 */
             monthlyTotalAmount?: number;
+            bannerMessage?: string;
+            bannerSubMessage?: string;
             expenses?: components["schemas"]["ExpenseListDTO"][];
+            retrospectCompleted?: boolean;
         };
         ExpenseListDTO: {
             /** Format: int64 */
@@ -463,6 +525,8 @@ export interface components {
             amount?: number;
             usageHistory?: string;
             categoryName?: string;
+            /** @enum {string} */
+            categoryIconType?: "coin" | "percent" | "shopping" | "plus";
             /** @enum {string} */
             emotionType?: "기분 전환" | "그냥 저냥" | "필수템" | "홀린 듯이" | "살기 위해";
             /** @enum {string} */
@@ -574,6 +638,26 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ApiResponseTokenReissueResultDTO"];
+                };
+            };
+        };
+    };
+    logout: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseString"];
                 };
             };
         };
@@ -740,6 +824,28 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ApiResponseSummaryRecordResponse"];
+                };
+            };
+        };
+    };
+    getRetrospectList: {
+        parameters: {
+            query: {
+                date: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseListExpenseResponseDTO"];
                 };
             };
         };
