@@ -34,6 +34,13 @@ const meta: Meta<typeof RatingBtn> = {
       control: 'text',
       description: '라벨 텍스트',
     },
+    readOnly: {
+      control: 'boolean',
+      description: '읽기 전용 (클릭 불가)',
+      table: {
+        defaultValue: { summary: 'false' },
+      },
+    },
   },
 };
 
@@ -133,6 +140,19 @@ export const AllVariants: Story = {
           <RatingBtn size='lg' type='NORMAL' selected label='보통' />
           <RatingBtn size='lg' type='DISAPPOINTED' selected label='불만족' />
           <RatingBtn size='lg' type='VERY_DISAPPOINTED' selected label='매우불만족' />
+        </div>
+      </div>
+
+      <div>
+        <h3 style={{ marginBottom: '16px', fontSize: '14px', fontWeight: 600, color: '#666' }}>
+          ReadOnly (md)
+        </h3>
+        <div style={{ display: 'flex', gap: '4px', alignItems: 'flex-start' }}>
+          <RatingBtn size='md' type='VERY_SATISFIED' selected readOnly label='매우만족' />
+          <RatingBtn size='md' type='SATISFIED' selected readOnly label='만족' />
+          <RatingBtn size='md' type='NORMAL' selected readOnly label='보통' />
+          <RatingBtn size='md' type='DISAPPOINTED' selected readOnly label='불만족' />
+          <RatingBtn size='md' type='VERY_DISAPPOINTED' selected readOnly label='매우불만족' />
         </div>
       </div>
 

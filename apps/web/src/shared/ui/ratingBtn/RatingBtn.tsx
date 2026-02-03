@@ -54,6 +54,8 @@ export interface RatingBtnProps extends Omit<
   type: EvaluationType;
   /** 선택 여부 */
   selected?: boolean;
+  /** 읽기 전용 (클릭 불가) */
+  readOnly?: boolean;
   /** 라벨 */
   label?: string;
 }
@@ -62,6 +64,7 @@ export const RatingBtn = ({
   size,
   type,
   selected = false,
+  readOnly = false,
   label,
   onClick,
   ...props
@@ -70,7 +73,10 @@ export const RatingBtn = ({
   const colors = RATING_COLOR_MAP[type];
 
   return (
-    <button className={ratingButtonWrapper()} onClick={onClick} {...props}>
+    <button
+      className={ratingButtonWrapper({ readOnly })}
+      onClick={readOnly ? undefined : onClick}
+      {...props}>
       <div
         className={ratingIconContainer({ selected, size })}
         style={selected ? { backgroundColor: colors.bg, borderColor: colors.border } : undefined}>

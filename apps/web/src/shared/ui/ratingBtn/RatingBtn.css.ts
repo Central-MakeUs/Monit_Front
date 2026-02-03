@@ -16,6 +16,15 @@ export const ratingButtonWrapper = recipe({
       transform: 'scale(0.96)',
     },
   },
+  variants: {
+    readOnly: {
+      true: {
+        ':active': {
+          transform: 'none',
+        },
+      },
+    },
+  },
 });
 
 export const ratingIconContainer = recipe({
