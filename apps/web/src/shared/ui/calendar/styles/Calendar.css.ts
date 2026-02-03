@@ -95,6 +95,7 @@ export const weeklyWeekdayCell = recipe({
     ...typography.body.b1,
     color: vars.color.text.tertiary,
     textAlign: 'center',
+    width: '4.4rem',
   },
   variants: {
     isSelected: {

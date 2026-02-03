@@ -6,6 +6,7 @@ export interface DateCellProps {
   isSelected: boolean;
   isToday: boolean;
   isOutsideMonth: boolean;
+  isDisabled?: boolean;
   size?: 'md' | 'lg' | 'weekly';
   showText?: boolean;
   text?: string;
@@ -17,22 +18,29 @@ export const DateCell = ({
   isSelected,
   isToday,
   isOutsideMonth,
+  isDisabled = false,
   size = 'md',
   showText = false,
   text,
   onClick,
 }: DateCellProps) => {
   const handleClick = () => {
-    onClick?.(date);
+    if (!isDisabled) {
+      onClick?.(date);
+    }
   };
 
   return (
-    <div className={dateCellWrapper({ size, showText })} onClick={handleClick}>
+    <div
+      className={dateCellWrapper({ size, showText, disabled: isDisabled })}
+      onClick={handleClick}
+      style={{ cursor: isDisabled ? 'not-allowed' : 'pointer' }}>
       <span
         className={dateBadge({
           selected: isSelected,
           today: isToday,
           isOutsideMonth,
+          disabled: isDisabled,
           size,
         })}>
         {date.getDate()}

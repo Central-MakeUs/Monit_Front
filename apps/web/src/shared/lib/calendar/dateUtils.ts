@@ -1,3 +1,9 @@
+/**
+ * @module shared/lib/calendar
+ * @description 순수 날짜 계산 및 검증 유틸리티 함수
+ * FSD: shared layer - 비즈니스 로직 없는 재사용 가능한 함수들
+ */
+
 import {
   isSameDay,
   isToday as dateFnsIsToday,
@@ -12,10 +18,61 @@ import {
   startOfWeek,
 } from 'date-fns';
 
-// Re-export date-fns functions
+// ==================== Re-exports ====================
 export { addMonths, subMonths, addDays, subDays };
 export { isSameDay as isSameDate };
 export { dateFnsIsToday as isToday };
+
+// ==================== Types ====================
+export interface CalendarDate {
+  date: Date;
+  isCurrentMonth: boolean;
+}
+
+// ==================== Date Validation ====================
+
+/**
+ * 주어진 날짜가 오늘 이후인지 확인 (미래 날짜인지)
+ */
+export const isAfterToday = (date: Date): boolean => {
+  const today = new Date();
+  const todayTime = today.setHours(0, 0, 0, 0);
+  const dateTime = new Date(date).setHours(0, 0, 0, 0);
+
+  return dateTime > todayTime;
+};
+
+/**
+ * 주어진 날짜가 현재 월 이후인지 확인
+ */
+export const isAfterCurrentMonth = (date: Date): boolean => {
+  const now = new Date();
+  const currentYear = now.getFullYear();
+  const currentMonth = now.getMonth();
+  const targetYear = date.getFullYear();
+  const targetMonth = date.getMonth();
+
+  return targetYear > currentYear || (targetYear === currentYear && targetMonth > currentMonth);
+};
+
+/**
+ * 주어진 날짜(baseDate)가 포함된 주가 오늘을 포함하는지 확인
+ * @param baseDate 확인할 주의 기준 날짜
+ * @returns 해당 주가 오늘을 포함하면 true
+ */
+export const isCurrentWeek = (baseDate: Date): boolean => {
+  const today = new Date();
+  const weekStart = startOfWeek(baseDate, { weekStartsOn: 1 });
+  const weekEnd = addDays(weekStart, 6);
+
+  const todayTime = today.setHours(0, 0, 0, 0);
+  const weekStartTime = weekStart.setHours(0, 0, 0, 0);
+  const weekEndTime = weekEnd.setHours(23, 59, 59, 999);
+
+  return todayTime >= weekStartTime && todayTime <= weekEndTime;
+};
+
+// ==================== Date Formatting ====================
 
 /**
  * 년/월을 "YYYY년 M월" 형식으로 포맷
@@ -24,13 +81,12 @@ export const formatYearMonth = (date: Date): string => {
   return format(date, 'yyyy년 M월');
 };
 
-export interface CalendarDate {
-  date: Date;
-  isCurrentMonth: boolean;
-}
+// ==================== Date Generation ====================
 
 /**
- * 캘린더에 표시할 날짜 배열 생성 (이전 달, 현재 달, 다음 달 포함)
+ * 월간 캘린더에 표시할 날짜 배열 생성 (이전 달, 현재 달, 다음 달 포함)
+ * @param currentDate 기준 날짜
+ * @returns 캘린더 그리드에 표시할 날짜 배열 (보통 35~42개)
  */
 export const generateCalendarDates = (currentDate: Date): CalendarDate[] => {
   const firstDay = startOfMonth(currentDate);
@@ -78,14 +134,13 @@ export const generateCalendarDates = (currentDate: Date): CalendarDate[] => {
 /**
  * 주간 캘린더에 표시할 날짜 배열 생성 (월~일 7일)
  * @param baseDate 기준 날짜 (이 날짜가 포함된 주의 월~일을 반환)
+ * @returns 7일치 날짜 배열
  */
 export const generateWeeklyDates = (baseDate: Date): CalendarDate[] => {
-  // 월요일을 주의 시작으로 설정
-  const weekStart = startOfWeek(baseDate, { weekStartsOn: 1 });
+  const weekStart = startOfWeek(baseDate, { weekStartsOn: 1 }); // 월요일 시작
 
   const weekDates: CalendarDate[] = [];
 
-  // 월요일부터 일요일까지 7일 생성
   for (let i = 0; i < 7; i++) {
     const date = addDays(weekStart, i);
     weekDates.push({

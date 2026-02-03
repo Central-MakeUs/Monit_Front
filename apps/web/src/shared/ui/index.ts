@@ -47,7 +47,6 @@ export type { CategoryIconType } from './categoryBtn';
 export { TextArea } from './textArea';
 
 export { Toggle } from './toggle';
-export { Calendar } from './calendar';
 
 export { PageIndicator } from './pageIndicator';
 export type { PageIndicatorProps } from './pageIndicator';
