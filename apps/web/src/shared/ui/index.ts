@@ -44,6 +44,8 @@ export { EditableTextInput, TextInput } from './textInput';
 export { InputField } from './inputField';
 export type { CategoryIconType } from './categoryBtn';
 
+export { TextArea } from './textArea';
+
 export { Toggle } from './toggle';
 export { Calendar } from './calendar';
 
