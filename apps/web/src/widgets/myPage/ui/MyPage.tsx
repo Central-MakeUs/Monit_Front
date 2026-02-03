@@ -44,7 +44,7 @@ export const MyPage = () => {
 
         {/* 계정 설정 */}
         <MenuLabel label='계정 설정' />
-        <MenuItem type='arrow' label='1:1문의' onClick={() => router.push('/')} />
+        <MenuItem type='arrow' label='1:1문의' onClick={() => router.push('/my/support')} />
         <MenuItem label='로그아웃' />
         <MenuItem label='회원탈퇴' />
       </div>
