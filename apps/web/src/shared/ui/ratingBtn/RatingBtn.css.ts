@@ -1,5 +1,5 @@
 import { recipe } from '@vanilla-extract/recipes';
-import { vars, spacing, typography, radius } from '../theme.css';
+import { vars, spacing, radius } from '../theme.css';
 
 export const ratingButtonWrapper = recipe({
   base: {
@@ -61,26 +61,5 @@ export const ratingIconSvg = recipe({
     width: '3.2rem',
     height: '3.2rem',
     alignItems: 'center',
-  },
-});
-
-export const ratingLabel = recipe({
-  base: {
-    ...typography.body.b4,
-    textAlign: 'center',
-    transition: 'color 0.15s ease-out',
-  },
-  variants: {
-    selected: {
-      true: {
-        color: vars.color.text.primary,
-      },
-      false: {
-        color: vars.color.text.tertiary,
-      },
-    },
-  },
-  defaultVariants: {
-    selected: false,
   },
 });
