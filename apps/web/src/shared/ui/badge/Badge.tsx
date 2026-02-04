@@ -3,6 +3,7 @@ import { Text } from '../text';
 import * as styles from './Badge.css';
 import { vars, primitiveColors } from '../theme.css';
 import type { EvaluationType } from '@/shared/types/evaluation.types';
+import { IcBadge } from 'public/icons';
 
 const BADGE_COLOR_MAP: Record<EvaluationType, { bg: string; border: string; text: string }> = {
   VERY_SATISFIED: {
@@ -43,7 +44,7 @@ export interface BadgeProps {
 export const Badge = ({
   label,
   size = 'lg',
-  icon,
+  icon = <IcBadge />,
   backgroundColor = vars.color.bg.neutral.subtle,
   evaluationType,
 }: BadgeProps) => {
@@ -58,7 +59,7 @@ export const Badge = ({
 
   return (
     <div className={styles.badgeContainer({ size, hasState: !!colors })} style={containerStyle}>
-      {icon && (
+      {icon && evaluationType && (
         <div
           className={styles.icon({ size })}
           style={{ color: colors ? colors.text : vars.color.icon.tertiary }}>

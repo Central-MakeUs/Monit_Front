@@ -9,10 +9,12 @@ import {
   CategoryIconType,
   CategoryGrid,
   DateInfoField,
+  Text,
+  vars,
+  Badge,
 } from '@/shared/ui';
 
 import { IcPlusCircle, IcTrash } from 'public/icons';
-import { InfoSection } from './infoSection';
 import { formatDate } from '@/shared/utils';
 export interface Category {
   id: string;
@@ -102,7 +104,6 @@ export const ExpenseFormBottomSheet = ({
         </InputField>
       </div>
 
-      {/* 소비일 - TODO: List Header 컴포넌트로 바꾸기*/}
       <DateInfoField label='소비일' value={formatDate(selectedDate)} onClick={() => {}} />
 
       {/* 카테고리 */}
@@ -114,12 +115,15 @@ export const ExpenseFormBottomSheet = ({
       />
 
       {/* 훌린듯이 소비 */}
-      <InfoSection
-        badges={[
-          { id: '1', label: '홀린듯이' },
-          { id: '2', label: '별로였어요', icon: <span>😐</span>, isActive: true },
-        ]}
-      />
+      <div className={styles.badgeContainer}>
+        <Text variant='b2' color={vars.color.text.secondary}>
+          소비 상황/만족도
+        </Text>
+        <div className={styles.badgeList}>
+          <Badge label={'홀린듯이'} />
+          <Badge label='정말 만족했어요' size='lg' evaluationType='VERY_SATISFIED' />
+        </div>
+      </div>
 
       {/* 하단 버튼 */}
       <div className={styles.buttonSection}>
