@@ -16,7 +16,8 @@ import {
 import type { EvaluationType } from '@/shared/types/evaluation.types';
 import { ratingButtonWrapper, ratingIconContainer, ratingIconSvg } from './RatingBtn.css';
 import { Text } from '../text';
-import { vars, primitiveColors } from '../theme.css';
+import { vars } from '../theme.css';
+import { EVALUATION_COLOR_MAP } from '../tokens/evaluationColors';
 
 type IconComponent = ComponentType<{ className?: string }>;
 
@@ -34,14 +35,6 @@ const RATING_GRAY_ICON_MAP: Record<EvaluationType, IconComponent> = {
   NORMAL: IcGrayNormal,
   DISAPPOINTED: IcGrayDisappointed,
   VERY_DISAPPOINTED: IcGrayVeryDisappointed,
-};
-
-const RATING_COLOR_MAP: Record<EvaluationType, { bg: string; border: string }> = {
-  VERY_SATISFIED: { bg: primitiveColors.blue[100], border: primitiveColors.blue[200] },
-  SATISFIED: { bg: primitiveColors.green[50], border: primitiveColors.green[100] },
-  NORMAL: { bg: primitiveColors.yellow[50], border: primitiveColors.yellow[100] },
-  DISAPPOINTED: { bg: primitiveColors.primary[50], border: primitiveColors.primary[100] },
-  VERY_DISAPPOINTED: { bg: primitiveColors.red[50], border: primitiveColors.red[100] },
 };
 
 export interface RatingBtnProps extends Omit<
@@ -70,7 +63,7 @@ export const RatingBtn = ({
   ...props
 }: RatingBtnProps) => {
   const IconComponent = selected ? RATING_ICON_MAP[type] : RATING_GRAY_ICON_MAP[type];
-  const colors = RATING_COLOR_MAP[type];
+  const colors = EVALUATION_COLOR_MAP[type];
 
   return (
     <button
