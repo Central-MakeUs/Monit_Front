@@ -12,7 +12,7 @@ export const container = style({
 export const reviewCardContainer = style({
   display: 'flex',
   flexDirection: 'column',
-  padding: `3.2rem  ${spacing.xl}`,
+  padding: `3.2rem ${spacing.xl}`,
   gap: spacing.lg,
   alignItems: 'flex-start',
   backgroundColor: vars.color.bg.surface.secondary.default,
@@ -54,7 +54,7 @@ export const badgeContainer = style({
   padding: `${spacing.xs} ${spacing.sm}`,
   borderRadius: radius.xs,
   backgroundColor: vars.color.bg.neutral.subtle,
-  border: `0.08rem solid ${vars.color.border.default} `,
+  border: `0.08rem solid ${vars.color.border.default}`,
 });
 
 export const pageIndicatorWrapper = style({
