@@ -28,6 +28,7 @@ export const SpendingReview = () => {
   return (
     <div>
       <TopBar
+        //TODO: 뒤로가기 클릭시 API 호출 추가
         left={<IcLeftChevron onClick={() => router.back()} />}
         center={
           <Text variant='t1' color={vars.color.text.primary}>
