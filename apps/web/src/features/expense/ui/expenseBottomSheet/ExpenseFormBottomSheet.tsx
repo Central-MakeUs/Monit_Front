@@ -12,6 +12,7 @@ import {
   Text,
   vars,
   Badge,
+  Divider,
 } from '@/shared/ui';
 
 import { IcPlusCircle, IcTrash } from 'public/icons';
@@ -94,7 +95,7 @@ export const ExpenseFormBottomSheet = ({
       </InputField>
 
       {/* 사용처 */}
-      <div className={styles.inputWrapper}>
+      <div>
         <InputField label='사용처'>
           <TextInput
             placeholder='사용처를 입력해주세요'
@@ -104,7 +105,10 @@ export const ExpenseFormBottomSheet = ({
         </InputField>
       </div>
 
+      {/* 소비일 */}
       <DateInfoField label='소비일' value={formatDate(selectedDate)} onClick={() => {}} />
+
+      <Divider color='#E8E8E8' />
 
       {/* 카테고리 */}
       <CategoryGrid

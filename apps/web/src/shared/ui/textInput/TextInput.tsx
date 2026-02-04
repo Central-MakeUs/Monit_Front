@@ -172,6 +172,7 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
           <button
             type='button'
             className={`${styles.clearButton} ${!showClearButton ? styles.clearButtonHidden : ''}`}
+            onMouseDown={(e) => e.preventDefault()}
             onClick={handleClear}
             aria-label='지우기'
             tabIndex={showClearButton ? 0 : -1}>

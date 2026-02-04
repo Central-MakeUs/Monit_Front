@@ -1,10 +1,6 @@
 import { style } from '@vanilla-extract/css';
 import { radius, spacing, vars } from '@/shared/ui/theme.css';
 
-export const inputWrapper = style({
-  marginBottom: '2.1rem',
-});
-
 export const dateSection = style({
   display: 'flex',
   gap: spacing['2xl'],
