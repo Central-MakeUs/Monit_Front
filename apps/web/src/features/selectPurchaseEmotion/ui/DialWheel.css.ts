@@ -2,12 +2,11 @@ import { style } from '@vanilla-extract/css';
 import { recipe } from '@vanilla-extract/recipes';
 import { vars } from '@/shared/ui/theme.css';
 
-const WHEEL_SIZE = '36rem';
-const CENTER_CIRCLE_SIZE = '16.2rem';
+const WHEEL_SIZE = '34rem';
+const CENTER_CIRCLE_SIZE = '15rem';
 
 export const wheelContainer = style({
   position: 'relative',
-  width: '18rem', // WHEEL_SIZE / 2 -> 휠이 보이는 영역(현재는 절반만)
   height: '36rem',
   overflow: 'visible',
 });
@@ -19,7 +18,7 @@ export const wheel = style({
   borderRadius: '50%',
   background: vars.color.bg.base,
   border: `0.8rem solid ${vars.color.primitive.static.white}`,
-  left: '-18rem', // WHEEL_SIZE / 2  -> 바깥쪽 휠이 어느정도 나올지 조정
+  left: '-19rem',
   top: '50%',
   transform: 'translateY(-50%)',
   cursor: 'grab',
@@ -71,7 +70,7 @@ export const centerCircle = style({
   height: CENTER_CIRCLE_SIZE,
   borderRadius: '50%',
   background: vars.color.primitive.static.white,
-  left: `-${parseFloat(CENTER_CIRCLE_SIZE) / 2}rem`,
+  left: `-9rem`,
   top: '50%',
   transform: 'translateY(-50%)',
   zIndex: 10,
