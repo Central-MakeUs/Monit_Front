@@ -163,7 +163,7 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
             />
             {suffix && (
               <span
-                className={`${styles.suffix[fieldType]} ${currentValue ? styles.suffixDefault : styles.suffixPlaceholder}`}>
+                className={`${styles.suffix[fieldType]} ${currentValue || isFocused ? styles.suffixDefault : styles.suffixPlaceholder}`}>
                 {suffix}
               </span>
             )}
