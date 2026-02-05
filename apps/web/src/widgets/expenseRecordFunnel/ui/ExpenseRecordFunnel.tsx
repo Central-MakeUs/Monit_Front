@@ -125,7 +125,10 @@ export const ExpenseRecordFunnel = () => {
         description='지금 나가면 작성한 내용은 저장되지 않아요.'
         cancelText='나중에 하기'
         confirmText='계속 하기'
-        onCancel={() => router.push('/')}
+        onCancel={() => {
+          formStore.reset();
+          router.push('/');
+        }}
       />
     </div>
   );
