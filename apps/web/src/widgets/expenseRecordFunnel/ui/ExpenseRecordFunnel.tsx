@@ -89,6 +89,11 @@ export const ExpenseRecordFunnel = () => {
               소비 기록
             </Text>
           }
+          right={
+            <Text variant='h4' color={vars.color.text.secondary} onClick={openModal}>
+              나가기
+            </Text>
+          }
         />
         <StepIndicator currentStep={STEP_NUMBER[funnel.step]} totalSteps={3} />
       </div>
