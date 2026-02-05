@@ -47,7 +47,14 @@ export const useCategoryStore = create<CategoryStore>()(
           categories,
           displayCategoryIds: categories.slice(0, DISPLAY_CATEGORY_LIMIT).map((c) => c.id!),
         }),
-      addCategory: (category) => set((state) => ({ categories: [...state.categories, category] })),
+      addCategory: (category) =>
+        set((state) => ({
+          categories: [...state.categories, category],
+          displayCategoryIds: [
+            category.id!,
+            ...state.displayCategoryIds.slice(0, DISPLAY_CATEGORY_LIMIT - 1),
+          ],
+        })),
       updateCategory: (id, category) =>
         set((state) => ({
           categories: state.categories.map((c) => (c.id === id ? { ...c, ...category } : c)),

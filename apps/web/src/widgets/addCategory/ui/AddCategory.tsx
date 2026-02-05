@@ -13,12 +13,15 @@ import {
   AlertDialog,
 } from '@/shared/ui';
 import { IcLeftChevron } from 'public/icons';
-import React, { useState, useTransition } from 'react';
+import React, { useState, useTransition, useMemo } from 'react';
 import * as styles from './AddCategory.css';
 import { IconPickerBottomSheetTemplate } from '@/features/expense';
 import type { Category } from '@/features/expense';
 import { useModal } from '@/shared/hooks';
 import { useRouter } from 'next/navigation';
+import { useCategoryStore } from '@/entities/category/model/store';
+
+const VALID_NAME_REGEX = /^[가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z0-9]*$/;
 
 const ICON_OPTIONS: Category[] = [
   //TODO: 확정되면 수정
@@ -36,11 +39,38 @@ export const AddCategory = () => {
   const { isOpen: isAlertOpen, openModal: openAlert, closeModal: closeAlert } = useModal();
   const toast = useToast();
   const router = useRouter();
+  const { categories, addCategory } = useCategoryStore();
 
   const [categoryName, setCategoryName] = useState('');
   const [selectedIcon, setSelectedIcon] = useState<Category | null>(null);
   const [tempIcon, setTempIcon] = useState<Category | null>(null);
   const [isPending, startTransition] = useTransition();
+
+  // 에러 검사
+  const validationError = useMemo(() => {
+    if (!categoryName) return null;
+    // 한글, 영문, 숫자만 허용
+    if (!VALID_NAME_REGEX.test(categoryName)) {
+      return 'invalid';
+    }
+    // 이미 존재하는 이름인지 확인
+    const isDuplicate = categories.some(
+      (c) => c.name?.toLowerCase() === categoryName.toLowerCase()
+    );
+    if (isDuplicate) {
+      return 'duplicate';
+    }
+    return null;
+  }, [categoryName, categories]);
+
+  // 에러 메시지 (항상 표시, 에러 시 다른 메시지)
+  const errorMessage =
+    validationError === 'duplicate'
+      ? '이미 존재하는 이름이에요.'
+      : '한글, 영문, 숫자만 5자 이내로 입력가능해요.';
+
+  const hasError = validationError !== null;
+  const isValid = categoryName && selectedIcon && !hasError;
 
   const handleOpenIconPicker = () => {
     setTempIcon(selectedIcon);
@@ -53,8 +83,16 @@ export const AddCategory = () => {
   };
 
   const handleSubmit = () => {
+    if (!selectedIcon) return;
     startTransition(async () => {
-      // TODO: API 호출
+      // TODO: API 호출 후 응답 id 사용
+      // 임시로 timestamp를 id로 사용 -> 서버 응답 오면 응답 ID 넣기
+      const newId = Date.now();
+      addCategory({
+        id: newId,
+        name: categoryName,
+        icon: selectedIcon.icon as 'coin' | 'percent' | 'shopping' | 'plus',
+      });
       toast.success('카테고리가 추가되었어요!');
       router.back();
     });
@@ -79,7 +117,8 @@ export const AddCategory = () => {
           placeholder='이름을 입력해주세요'
           value={categoryName}
           onValueChange={setCategoryName}
-          errorMessage='한글, 영문, 숫자만 5자 이내로 입력가능해요.'
+          error={hasError}
+          errorMessage={errorMessage}
           maxLength={5}
         />
         <InputField label='아이콘' className={styles.inputFieldStyle}>
@@ -101,11 +140,7 @@ export const AddCategory = () => {
         />
       </BottomSheet>
       <BottomFixedArea zIndex={-1}>
-        <Button
-          variant='primary'
-          disabled={!categoryName || !selectedIcon || isPending}
-          size='lg'
-          onClick={handleSubmit}>
+        <Button variant='primary' disabled={!isValid || isPending} size='lg' onClick={handleSubmit}>
           추가하기
         </Button>
       </BottomFixedArea>
