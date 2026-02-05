@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import {
   generateCalendarDates,
   addMonths,
@@ -27,6 +27,11 @@ export const useMonthlyCalendar = ({
 }: UseMonthlyCalendarProps) => {
   const [internalCurrentDate, setInternalCurrentDate] = useState<Date>(currentDate);
   const [internalSelectedDate, setInternalSelectedDate] = useState<Date | null>(null);
+
+  // currentDate prop이 변경되면 internalCurrentDate 업데이트
+  useEffect(() => {
+    setInternalCurrentDate(currentDate);
+  }, [currentDate]);
 
   const effectiveSelectedDate = selectedDate !== undefined ? selectedDate : internalSelectedDate;
 

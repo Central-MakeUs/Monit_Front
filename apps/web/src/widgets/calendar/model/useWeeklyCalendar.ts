@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { generateWeeklyDates, addDays, subDays, isCurrentWeek } from '@/shared/lib/calendar';
 import { useWeeklyCarousel } from '@/features/calendarCarousel';
 
@@ -19,6 +19,11 @@ export const useWeeklyCalendar = ({
 }: UseWeeklyCalendarProps) => {
   const [internalCurrentDate, setInternalCurrentDate] = useState<Date>(currentDate);
   const [internalSelectedDate, setInternalSelectedDate] = useState<Date | null>(null);
+
+  // currentDate prop이 변경되면 internalCurrentDate 업데이트
+  useEffect(() => {
+    setInternalCurrentDate(currentDate);
+  }, [currentDate]);
 
   const effectiveSelectedDate = selectedDate !== undefined ? selectedDate : internalSelectedDate;
 

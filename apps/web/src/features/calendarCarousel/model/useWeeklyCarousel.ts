@@ -37,8 +37,6 @@ export interface UseWeeklyCarouselReturn {
   getTransition: () => string;
 }
 
-const SLIDE_WIDTH_REM = 39;
-
 export const useWeeklyCarousel = ({
   dates,
   onSwipeLeft,
@@ -49,18 +47,33 @@ export const useWeeklyCarousel = ({
   const [dragOffset, setDragOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [slideWidth, setSlideWidth] = useState(0);
 
   const trackRef = useRef<HTMLDivElement>(null);
   const pendingActionRef = useRef<'left' | 'right' | null>(null);
 
-  const getSlideWidth = (): number => {
-    if (typeof window === 'undefined') return 624;
-    const rootFontSize = parseFloat(getComputedStyle(document.documentElement).fontSize);
-    return SLIDE_WIDTH_REM * rootFontSize;
+  const getContainerWidth = (): number => {
+    const container = trackRef.current?.parentElement;
+    return container?.offsetWidth ?? 0;
   };
 
-  const SLIDE_WIDTH = getSlideWidth();
-  const SWIPE_THRESHOLD = SLIDE_WIDTH * SWIPE_THRESHOLD_RATIO;
+  // 실제 컨테이너 너비를 기준으로 슬라이드 폭을 동기화 (반응형 대응)
+  useEffect(() => {
+    const container = trackRef.current?.parentElement;
+    if (!container) return;
+
+    const update = () => setSlideWidth(container.offsetWidth);
+    update();
+
+    if (typeof ResizeObserver !== 'undefined') {
+      const ro = new ResizeObserver(() => update());
+      ro.observe(container);
+      return () => ro.disconnect();
+    }
+
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, []);
 
   useEffect(() => {
     if (!isTransitioning && !isDragging) {
@@ -96,27 +109,36 @@ export const useWeeklyCarousel = ({
   const handlers = useSwipeable({
     onSwiping: (eventData) => {
       if (!isTransitioning) {
+        const width = slideWidth || getContainerWidth();
+        if (width <= 0) return;
+
         setIsDragging(true);
         const delta = eventData.deltaX;
         const clampedOffset =
-          disableNext && delta < 0
-            ? Math.max(0, Math.min(SLIDE_WIDTH, delta))
-            : Math.max(-SLIDE_WIDTH, Math.min(SLIDE_WIDTH, delta));
+          disableNext && delta < 0 ? 0 : Math.max(-width, Math.min(width, delta));
         setDragOffset(clampedOffset);
       }
     },
     onSwiped: (eventData) => {
+      const width = slideWidth || getContainerWidth();
       const delta = eventData.deltaX;
       setIsDragging(false);
 
-      if (delta < -SWIPE_THRESHOLD && !disableNext) {
+      if (width <= 0) {
+        setDragOffset(0);
+        return;
+      }
+
+      const swipeThreshold = width * SWIPE_THRESHOLD_RATIO;
+
+      if (delta < -swipeThreshold && !disableNext) {
         setIsTransitioning(true);
         pendingActionRef.current = 'left';
-        setDragOffset(-SLIDE_WIDTH);
-      } else if (delta > SWIPE_THRESHOLD) {
+        setDragOffset(-width);
+      } else if (delta > swipeThreshold) {
         setIsTransitioning(true);
         pendingActionRef.current = 'right';
-        setDragOffset(SLIDE_WIDTH);
+        setDragOffset(width);
       } else {
         setDragOffset(0);
       }
@@ -127,7 +149,8 @@ export const useWeeklyCarousel = ({
     preventScrollOnSwipe: true,
   });
 
-  const getTransform = () => `translateX(calc(-${SLIDE_WIDTH}px + ${dragOffset}px))`;
+  // 가운데(현재 주) 슬라이드를 기준(-100%)으로, 드래그/스와이프는 px 오프셋으로 조절
+  const getTransform = () => `translateX(calc(-100% + ${dragOffset}px))`;
 
   const getTransition = () => {
     const shouldTransition = isTransitioning || (!isDragging && dragOffset !== 0);

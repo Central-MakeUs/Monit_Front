@@ -31,8 +31,6 @@ export const monthlyCarouselSlide = style({
 
 export const weeklyCarouselContainer = style({
   width: '100%',
-  maxWidth: '39rem',
-  margin: '0 auto',
   overflow: 'hidden',
   position: 'relative',
 });

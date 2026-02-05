@@ -88,10 +88,8 @@ export const useMonthlyCarousel = ({
 
       if (pendingActionRef.current === 'left') {
         setCurrentMonth(nextMonth);
-        onSwipeLeft?.();
       } else {
         setCurrentMonth(prevMonth);
-        onSwipeRight?.();
       }
 
       setDragOffset(0);
@@ -122,10 +120,14 @@ export const useMonthlyCarousel = ({
           setIsTransitioning(true);
           pendingActionRef.current = 'left';
           setDragOffset(-slideWidth);
+          // 스와이프 시작 시 즉시 콜백 호출
+          onSwipeLeft?.();
         } else if (delta > swipeThreshold) {
           setIsTransitioning(true);
           pendingActionRef.current = 'right';
           setDragOffset(slideWidth);
+          // 스와이프 시작 시 즉시 콜백 호출
+          onSwipeRight?.();
         } else {
           setDragOffset(0);
         }
