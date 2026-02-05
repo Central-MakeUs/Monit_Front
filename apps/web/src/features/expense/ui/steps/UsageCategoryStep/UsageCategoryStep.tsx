@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   Button,
@@ -59,6 +59,12 @@ export const UsageCategoryStep = ({
   );
   const [tempCategory, setTempCategory] = useState<Category | null>(null);
   const isValid = usageHistory.trim() !== '' && selectedCategory !== null;
+
+  useEffect(() => {
+    if (selectedCategory || defaultCategoryId == null) return;
+    const found = allCategories.find((c) => c.id === String(defaultCategoryId));
+    if (found) setSelectedCategory(found);
+  }, [allCategories, defaultCategoryId, selectedCategory]);
 
   // 바텀시트용: 선택된 카테고리가 맨 앞에 오도록 정렬
   const sortedCategories = useMemo(() => {

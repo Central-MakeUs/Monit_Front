@@ -4,6 +4,12 @@ import type { CategoryListResponseDTO } from './categoryTypes';
 
 const DISPLAY_CATEGORY_LIMIT = 7;
 
+const toDisplayIds = (categories: CategoryListResponseDTO[]) =>
+  categories
+    .filter((c): c is CategoryListResponseDTO & { id: number } => c.id != null)
+    .slice(0, DISPLAY_CATEGORY_LIMIT)
+    .map((c) => c.id);
+
 interface CategoryStore {
   categories: CategoryListResponseDTO[];
   displayCategoryIds: number[]; // 홈에 보여줄 카테고리 ID 목록 (최대 7개)
@@ -41,19 +47,19 @@ export const useCategoryStore = create<CategoryStore>()(
   persist(
     (set, get) => ({
       categories: initialCategories,
-      displayCategoryIds: initialCategories.slice(0, DISPLAY_CATEGORY_LIMIT).map((c) => c.id!),
+      displayCategoryIds: toDisplayIds(initialCategories),
       setCategories: (categories) =>
         set({
           categories,
-          displayCategoryIds: categories.slice(0, DISPLAY_CATEGORY_LIMIT).map((c) => c.id!),
+          displayCategoryIds: toDisplayIds(categories),
         }),
       addCategory: (category) =>
         set((state) => ({
           categories: [...state.categories, category],
-          displayCategoryIds: [
-            category.id!,
-            ...state.displayCategoryIds.slice(0, DISPLAY_CATEGORY_LIMIT - 1),
-          ],
+          displayCategoryIds:
+            category.id == null
+              ? state.displayCategoryIds
+              : [category.id, ...state.displayCategoryIds.slice(0, DISPLAY_CATEGORY_LIMIT - 1)],
         })),
       updateCategory: (id, category) =>
         set((state) => ({
