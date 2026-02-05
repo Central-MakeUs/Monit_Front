@@ -20,6 +20,7 @@ import type { Category } from '@/features/expense';
 import { useModal } from '@/shared/hooks';
 import { useRouter } from 'next/navigation';
 import { useCategoryStore } from '@/entities/category/model/store';
+import { useExpenseFormStore } from '@/widgets/expenseRecordFunnel/model/store';
 
 const VALID_NAME_REGEX = /^[가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z0-9]*$/;
 
@@ -40,6 +41,7 @@ export const AddCategory = () => {
   const toast = useToast();
   const router = useRouter();
   const { categories, addCategory } = useCategoryStore();
+  const { setCategoryId } = useExpenseFormStore();
 
   const [categoryName, setCategoryName] = useState('');
   const [selectedIcon, setSelectedIcon] = useState<Category | null>(null);
@@ -93,6 +95,8 @@ export const AddCategory = () => {
         name: categoryName,
         icon: selectedIcon.icon as 'coin' | 'percent' | 'shopping' | 'plus',
       });
+      // 새로 만든 카테고리 자동 선택
+      setCategoryId(newId);
       toast.success('카테고리가 추가되었어요!');
       router.back();
     });
