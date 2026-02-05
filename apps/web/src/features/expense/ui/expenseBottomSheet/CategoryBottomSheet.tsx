@@ -29,7 +29,8 @@ export const CategoryBottomSheetTemplate = ({
   onAddClick,
   onConfirm,
 }: CategoryBottomSheetTemplateProps) => {
-  const needsScroll = categories.length > 12;
+  const MAX_VISIBLE_CATEGORIES = 12;
+  const needsScroll = categories.length > MAX_VISIBLE_CATEGORIES;
 
   return (
     <BaseBottomSheetTemplate>
