@@ -1,5 +1,5 @@
 import { style } from '@vanilla-extract/css';
-import { spacing } from '../tokens';
+import { primitiveColors, spacing } from '../tokens';
 
 export const container = style({
   display: 'flex',
@@ -20,5 +20,5 @@ export const icon = style({
   width: '1.65rem',
   height: '1.725rem',
   display: 'block',
-  color: '#5C606C',
+  color: primitiveColors.gray[600],
 });
