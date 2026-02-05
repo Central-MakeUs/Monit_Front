@@ -34,7 +34,9 @@ export const ReadonlyDisplay = ({
 
   return (
     <div className={styles.textInputContainer}>
-      <div className={styles.inputFieldVariants[hasError ? 'error' : 'default-edit']}>
+      <div
+        className={styles.inputFieldVariants[hasError ? 'error' : 'default-edit']}
+        onClick={onEditClick}>
         <span className={`${styles.inputVariants[fieldType]} ${styles.inputDefaultEdit}`}>
           {displayValue}
           {resolvedSuffix}
@@ -42,7 +44,6 @@ export const ReadonlyDisplay = ({
         <button
           type='button'
           className={styles.editButton}
-          onClick={onEditClick}
           disabled={disabled || hasError}
           aria-label='수정'>
           <IcEdit />

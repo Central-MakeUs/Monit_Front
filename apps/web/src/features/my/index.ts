@@ -1,1 +1,1 @@
-export { MenuLabel, MenuItem, Divider } from './ui';
+export { MenuLabel, MenuItem } from './ui';

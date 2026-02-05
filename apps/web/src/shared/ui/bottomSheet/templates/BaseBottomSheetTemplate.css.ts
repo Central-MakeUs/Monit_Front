@@ -23,8 +23,8 @@ export const bottomSheetHeaderWrapper = style({
 });
 
 export const headerIcon = style({
-  width: '2.4rem',
-  height: '2.4rem',
+  width: '1.5rem',
+  height: '1.5rem',
 });
 
 export const BottomSheetHeaderBtn = style({
