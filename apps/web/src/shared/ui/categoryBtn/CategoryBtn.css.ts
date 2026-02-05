@@ -8,6 +8,7 @@ export const categoryButtonWrapper = recipe({
     flexDirection: 'column',
     alignItems: 'center',
     gap: spacing.sm2,
+    padding: spacing.sm,
     cursor: 'pointer',
     position: 'relative',
     border: 'none',

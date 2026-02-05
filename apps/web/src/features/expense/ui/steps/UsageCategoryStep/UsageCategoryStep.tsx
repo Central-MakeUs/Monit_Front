@@ -24,8 +24,14 @@ const expenseCategories: Category[] = [
   { id: '3', icon: 'percent', label: '감식' },
   { id: '4', icon: 'shopping', label: '카테고리명' },
   { id: '5', icon: 'shopping', label: '간식' },
-  { id: '6', icon: 'coin', label: '자기계발비' },
-  { id: '7', icon: 'percent', label: '감식' },
+  // { id: '6', icon: 'coin', label: '자기계발비' },
+  // { id: '72', icon: 'percent', label: '감식' },
+  // { id: '7233333', icon: 'percent', label: '감식' },
+  // { id: '723', icon: 'percent', label: '감식' },
+  // { id: '732', icon: 'percent', label: '감식' },
+  // { id: '7323', icon: 'percent', label: '감식' },
+  // { id: '22222', icon: 'coin', label: '자기계발비' },
+  // { id: '222323222', icon: 'coin', label: '자기계발비' },
 ];
 
 export interface UsageCategoryStepProps {
