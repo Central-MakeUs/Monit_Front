@@ -72,6 +72,13 @@ const [value, setValue] = useState({ year: 2024, month: 1 });
         type: { summary: '{ year?: (year: number) => string; month?: (month: number) => string }' },
       },
     },
+    allowFuture: {
+      control: 'boolean',
+      description: '미래 날짜 선택 허용 여부입니다.',
+      table: {
+        defaultValue: { summary: 'true' },
+      },
+    },
   },
 };
 

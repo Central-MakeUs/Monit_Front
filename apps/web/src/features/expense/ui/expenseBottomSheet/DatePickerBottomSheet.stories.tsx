@@ -43,29 +43,38 @@ const meta = {
     },
   },
   argTypes: {
-    selectedDate: {
-      control: 'date',
-      description: '선택된 날짜',
+    initialYear: {
+      control: 'number',
+      description: '초기 연도',
       table: {
-        type: { summary: 'Date' },
+        type: { summary: 'number' },
       },
     },
-    onSelectDate: {
-      description: '날짜 선택 시 콜백',
+    initialMonth: {
+      control: 'number',
+      description: '초기 월',
       table: {
-        type: { summary: '(date: Date) => void' },
+        type: { summary: 'number' },
       },
     },
     onConfirm: {
       description: '선택 버튼 클릭 시 콜백',
       table: {
-        type: { summary: '() => void' },
+        type: { summary: '(year: number, month: number) => void' },
       },
     },
     onClose: {
       description: '닫기 버튼 클릭 시 콜백',
       table: {
         type: { summary: '() => void' },
+      },
+    },
+    allowFuture: {
+      control: 'boolean',
+      description: '미래 날짜 선택 허용 여부',
+      table: {
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'false' },
       },
     },
   },
@@ -76,7 +85,11 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   name: '기본 월 선택',
-  render: () => {
+  args: {
+    initialYear: new Date().getFullYear(),
+    initialMonth: new Date().getMonth() + 1,
+  },
+  render: (args) => {
     const TemplateDemo = () => {
       const { isOpen, openModal, closeModal } = useModal();
 
@@ -94,9 +107,10 @@ export const Default: Story = {
 
           <BottomSheet isOpen={isOpen} onClose={closeModal}>
             <DatePickerBottomSheetTemplate
+              {...args}
               onClose={closeModal}
-              onConfirm={() => {
-                alert('월 선택 완료');
+              onConfirm={(year, month) => {
+                alert(`선택된 월: ${year}년 ${month}월`);
                 closeModal();
               }}
             />
