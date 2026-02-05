@@ -6,6 +6,7 @@ export const container = style({
   gridTemplateColumns: '1fr auto 1fr',
   width: '100%',
   alignItems: 'center',
+  height: '4.8rem',
 });
 
 export const leftSection = style({

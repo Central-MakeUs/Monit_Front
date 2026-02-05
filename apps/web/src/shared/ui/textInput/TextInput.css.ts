@@ -97,6 +97,11 @@ export const inputVariants = styleVariants({
       '::placeholder': {
         color: vars.color.text.tertiary,
       },
+      selectors: {
+        '&:focus::placeholder': {
+          color: vars.color.text.primary,
+        },
+      },
     },
   ],
 });

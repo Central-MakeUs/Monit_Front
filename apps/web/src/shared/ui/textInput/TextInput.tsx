@@ -69,11 +69,13 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
     }, []);
 
     const hasValidationError = (() => {
-      if (fieldType === 'text' && maxLength && String(currentValue).length > maxLength) {
+      const valueToCheck = fieldType === 'number' ? currentValue.replace(/,/g, '') : currentValue;
+
+      if (fieldType === 'text' && maxLength && String(valueToCheck).length > maxLength) {
         return true;
       }
-      if (fieldType === 'number' && maxNumber !== undefined && currentValue) {
-        const numValue = Number(currentValue);
+      if (fieldType === 'number' && maxNumber !== undefined && valueToCheck) {
+        const numValue = +valueToCheck;
         if (!isNaN(numValue) && numValue > maxNumber) {
           return true;
         }
@@ -110,7 +112,12 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
       let newValue = e.target.value;
 
       if (fieldType === 'number') {
-        newValue = normalizeNumberValue(newValue);
+        const valueToCheck = newValue.replace(/,/g, '');
+        // 숫자만 허용 (빈 문자열 허용)
+        if (valueToCheck !== '' && isNaN(Number(valueToCheck))) {
+          return;
+        }
+        newValue = normalizeNumberValue(newValue.replace(/,/g, ''));
       }
 
       if (fieldType === 'text' && maxLength && newValue.length > maxLength) {
@@ -149,8 +156,8 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
             <input
               {...restProps}
               ref={combinedRef}
-              type={fieldType === 'number' ? 'number' : 'text'}
-              inputMode={fieldType === 'number' ? 'numeric' : undefined}
+              type='text'
+              inputMode={restProps.inputMode ?? (fieldType === 'number' ? 'numeric' : undefined)}
               value={currentValue}
               onChange={handleChange}
               onFocus={handleFocus}
@@ -163,7 +170,7 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
             />
             {suffix && (
               <span
-                className={`${styles.suffix[fieldType]} ${currentValue ? styles.suffixDefault : styles.suffixPlaceholder}`}>
+                className={`${styles.suffix[fieldType]} ${currentValue || isFocused ? styles.suffixDefault : styles.suffixPlaceholder}`}>
                 {suffix}
               </span>
             )}

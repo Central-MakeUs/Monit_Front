@@ -29,11 +29,14 @@ export const CategoryBottomSheetTemplate = ({
   onAddClick,
   onConfirm,
 }: CategoryBottomSheetTemplateProps) => {
+  const MAX_VISIBLE_CATEGORIES = 12;
+  const needsScroll = categories.length > MAX_VISIBLE_CATEGORIES;
+
   return (
     <BaseBottomSheetTemplate>
       <BaseBottomSheetTemplate.Header type='add' text='카테고리' onClickAddBtn={onAddClick} />
       <BaseBottomSheetTemplate.Content>
-        <div className={styles.categoryGrid}>
+        <div className={needsScroll ? styles.categoryGridScrollable : styles.categoryGrid}>
           {categories.map((category) => (
             <CategoryBtn
               key={category.id}
@@ -45,8 +48,8 @@ export const CategoryBottomSheetTemplate = ({
           ))}
         </div>
       </BaseBottomSheetTemplate.Content>
-      <BaseBottomSheetTemplate.Button label='선택' onClick={onConfirm} isGradation={true} />
-      <BaseBottomSheetTemplate.Gradient />
+      <BaseBottomSheetTemplate.Button label='선택' onClick={onConfirm} isGradation={needsScroll} />
+      {needsScroll && <BaseBottomSheetTemplate.Gradient />}
     </BaseBottomSheetTemplate>
   );
 };

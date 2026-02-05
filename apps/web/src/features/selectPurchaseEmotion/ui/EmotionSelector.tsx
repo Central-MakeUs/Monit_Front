@@ -12,7 +12,7 @@ interface EmotionSelectorProps {
   onChange?: (value: EmotionValue, index: number) => void;
 }
 
-export const EmotionSelector = ({ defaultIndex = 1, onChange }: EmotionSelectorProps) => {
+export const EmotionSelector = ({ defaultIndex = 2, onChange }: EmotionSelectorProps) => {
   const [selectedIndex, setSelectedIndex] = useState(defaultIndex);
 
   const handleIndexChange = useCallback(

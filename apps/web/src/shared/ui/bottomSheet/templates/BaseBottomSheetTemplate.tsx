@@ -55,7 +55,7 @@ const BottomSheetHeader = ({
         <IcClear className={headerIcon} color={vars.color.icon.subtle} onClick={onClose} />
       ) : (
         <div className={BottomSheetHeaderBtn} onClick={onClickAddBtn}>
-          <IcPlusSimple className={headerIcon} color={vars.color.icon.tertiary} />
+          <IcPlusSimple className={headerIcon} color={vars.color.icon.subtle} />
           <Text variant='b4' color={vars.color.text.tertiary}>
             추가
           </Text>
