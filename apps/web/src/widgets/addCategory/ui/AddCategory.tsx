@@ -114,9 +114,9 @@ export const AddCategory = () => {
         onClose={closeAlert}
         variant='left'
         title='카테고리 추가를 그만둘까요?'
-        description='지금 나가면 카테고리는 추가되지 않아요'
-        cancelText='나중에 하기'
-        confirmText='계속 하기'
+        description='지금 나가면 카테고리는 추가되지 않아요.'
+        cancelText='그만두기'
+        confirmText='계속 추가하기'
         onCancel={() => router.back()}
       />
     </div>
