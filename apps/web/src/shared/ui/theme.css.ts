@@ -122,6 +122,7 @@ export const vars = createGlobalTheme(':root', {
     sm2: spacing.sm2,
     md: spacing.md,
     lg: spacing.lg,
+    lg2: spacing.lg2,
     xl: spacing.xl,
     '2xl': spacing['2xl'],
   },
