@@ -20,12 +20,23 @@ export const useWeeklyCalendar = ({
   const [internalCurrentDate, setInternalCurrentDate] = useState<Date>(currentDate);
   const [internalSelectedDate, setInternalSelectedDate] = useState<Date | null>(null);
 
-  // currentDate prop이 변경되면 internalCurrentDate 업데이트
-  useEffect(() => {
-    setInternalCurrentDate(currentDate);
-  }, [currentDate]);
-
   const effectiveSelectedDate = selectedDate !== undefined ? selectedDate : internalSelectedDate;
+
+  // currentDate prop이 변경되면 internalCurrentDate 업데이트
+  // 월이 변경된 경우 selectedDate가 포함된 주로 이동
+  useEffect(() => {
+    const currentMonth = internalCurrentDate.getMonth();
+    const currentYear = internalCurrentDate.getFullYear();
+    const newMonth = currentDate.getMonth();
+    const newYear = currentDate.getFullYear();
+
+    // 월이나 연도가 변경된 경우
+    if (currentMonth !== newMonth || currentYear !== newYear) {
+      // selectedDate가 있으면 그 날짜를 기준으로, 없으면 currentDate를 기준으로 설정
+      const baseDate = effectiveSelectedDate || currentDate;
+      setInternalCurrentDate(baseDate);
+    }
+  }, [currentDate, internalCurrentDate, effectiveSelectedDate]);
 
   const dates = useMemo(() => {
     return generateWeeklyDates(internalCurrentDate);
