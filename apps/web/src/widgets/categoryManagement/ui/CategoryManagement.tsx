@@ -22,7 +22,7 @@ export const CategoryManagement = () => {
         right={
           <IcPlusCircle
             color={vars.color.icon.tertiary}
-            onClick={() => router.push('/expense/category')}
+            onClick={() => router.push('/expense/category?from=mypage')}
           />
         }
       />

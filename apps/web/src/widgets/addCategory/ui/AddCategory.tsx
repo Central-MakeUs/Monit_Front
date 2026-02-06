@@ -18,7 +18,7 @@ import * as styles from './AddCategory.css';
 import { IconPickerBottomSheetTemplate } from '@/features/expense';
 import type { Category } from '@/features/expense';
 import { useModal } from '@/shared/hooks';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useCategoryStore } from '@/entities/category/model/store';
 import { useExpenseFormStore } from '@/widgets/expenseRecordFunnel/model/store';
 
@@ -40,6 +40,8 @@ export const AddCategory = () => {
   const { isOpen: isAlertOpen, openModal: openAlert, closeModal: closeAlert } = useModal();
   const toast = useToast();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const isFromMypage = searchParams.get('from') === 'mypage';
   const { categories, addCategory } = useCategoryStore();
   const { setCategoryId } = useExpenseFormStore();
 
@@ -95,8 +97,10 @@ export const AddCategory = () => {
         name: categoryName,
         icon: selectedIcon.icon as 'coin' | 'percent' | 'shopping' | 'plus',
       });
-      // 새로 만든 카테고리 자동 선택
-      setCategoryId(newId);
+      // 지출 기록 플로우에서 온 경우에만 새 카테고리 자동 선택
+      if (!isFromMypage) {
+        setCategoryId(newId);
+      }
       toast.success('카테고리가 추가되었어요!');
       router.back();
     });
