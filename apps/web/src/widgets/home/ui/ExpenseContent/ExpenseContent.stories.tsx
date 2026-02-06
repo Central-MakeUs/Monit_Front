@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 import { ExpenseContent } from './ExpenseContent';
+import { Expense } from '../ExpenseList';
 
 const meta = {
   title: 'Widgets/Home/ExpenseContent',
@@ -26,6 +27,30 @@ type Story = StoryObj<typeof meta>;
 
 const defaultSelectedDate = new Date(2024, 0, 15);
 
+const mockExpenses: Expense[] = [
+  {
+    id: 1,
+    title: '스타벅스 아메리카노',
+    category: 'coin' as const,
+    price: 5000,
+    badgeLabel: '필수템',
+  },
+  {
+    id: 2,
+    title: 'GS25 편의점',
+    category: 'shopping' as const,
+    price: 12000,
+    badgeLabel: '살기위해',
+  },
+  {
+    id: 3,
+    title: '카카오택시',
+    category: 'percent' as const,
+    price: 8500,
+    badgeLabel: '기분전환',
+  },
+];
+
 /**
  * 소비 목록이 있는 상태
  *
@@ -38,6 +63,7 @@ export const WithExpenses: Story = {
     expenseCount: 3,
     totalExpenseAmount: 25500,
     selectedDate: defaultSelectedDate,
+    expenses: mockExpenses,
   },
 };
 
@@ -96,5 +122,21 @@ export const ManyExpenses: Story = {
     expenseCount: 15,
     totalExpenseAmount: 125000,
     selectedDate: defaultSelectedDate,
+    expenses: [
+      ...mockExpenses,
+      {
+        id: 4,
+        title: '올리브영',
+        category: 'shopping' as const,
+        price: 15000,
+      },
+      {
+        id: 5,
+        title: '점심식사',
+        category: 'coin' as const,
+        price: 9000,
+        badgeLabel: '맛집',
+      },
+    ],
   },
 };

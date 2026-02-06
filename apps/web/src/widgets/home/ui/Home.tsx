@@ -4,18 +4,14 @@ import React from 'react';
 import { DatePickerFeature } from '@/features/datePickerModal';
 import { useClientOnly } from '@/shared/hooks';
 import { useHomeStore } from '../model/useHomeStore';
-import { useHomeTestMode } from '../dev';
 import { HomeHeader } from './HomeHeader';
 import { MonthlyExpenseInfo } from './MonthlyExpenseInfo';
 import { CalendarSection } from './CalendarSection';
 import { ExpenseContent } from './ExpenseContent';
-import { TestModeButtons } from '../dev/TestModeButtons';
 import * as styles from './Home.css';
 
 export const Home = () => {
   const isMounted = useClientOnly();
-  const { testMode, setTestMode, hasExpenses, emptyStateType, expenseCount, totalExpenseAmount } =
-    useHomeTestMode();
 
   const currentDate = useHomeStore((state) => state.currentDate);
   const selectedDate = useHomeStore((state) => state.selectedDate);
@@ -25,9 +21,11 @@ export const Home = () => {
   const setViewMode = useHomeStore((state) => state.setViewMode);
   const setDateFromPicker = useHomeStore((state) => state.setDateFromPicker);
 
-  // 개발 환경에서만 TestModeButtons 표시
-  // eslint-disable-next-line turbo/no-undeclared-env-vars
-  const isDevelopment = process.env.NODE_ENV !== 'production';
+  // TODO: API 연동 후 실제 데이터로 교체
+  const hasExpenses = false;
+  const emptyStateType = 'date';
+  const expenseCount = 0;
+  const totalExpenseAmount = 0;
 
   if (!isMounted) {
     return null;
@@ -57,8 +55,6 @@ export const Home = () => {
           totalExpenseAmount={totalExpenseAmount}
           selectedDate={selectedDate}
         />
-
-        {isDevelopment && <TestModeButtons testMode={testMode} onTestModeChange={setTestMode} />}
       </div>
     </div>
   );

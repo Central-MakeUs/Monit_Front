@@ -4,7 +4,7 @@ import React from 'react';
 import { Banner } from '@/shared/ui/banner';
 import { EmptyState } from '../EmptyState';
 import { EmptyStateType } from '../../model/types';
-import { ExpenseList } from '../ExpenseList';
+import { ExpenseList, Expense } from '../ExpenseList';
 import { ExpenseSummary } from '../ExpenseSummary';
 import * as styles from './ExpenseContent.css';
 
@@ -14,6 +14,7 @@ export interface ExpenseContentProps {
   expenseCount: number;
   totalExpenseAmount: number;
   selectedDate: Date | null;
+  expenses?: Expense[];
 }
 
 export const ExpenseContent = ({
@@ -22,6 +23,7 @@ export const ExpenseContent = ({
   expenseCount,
   totalExpenseAmount,
   selectedDate,
+  expenses = [],
 }: ExpenseContentProps) => {
   return (
     <div className={styles.container}>
@@ -35,7 +37,7 @@ export const ExpenseContent = ({
 
       {hasExpenses ? (
         <div className={styles.expenseSection}>
-          <ExpenseList selectedDate={selectedDate} />
+          <ExpenseList selectedDate={selectedDate} expenses={expenses} />
         </div>
       ) : (
         <div className={styles.emptySection}>
