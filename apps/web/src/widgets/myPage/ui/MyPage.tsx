@@ -49,11 +49,7 @@ export const MyPage = () => {
       <div className={styles.container}>
         {/* 서비스 */}
         <MenuLabel label='서비스' />
-        <MenuItem
-          type='arrow'
-          label='카테고리 편집'
-          onClick={() => router.push('/expense/category')}
-        />
+        <MenuItem type='arrow' label='카테고리 편집' onClick={() => router.push('/my/category')} />
         <div className={styles.dividerWrapper}>
           <Divider />
         </div>
