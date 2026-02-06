@@ -33,6 +33,7 @@ export const CategoryManagement = () => {
             icon={category.icon ?? 'coin'}
             label={category.name}
             type='secondary'
+            onClick={() => router.push(`/expense/category?mode=edit&id=${category.id}&from=mypage`)}
           />
         ))}
       </div>
