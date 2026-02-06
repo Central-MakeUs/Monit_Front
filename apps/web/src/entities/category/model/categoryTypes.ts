@@ -1,3 +1,6 @@
 import { components } from '@/shared/api/schema';
 
-export type CategoryListResponseDTO = components['schemas']['CategoryListResponseDTO'];
+//TODO: 서버 id를 required로 변경 요청
+export type CategoryListResponseDTO = components['schemas']['CategoryListResponseDTO'] & {
+  id: number;
+};

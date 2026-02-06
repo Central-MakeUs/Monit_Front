@@ -5,12 +5,63 @@ import { TopBar, vars, Text, CategoryBtn, Tooltip } from '@/shared/ui';
 import { IcLeftChevron, IcPlusCircle } from 'public/icons';
 import { useRouter } from 'next/navigation';
 import { useCategoryStore } from '@/entities/category/model/store';
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  SortableContext,
+  sortableKeyboardCoordinates,
+  rectSortingStrategy,
+  useSortable,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { CategoryListResponseDTO } from '@/entities/category/model/categoryTypes';
 
 const ONBOARDING_KEY = 'category-management-onboarding-completed';
 
+const SortableCategoryItem = ({
+  category,
+  onClick,
+  highlighted,
+}: {
+  category: CategoryListResponseDTO;
+  onClick: () => void;
+  highlighted?: boolean;
+}) => {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: category.id,
+  });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    zIndex: isDragging ? 1000 : 'auto',
+    opacity: isDragging ? 0.5 : 1,
+    position: 'relative' as const,
+  };
+
+  return (
+    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+      <CategoryBtn
+        icon={category.icon ?? 'coin'}
+        label={category.name}
+        type='secondary'
+        highlighted={highlighted}
+        onClick={onClick}
+      />
+    </div>
+  );
+};
+
 export const CategoryManagement = () => {
   const router = useRouter();
-  const { categories } = useCategoryStore();
+  const { categories, reorderCategories } = useCategoryStore();
   const [onboardingStep, setOnboardingStep] = useState<number | null>(null);
 
   useEffect(() => {
@@ -20,6 +71,28 @@ export const CategoryManagement = () => {
     }
   }, []);
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id) {
+      const oldIndex = categories.findIndex((cat) => cat.id === active.id);
+      const newIndex = categories.findIndex((cat) => cat.id === over.id);
+
+      reorderCategories(oldIndex, newIndex);
+    }
+  };
+
   const handleOverlayClick = () => {
     if (onboardingStep === 1) {
       setOnboardingStep(2);
@@ -28,6 +101,10 @@ export const CategoryManagement = () => {
       localStorage.setItem(ONBOARDING_KEY, 'true');
     }
   };
+
+  const validCategories = categories.filter(
+    (c): c is typeof c & { id: number } => c.id !== undefined && c.id !== null
+  );
 
   return (
     <div>
@@ -47,18 +124,23 @@ export const CategoryManagement = () => {
           </div>
         }
       />
-      <div className={styles.categoryGrid}>
-        {categories.map((category, index) => (
-          <CategoryBtn
-            key={category.id}
-            icon={category.icon ?? 'coin'}
-            label={category.name}
-            type='secondary'
-            highlighted={onboardingStep === 1 && index === 0}
-            onClick={() => router.push(`/expense/category?mode=edit&id=${category.id}&from=mypage`)}
-          />
-        ))}
-      </div>
+      <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+        <SortableContext items={validCategories.map((c) => c.id)} strategy={rectSortingStrategy}>
+          <div className={styles.categoryGrid}>
+            {validCategories.map((category, index) => (
+              <SortableCategoryItem
+                key={category.id}
+                category={category}
+                highlighted={onboardingStep === 1 && index === 0}
+                onClick={() => {
+                  if (onboardingStep) return;
+                  router.push(`/expense/category?mode=edit&id=${category.id}&from=mypage`);
+                }}
+              />
+            ))}
+          </div>
+        </SortableContext>
+      </DndContext>
 
       {/* 온보딩 오버레이 */}
       {onboardingStep !== null && (

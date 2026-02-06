@@ -21,9 +21,10 @@ interface CategoryStore {
 
   // 카테고리 선택 시: 홈에 없는 카테고리면 맨 앞으로
   selectCategory: (id: number) => void;
+  reorderCategories: (fromIndex: number, toIndex: number) => void;
 }
 
-// 임시ㅇ
+// 임시
 const initialCategories: CategoryListResponseDTO[] = [
   { id: 1, name: '간식', icon: 'shopping' },
   { id: 2, name: '자기계발비', icon: 'coin' },
@@ -79,6 +80,15 @@ export const useCategoryStore = create<CategoryStore>()(
         const newIds = [id, ...displayCategoryIds.slice(0, DISPLAY_CATEGORY_LIMIT - 1)];
         set({ displayCategoryIds: newIds });
       },
+      reorderCategories: (fromIndex, toIndex) =>
+        set((state) => {
+          const newCategories = [...state.categories];
+          const [movedCategory] = newCategories.splice(fromIndex, 1);
+          if (movedCategory) {
+            newCategories.splice(toIndex, 0, movedCategory);
+          }
+          return { categories: newCategories };
+        }),
     }),
     {
       name: 'category-storage',
