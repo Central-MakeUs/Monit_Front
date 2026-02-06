@@ -65,9 +65,6 @@ export const AmountDateStep = ({ onNext, defaultAmount, defaultDate }: AmountDat
 
     if (!formattedAmount) {
       setShowError(true);
-      errorTimerRef.current = setTimeout(() => {
-        setShowError(false);
-      }, 3000);
     } else {
       setShowError(false);
     }
