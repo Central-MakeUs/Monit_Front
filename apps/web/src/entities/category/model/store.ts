@@ -55,7 +55,7 @@ export const useCategoryStore = create<CategoryStore>()(
         }),
       addCategory: (category) =>
         set((state) => ({
-          categories: [...state.categories, category],
+          categories: [category, ...state.categories],
           displayCategoryIds:
             category.id == null
               ? state.displayCategoryIds
