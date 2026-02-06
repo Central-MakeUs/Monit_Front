@@ -127,6 +127,12 @@ export const dateBadge = recipe({
         boxShadow: shadows.shadow2,
       },
     },
+    {
+      variants: { today: true, selected: true },
+      style: {
+        border: 'none',
+      },
+    },
   ],
   defaultVariants: {
     selected: false,
