@@ -42,7 +42,7 @@ export const MyPage = () => {
           label='개인정보 수집 및 이용 동의'
           onClick={() => router.push('/')}
         />
-        <MenuItem type='toggle' label='개인정보 수집 및 이용 동의' />
+        <MenuItem type='toggle' label='알림 설정 허용' />
         <div className={styles.dividerWrapper}>
           <Divider />
         </div>
