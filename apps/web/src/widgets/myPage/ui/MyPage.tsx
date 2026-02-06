@@ -60,11 +60,22 @@ export const MyPage = () => {
 
         {/* 약관 */}
         <MenuLabel label='약관' />
-        <MenuItem type='arrow' label='서비스 이용약관' onClick={() => router.push('/')} />
+        <MenuItem
+          type='arrow'
+          label='서비스 이용약관'
+          onClick={() =>
+            window.open('https://www.notion.so/1-0-2e214c814b498037a7f1d4905a2aa4ce', '_blank')
+          }
+        />
         <MenuItem
           type='arrow'
           label='개인정보 수집 및 이용 동의'
-          onClick={() => router.push('/')}
+          onClick={() =>
+            window.open(
+              'https://wise-sunspot-cba.notion.site/1-0-2e214c814b4980358041edd610580fca',
+              '_blank'
+            )
+          }
         />
         <MenuItem type='toggle' label='알림 설정 허용' />
         <div className={styles.dividerWrapper}>
