@@ -8,7 +8,7 @@ export const container = style({
   left: '50%',
   transform: 'translateX(-50%)',
   width: '100%',
-  maxWidth: 768,
+  maxWidth: '43rem',
   display: 'flex',
   flexDirection: 'column',
   boxSizing: 'border-box',

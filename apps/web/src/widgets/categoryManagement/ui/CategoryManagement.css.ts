@@ -13,7 +13,12 @@ export const categoryGrid = style({
 
 export const onboardingOverlay = style({
   position: 'fixed',
-  inset: 0,
+  top: 0,
+  bottom: 0,
+  left: '50%',
+  transform: 'translateX(-50%)',
+  width: '100%',
+  maxWidth: '430px',
   zIndex: 100,
   backgroundColor: 'rgba(0, 0, 0, 0.3)',
 });
