@@ -11,6 +11,9 @@
     "lint": "expo lint"
   },
   "dependencies": {
+    "@repo/bridge": "workspace:*",
+    "@webview-bridge/react-native": "^1.7.8",
+    "react-native-webview": "^13.16.0",
     "@expo/vector-icons": "^15.0.3",
     "@react-navigation/bottom-tabs": "^7.4.0",
     "@react-navigation/elements": "^2.6.3",
