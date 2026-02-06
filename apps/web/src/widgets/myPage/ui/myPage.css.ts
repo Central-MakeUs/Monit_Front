@@ -7,3 +7,7 @@ export const container = style({
   gap: spacing.xs2,
   marginTop: '2.7rem',
 });
+
+export const dividerWrapper = style({
+  margin: `${spacing.md} ${spacing.xl}`,
+});

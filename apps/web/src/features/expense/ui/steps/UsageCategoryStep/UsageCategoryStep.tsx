@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   Button,
@@ -13,20 +13,10 @@ import {
 import { CategoryBottomSheetTemplate, type Category } from '../../expenseBottomSheet';
 import * as styles from './UsageCategoryStep.css';
 import { useModal } from '@/shared/hooks';
-import { useExpenseFormStore } from '@/widgets/expenseRecordFunnel/model/useExpenseFormStore';
+import { useExpenseFormStore } from '@/widgets/expenseRecordFunnel/model/store';
+import { useCategoryStore } from '@/entities/category/model/store';
 
 const MAX_LENGTH = 20;
-
-// TODO: 임시 데이터 교체해야함
-const expenseCategories: Category[] = [
-  { id: '1', icon: 'shopping', label: '간식' },
-  { id: '2', icon: 'coin', label: '자기계발비' },
-  { id: '3', icon: 'percent', label: '감식' },
-  { id: '4', icon: 'shopping', label: '카테고리명' },
-  { id: '5', icon: 'shopping', label: '간식' },
-  { id: '6', icon: 'coin', label: '자기계발비' },
-  { id: '7', icon: 'percent', label: '감식' },
-];
 
 export interface UsageCategoryStepProps {
   onNext: (usageHistory: string, categoryId: number) => void;
@@ -41,15 +31,48 @@ export const UsageCategoryStep = ({
 }: UsageCategoryStepProps) => {
   const { isOpen, openModal, closeModal } = useModal();
   const router = useRouter();
+  const { categories: storeCategories, displayCategoryIds, selectCategory } = useCategoryStore();
+
+  // store 데이터를 Category 타입으로 변환
+  const allCategories = useMemo<Category[]>(
+    () =>
+      storeCategories.map((c) => ({
+        id: String(c.id),
+        icon: c.icon ?? 'shopping',
+        label: c.name ?? '',
+      })),
+    [storeCategories]
+  );
+
+  // 홈에 보여줄 카테고리
+  const displayCategories = useMemo<Category[]>(() => {
+    return displayCategoryIds
+      .map((id) => allCategories.find((c) => c.id === String(id)))
+      .filter((c): c is Category => c !== undefined);
+  }, [displayCategoryIds, allCategories]);
 
   const [usageHistory, setUsageHistory] = useState<string>(defaultUsageHistory ?? '');
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
     defaultCategoryId != null
-      ? (expenseCategories.find((c) => c.id === String(defaultCategoryId)) ?? null)
+      ? (allCategories.find((c) => c.id === String(defaultCategoryId)) ?? null)
       : null
   );
   const [tempCategory, setTempCategory] = useState<Category | null>(null);
   const isValid = usageHistory.trim() !== '' && selectedCategory !== null;
+
+  useEffect(() => {
+    if (selectedCategory || defaultCategoryId == null) return;
+    const found = allCategories.find((c) => c.id === String(defaultCategoryId));
+    if (found) setSelectedCategory(found);
+  }, [allCategories, defaultCategoryId, selectedCategory]);
+
+  // 바텀시트용: 선택된 카테고리가 맨 앞에 오도록 정렬
+  const sortedCategories = useMemo(() => {
+    if (!selectedCategory) return allCategories;
+    const selected = allCategories.find((c) => c.id === selectedCategory.id);
+    const rest = allCategories.filter((c) => c.id !== selectedCategory.id);
+    return selected ? [selected, ...rest] : allCategories;
+  }, [allCategories, selectedCategory]);
 
   const handleNext = () => {
     if (!isValid || !selectedCategory) return;
@@ -62,6 +85,9 @@ export const UsageCategoryStep = ({
   };
 
   const handleConfirm = () => {
+    if (tempCategory) {
+      selectCategory(Number(tempCategory.id));
+    }
     setSelectedCategory(tempCategory);
     closeModal();
   };
@@ -88,7 +114,7 @@ export const UsageCategoryStep = ({
 
       <CategoryGrid
         type='expense'
-        categories={expenseCategories}
+        categories={displayCategories}
         selectedId={selectedCategory?.id}
         onSelect={setSelectedCategory}
         onMoreClick={handleOpenBottomSheet}
@@ -96,7 +122,7 @@ export const UsageCategoryStep = ({
 
       <BottomSheet isOpen={isOpen} onClose={closeModal}>
         <CategoryBottomSheetTemplate
-          categories={expenseCategories}
+          categories={sortedCategories}
           selectedId={tempCategory?.id}
           onSelect={setTempCategory}
           onConfirm={handleConfirm}

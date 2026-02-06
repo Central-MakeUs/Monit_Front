@@ -2,24 +2,44 @@ import React, { ReactNode } from 'react';
 import { Text } from '../text';
 import * as styles from './Badge.css';
 import { vars } from '../theme.css';
+import type { EvaluationType } from '@/shared/types/evaluation.types';
+import { IcBadge } from 'public/icons';
+import { EVALUATION_COLOR_MAP } from '../tokens/evaluationColors';
 
 export interface BadgeProps {
   label: string;
   icon?: ReactNode;
-  size?: 'md' | 'lg';
+  size?: 'sm' | 'lg';
   backgroundColor?: string;
+  evaluationType?: EvaluationType;
 }
-//TODO: [암시]디자인 변경후 다시 반영 예정!!! -> 아마 거의 수정
+
 export const Badge = ({
   label,
-  size = 'md',
-  icon,
+  size = 'lg',
+  icon = <IcBadge />,
   backgroundColor = vars.color.bg.neutral.subtle,
+  evaluationType,
 }: BadgeProps) => {
+  const colors = evaluationType ? EVALUATION_COLOR_MAP[evaluationType] : undefined;
+
+  const containerStyle =
+    size === 'lg' && colors
+      ? { backgroundColor: colors.bg, borderColor: colors.border }
+      : { backgroundColor };
+
+  const textColor = colors ? colors.text : vars.color.text.secondary;
+
   return (
-    <div className={styles.badge} style={{ backgroundColor }}>
-      {icon && <div className={styles.icon}>{icon}</div>}
-      <Text variant={size === 'md' ? 'b1' : 'h1'} color={vars.color.text.secondary}>
+    <div className={styles.badgeContainer({ size, hasState: !!colors })} style={containerStyle}>
+      {icon && evaluationType && (
+        <div
+          className={styles.icon({ size })}
+          style={{ color: colors ? colors.text : vars.color.icon.tertiary }}>
+          {icon}
+        </div>
+      )}
+      <Text variant={size === 'sm' ? 'b1' : 'b2'} color={textColor}>
         {label}
       </Text>
     </div>

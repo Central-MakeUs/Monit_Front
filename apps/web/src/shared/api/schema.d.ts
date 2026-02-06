@@ -44,6 +44,86 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/auth/reissue": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * 토큰 재발급 API
+         * @description 리프레시 토큰으로 액세스 토큰을 재발급하는 API입니다.
+         */
+        post: operations["reissue"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/logout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * 공통 로그아웃
+         * @description 카카오/애플 로그인 방식에 관계없이 현재 사용자를 로그아웃 처리합니다.
+         */
+        post: operations["logout"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/apple/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * 애플 로그인 및 회원가입
+         * @description 애플 OAuth 코드를 받아 로그인 또는 회원가입을 처리합니다.
+         */
+        post: operations["appleLogin"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/apple/callback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * 애플 서버 알림 처리
+         * @description 애플 서버에서 전송된 알림을 처리합니다.
+         */
+        post: operations["handleAppleNotification"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/expense/update_record/{expenseId}": {
         parameters: {
             query?: never;
@@ -144,6 +224,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/expense/retrospect-list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * 회고 필요 지출 내역 조회
+         * @description 특정 날짜의 지출 중 아직 회고(만족도 조사)가 완료되지 않은 내역만 리스트로 조회합니다.
+         */
+        get: operations["getRetrospectList"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/expense/daily_satisfaction": {
         parameters: {
             query?: never;
@@ -172,7 +272,7 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * 일별 지출 내역 조회
+         * 메인화면 일별 지출내역 조회
          * @description 특정 날짜의 지출 내역과 월간 총액을 조회합니다.
          */
         get: operations["getDailyExpense"];
@@ -271,6 +371,8 @@ export interface components {
         };
         CategoryDetailsDTO: {
             name?: string;
+            /** @enum {string} */
+            icon?: "coin" | "percent" | "shopping" | "plus";
         };
         ApiResponseCategoryIdResponseDTO: {
             isSuccess?: boolean;
@@ -281,6 +383,32 @@ export interface components {
         CategoryIdResponseDTO: {
             /** Format: int64 */
             id?: number;
+            name?: string;
+            /** @enum {string} */
+            icon?: "coin" | "percent" | "shopping" | "plus";
+        };
+        ApiResponseTokenReissueResultDTO: {
+            isSuccess?: boolean;
+            code?: string;
+            message?: string;
+            result?: components["schemas"]["TokenReissueResultDTO"];
+        };
+        TokenReissueResultDTO: {
+            accessToken?: string;
+        };
+        ApiResponseString: {
+            isSuccess?: boolean;
+            code?: string;
+            message?: string;
+            result?: string;
+        };
+        ApiResponseMapStringObject: {
+            isSuccess?: boolean;
+            code?: string;
+            message?: string;
+            result?: {
+                [key: string]: Record<string, never>;
+            };
         };
         ExpenseRemindRequestDTO: {
             /** Format: int64 */
@@ -290,6 +418,8 @@ export interface components {
         };
         CategoryUpdateRequestDTO: {
             name: string;
+            /** @enum {string} */
+            icon?: "coin" | "percent" | "shopping" | "plus";
         };
         ApiResponseWeeklyDetailReportResponse: {
             isSuccess?: boolean;
@@ -353,11 +483,24 @@ export interface components {
             topEmotion?: components["schemas"]["EmotionSummary"];
             emotionDetails?: components["schemas"]["EmotionSummary"][];
         };
-        ApiResponseString: {
+        ApiResponseListExpenseResponseDTO: {
             isSuccess?: boolean;
             code?: string;
             message?: string;
-            result?: string;
+            result?: components["schemas"]["ExpenseResponseDTO"][];
+        };
+        ExpenseResponseDTO: {
+            /** Format: int64 */
+            expenseId?: number;
+            /** Format: date */
+            date?: string;
+            /** @enum {string} */
+            categoryIconType?: "coin" | "percent" | "shopping" | "plus";
+            usageHistory?: string;
+            categoryName?: string;
+            /** Format: int64 */
+            amount?: number;
+            emotionType?: string;
         };
         ApiResponseDailyExpenseResponseDTO: {
             isSuccess?: boolean;
@@ -370,7 +513,10 @@ export interface components {
             date?: string;
             /** Format: int64 */
             monthlyTotalAmount?: number;
+            bannerMessage?: string;
+            bannerSubMessage?: string;
             expenses?: components["schemas"]["ExpenseListDTO"][];
+            retrospectCompleted?: boolean;
         };
         ExpenseListDTO: {
             /** Format: int64 */
@@ -379,6 +525,8 @@ export interface components {
             amount?: number;
             usageHistory?: string;
             categoryName?: string;
+            /** @enum {string} */
+            categoryIconType?: "coin" | "percent" | "shopping" | "plus";
             /** @enum {string} */
             emotionType?: "기분 전환" | "그냥 저냥" | "필수템" | "홀린 듯이" | "살기 위해";
             /** @enum {string} */
@@ -394,6 +542,8 @@ export interface components {
             /** Format: int64 */
             id?: number;
             name?: string;
+            /** @enum {string} */
+            icon?: "coin" | "percent" | "shopping" | "plus";
         };
         ApiResponseAuthResponse: {
             isSuccess?: boolean;
@@ -468,6 +618,94 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ApiResponseCategoryIdResponseDTO"];
+                };
+            };
+        };
+    };
+    reissue: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTokenReissueResultDTO"];
+                };
+            };
+        };
+    };
+    logout: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseString"];
+                };
+            };
+        };
+    };
+    appleLogin: {
+        parameters: {
+            query: {
+                code: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseMapStringObject"];
+                };
+            };
+        };
+    };
+    handleAppleNotification: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    [key: string]: string;
+                };
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseString"];
                 };
             };
         };
@@ -586,6 +824,28 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ApiResponseSummaryRecordResponse"];
+                };
+            };
+        };
+    };
+    getRetrospectList: {
+        parameters: {
+            query: {
+                date: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseListExpenseResponseDTO"];
                 };
             };
         };

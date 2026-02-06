@@ -11,21 +11,23 @@ interface DialWheelProps {
 }
 
 const ITEM_COUNT = emotions.length;
-const DISPLAY_COUNT = ITEM_COUNT * 2; // 두 번 반복해서 표시
-const ANGLE_PER_ITEM = 360 / DISPLAY_COUNT; // 30도씩
+const TOTAL_ANGLE = 140; // 전체 사용 각도 (180보다 작으면 간격이 좁아짐)
+const ANGLE_PER_ITEM = TOTAL_ANGLE / (ITEM_COUNT - 1);
 
 //숫자 작아질 수록 안으로 들어가
-const WHEEL_RADIUS = 128; // 텍스트가 위치할 반지름 (중앙원과 바깥원 사이)
+const WHEEL_RADIUS = 120; // 텍스트가 위치할 반지름 (중앙원과 바깥원 사이)
 
-// 휠에 표시할 아이템들 (두번 반복)
-const displayEmotions = [...emotions, ...emotions];
+// 회전 범위 제한 (0도 ~ 최대 회전각)
+const MIN_ROTATION = 0;
+const MAX_ROTATION = -TOTAL_ANGLE;
 
 export const DialWheel = ({ selectedIndex, onIndexChange }: DialWheelProps) => {
   const wheelRef = useRef<HTMLDivElement>(null);
   const isDragging = useRef(false);
   const startAngle = useRef(0);
-  const currentRotation = useRef(0);
-  const [rotation, setRotation] = useState(0);
+  const initialRotation = -selectedIndex * ANGLE_PER_ITEM;
+  const currentRotation = useRef(initialRotation);
+  const [rotation, setRotation] = useState(initialRotation);
   const isInternalChange = useRef(false);
 
   // ScrollPicker에서 selectedIndex가 변경되면 첫 번째 세트로 동기화
@@ -61,7 +63,11 @@ export const DialWheel = ({ selectedIndex, onIndexChange }: DialWheelProps) => {
     (clientX: number, clientY: number) => {
       if (!isDragging.current) return;
       const angle = getAngleFromEvent(clientX, clientY);
-      const newRotation = angle - startAngle.current;
+      let newRotation = angle - startAngle.current;
+
+      // 회전 범위 제한 (MIN_ROTATION ~ MAX_ROTATION)
+      newRotation = Math.min(MIN_ROTATION, Math.max(MAX_ROTATION, newRotation));
+
       currentRotation.current = newRotation;
       setRotation(newRotation);
     },
@@ -75,14 +81,16 @@ export const DialWheel = ({ selectedIndex, onIndexChange }: DialWheelProps) => {
     // 현재 회전에서 가장 가까운 ANGLE_PER_ITEM 배수 찾기
     const currentAngle = -currentRotation.current;
     const snappedAngle = Math.round(currentAngle / ANGLE_PER_ITEM) * ANGLE_PER_ITEM;
-    const targetRotation = -snappedAngle;
+    let targetRotation = -snappedAngle;
+
+    // 회전 범위 제한
+    targetRotation = Math.min(MIN_ROTATION, Math.max(MAX_ROTATION, targetRotation));
 
     currentRotation.current = targetRotation;
     setRotation(targetRotation);
 
-    // 정규화된 각도에서 인덱스 계산 (0-360 범위로 변환하여 음수 처리)
-    const normalizedAngle = ((snappedAngle % 360) + 360) % 360;
-    const finalIndex = Math.round(normalizedAngle / ANGLE_PER_ITEM) % ITEM_COUNT;
+    // 인덱스 계산 (0 ~ ITEM_COUNT-1 범위)
+    const finalIndex = Math.round(-targetRotation / ANGLE_PER_ITEM);
 
     // 내부 변경 표시 (useEffect에서 첫 번째 세트로 이동하지 않도록)
     isInternalChange.current = true;
@@ -137,10 +145,9 @@ export const DialWheel = ({ selectedIndex, onIndexChange }: DialWheelProps) => {
         style={{ transform: `translateY(-50%) rotate(${rotation}deg)` }}
         onMouseDown={handleMouseDown}
         onTouchStart={handleTouchStart}>
-        {displayEmotions.map((emotion, index) => {
+        {emotions.map((emotion, index) => {
           const itemAngle = index * ANGLE_PER_ITEM;
-          const originalIndex = index % ITEM_COUNT;
-          const isActive = originalIndex === selectedIndex;
+          const isActive = index === selectedIndex;
 
           return (
             <Text

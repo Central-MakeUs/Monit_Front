@@ -10,7 +10,7 @@ import type {
   SatisfactionStepType,
   SubmitStepType,
 } from '../model/expenseFunnelContext';
-import { useExpenseFormStore } from '../model/useExpenseFormStore';
+import { useExpenseFormStore } from '../model/store';
 import { StepIndicator, TopBar, Text, vars, AlertDialog, useToast } from '@/shared/ui';
 import { useModal } from '@/shared/hooks';
 import { IcLeftChevron } from 'public/icons';
@@ -89,6 +89,11 @@ export const ExpenseRecordFunnel = () => {
               소비 기록
             </Text>
           }
+          right={
+            <Text variant='h4' color={vars.color.text.secondary} onClick={openModal}>
+              나가기
+            </Text>
+          }
         />
         <StepIndicator currentStep={STEP_NUMBER[funnel.step]} totalSteps={3} />
       </div>
@@ -120,7 +125,10 @@ export const ExpenseRecordFunnel = () => {
         description='지금 나가면 작성한 내용은 저장되지 않아요.'
         cancelText='나중에 하기'
         confirmText='계속 하기'
-        onCancel={() => router.push('/')}
+        onCancel={() => {
+          formStore.reset();
+          router.push('/');
+        }}
       />
     </div>
   );

@@ -1,9 +1,5 @@
 import { style } from '@vanilla-extract/css';
-import { spacing, vars } from '@/shared/ui/theme.css';
-
-export const inputWrapper = style({
-  marginBottom: '2.1rem',
-});
+import { radius, spacing, vars } from '@/shared/ui/theme.css';
 
 export const dateSection = style({
   display: 'flex',
@@ -58,4 +54,20 @@ export const deleteButton = style({
     backgroundColor: vars.color.bg.surface.secondary.active,
     color: vars.color.icon.disabled,
   },
+});
+
+export const badgeContainer = style({
+  display: 'flex',
+  padding: `${spacing.md} ${spacing.lg}`,
+  flexDirection: 'column',
+  alignItems: 'flex-start',
+  gap: spacing.xs2,
+  borderRadius: radius.sm2,
+  background: vars.color.bg.base,
+});
+
+export const badgeList = style({
+  display: 'flex',
+  gap: spacing.sm,
+  alignItems: 'flex-start',
 });

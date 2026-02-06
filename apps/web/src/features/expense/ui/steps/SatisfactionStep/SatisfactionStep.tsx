@@ -19,9 +19,9 @@ export const SatisfactionStep = ({
   const [selectedIndex, setSelectedIndex] = useState(() => {
     if (defaultEmotionType) {
       const idx = emotions.findIndex((e) => e.value === defaultEmotionType);
-      return idx !== -1 ? idx : 1;
+      return idx !== -1 ? idx : 2;
     }
-    return 1;
+    return 2;
   });
 
   const handleChange = (_value: EmotionValue, index: number) => {

@@ -44,6 +44,8 @@ export { EditableTextInput, TextInput } from './textInput';
 export { InputField } from './inputField';
 export type { CategoryIconType } from './categoryBtn';
 
+export { TextArea } from './textArea';
+
 export { Toggle } from './toggle';
 
 export { PageIndicator } from './pageIndicator';
@@ -54,3 +56,9 @@ export { CategoryGrid } from './categoryGrid';
 export { DateInfoField } from './dateInfoField';
 
 export { BottomFixedArea } from './bottomFixedArea';
+
+export { DateLabel } from './dateLabel';
+
+export { RatingBtn } from './ratingBtn';
+
+export { Divider } from './divider';
