@@ -1,13 +1,15 @@
 'use client';
 
 import React from 'react';
-import { useClientOnly } from '@/shared/hooks';
 import { Home } from '@/widgets/home';
+import { WelcomeModal, OnboardingTour } from '@/features/onboarding';
 
 export default function HomePage(): React.JSX.Element {
-  const isMounted = useClientOnly();
-
-  if (!isMounted) return <div />;
-
-  return <Home />;
+  return (
+    <>
+      <Home />
+      <WelcomeModal />
+      <OnboardingTour />
+    </>
+  );
 }
