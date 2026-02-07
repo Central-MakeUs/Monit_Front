@@ -12,7 +12,6 @@ export const slideContainer = style({
   flex: 1,
   width: '100%',
   transition: 'transform 0.3s ease-out',
-  overflow: 'hidden',
 });
 
 export const slide = style({

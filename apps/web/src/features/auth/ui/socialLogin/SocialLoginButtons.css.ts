@@ -37,8 +37,3 @@ export const loginBtn = recipe({
     },
   },
 });
-
-export const loginBtnIcon = style({
-  width: '24px',
-  height: '24px',
-});
