@@ -135,6 +135,9 @@ export default function HomeScreen() {
           mediaPlaybackRequiresUserAction={false}
           // Android 설정
           allowFileAccess={true}
+          mixedContentMode='always'
+          allowUniversalAccessFromFileURLs={true}
+          allowFileAccessFromFileURLs={true}
           // 스크롤 설정
           scrollEnabled={true}
           bounces={Platform.OS === 'ios'}
