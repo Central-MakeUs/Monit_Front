@@ -65,6 +65,7 @@ export const loginBtn = recipe({
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: radius.sm2,
+    border: 'none',
   },
   variants: {
     social: {

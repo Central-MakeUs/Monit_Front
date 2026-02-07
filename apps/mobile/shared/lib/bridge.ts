@@ -19,7 +19,6 @@ export const appBridge = bridge({
   },
 
   async requestAppleLogin(): Promise<AppleLoginResult> {
-    // iOS에서만 사용 가능
     if (Platform.OS !== 'ios') {
       throw new Error('애플 로그인은 iOS에서만 사용 가능합니다.');
     }
