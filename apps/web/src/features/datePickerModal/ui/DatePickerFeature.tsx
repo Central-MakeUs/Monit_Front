@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
+import { useModal } from '@/shared/hooks/useModal';
 import { BottomSheet } from '@/shared/ui/bottomSheet';
 import { DatePickerBottomSheetTemplate } from './DatePickerBottomSheet';
 
@@ -28,25 +29,22 @@ export const DatePickerFeature = ({
   onDateConfirm,
   children,
 }: DatePickerFeatureProps) => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const handleOpen = () => setIsOpen(true);
-  const handleClose = () => setIsOpen(false);
+  const { isOpen, openModal, closeModal } = useModal();
 
   const handleConfirm = (year: number, month: number) => {
     onDateConfirm(year, month);
-    handleClose();
+    closeModal();
   };
 
   return (
     <>
-      {children({ onOpen: handleOpen })}
-      <BottomSheet isOpen={isOpen} onClose={handleClose}>
+      {children({ onOpen: openModal })}
+      <BottomSheet isOpen={isOpen} onClose={closeModal}>
         <DatePickerBottomSheetTemplate
           initialYear={currentDate.getFullYear()}
           initialMonth={currentDate.getMonth() + 1}
           onConfirm={handleConfirm}
-          onClose={handleClose}
+          onClose={closeModal}
           allowFuture={false}
         />
       </BottomSheet>
