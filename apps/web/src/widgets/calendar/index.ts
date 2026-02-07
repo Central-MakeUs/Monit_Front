@@ -5,4 +5,6 @@
  */
 
 export { Calendar } from './ui/Calendar';
+export { WeeklyCalendar } from './ui/WeeklyCalendar';
+export { MonthlyCalendar } from './ui/MonthlyCalendar';
 export type { CalendarProps } from './ui/Calendar';

@@ -30,8 +30,7 @@ export const monthlyCarouselSlide = style({
 // ==================== Weekly Carousel ====================
 
 export const weeklyCarouselContainer = style({
-  width: '39rem',
-  margin: '0 auto',
+  width: '100%',
   overflow: 'hidden',
   position: 'relative',
 });
@@ -44,7 +43,7 @@ export const weeklyCarouselTrack = style({
 });
 
 export const weeklyCarouselSlide = style({
-  width: '39rem',
-  minWidth: '39rem',
+  width: '100%',
+  minWidth: '100%',
   flexShrink: 0,
 });

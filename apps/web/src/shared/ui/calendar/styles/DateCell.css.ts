@@ -20,7 +20,7 @@ export const dateCellWrapper = recipe({
         height: '5.2rem',
       },
       weekly: {
-        width: '4.4rem',
+        width: 'min(4.4rem, 100%)',
         padding: 0,
       },
     },
@@ -72,8 +72,9 @@ export const dateBadge = recipe({
       },
       weekly: {
         width: '100%',
-        height: '4.4rem',
-        padding: '1.2rem',
+        height: 'auto',
+        aspectRatio: '1 / 1',
+        padding: 0,
         borderRadius: vars.radius.xl,
         ...typography.body.b4,
       },
@@ -124,6 +125,12 @@ export const dateBadge = recipe({
         backgroundColor: vars.color.bg.surface.secondary.default,
         color: vars.color.text.primary,
         boxShadow: shadows.shadow2,
+      },
+    },
+    {
+      variants: { today: true, selected: true },
+      style: {
+        border: 'none',
       },
     },
   ],

@@ -77,9 +77,10 @@ export const weekdayCell = style({
 
 export const weeklyGrid = style({
   display: 'flex',
-  gap: '0.8rem',
-  padding: '1.4rem 1.8rem',
+  gap: 'clamp(0.4rem, 2.2vw, 0.8rem)',
+  padding: 'clamp(1.1rem, 3.2vw, 1.4rem) clamp(1rem, 4.6vw, 1.8rem)',
   width: '100%',
+  boxSizing: 'border-box',
 });
 
 export const weeklyColumn = style({
@@ -95,7 +96,7 @@ export const weeklyWeekdayCell = recipe({
     ...typography.body.b1,
     color: vars.color.text.tertiary,
     textAlign: 'center',
-    width: '4.4rem',
+    width: 'min(4.4rem, 100%)',
   },
   variants: {
     isSelected: {

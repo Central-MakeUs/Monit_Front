@@ -55,7 +55,7 @@ export const toast = style({
   padding: `${spacing.sm} ${spacing.md}`,
   backgroundColor: vars.color.bg.surface.primary.subtle,
   borderRadius: vars.radius.sm,
-  boxShadow: vars.shadow.shadow2,
+  boxShadow: vars.shadow.shadow3,
   width: 'fit-content',
 });
 

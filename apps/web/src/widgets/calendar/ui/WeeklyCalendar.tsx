@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { useWeeklyCalendar } from '../model/useWeeklyCalendar';
-import { WeeklyHeader } from '@/shared/ui/calendar';
 import { WeeklyCarousel } from '@/features/calendarCarousel';
 
 interface WeeklyCalendarProps {
@@ -26,20 +25,17 @@ export const WeeklyCalendar = ({
   });
 
   return (
-    <div>
-      <WeeklyHeader currentWeek={carousel.currentWeek} selectedDate={effectiveSelectedDate} />
-      <WeeklyCarousel
-        prevWeek={carousel.prevWeek}
-        currentWeek={carousel.currentWeek}
-        nextWeek={carousel.nextWeek}
-        selectedDate={effectiveSelectedDate}
-        onDateSelect={handleDateSelect}
-        trackRef={carousel.trackRef}
-        handlers={carousel.handlers}
-        transform={carousel.getTransform()}
-        transition={carousel.getTransition()}
-        onTransitionEnd={carousel.handleTransitionEnd}
-      />
-    </div>
+    <WeeklyCarousel
+      prevWeek={carousel.prevWeek}
+      currentWeek={carousel.currentWeek}
+      nextWeek={carousel.nextWeek}
+      selectedDate={effectiveSelectedDate}
+      onDateSelect={handleDateSelect}
+      trackRef={carousel.trackRef}
+      handlers={carousel.handlers}
+      transform={carousel.getTransform()}
+      transition={carousel.getTransition()}
+      onTransitionEnd={carousel.handleTransitionEnd}
+    />
   );
 };

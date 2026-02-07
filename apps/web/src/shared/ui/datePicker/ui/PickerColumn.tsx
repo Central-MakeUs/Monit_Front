@@ -13,6 +13,7 @@ interface PickerColumnProps<T> {
   selectedIndex: number;
   onChange: (index: number) => void;
   renderItem: (item: T) => string;
+  isDisabled?: (item: T) => boolean;
 }
 
 export function PickerColumn<T>({
@@ -20,25 +21,43 @@ export function PickerColumn<T>({
   selectedIndex,
   onChange,
   renderItem,
+  isDisabled,
 }: PickerColumnProps<T>): React.JSX.Element {
+  // 인덱스 기반 disabled 체크 함수
+  const isIndexDisabled = React.useCallback(
+    (index: number) => {
+      if (!isDisabled) return false;
+      return isDisabled(items[index]!);
+    },
+    [isDisabled, items]
+  );
+
   const { listRef, handleScroll, handleClick } = usePickerScroll({
     selectedIndex,
     onChange,
     itemsCount: items.length,
+    isIndexDisabled,
   });
 
   return (
     <div className={pickerColumn}>
       <div className={pickerWrapper}>
         <div ref={listRef} className={pickerList} onScroll={handleScroll}>
-          {items.map((item, index) => (
-            <div
-              key={index}
-              className={pickerItem({ isSelected: index === selectedIndex })}
-              onClick={() => handleClick(index)}>
-              {renderItem(item)}
-            </div>
-          ))}
+          {items.map((item, index) => {
+            const disabled = isDisabled ? isDisabled(item) : false;
+            if (disabled) return null;
+
+            return (
+              <div
+                key={index}
+                className={pickerItem({
+                  isSelected: index === selectedIndex,
+                })}
+                onClick={() => handleClick(index)}>
+                {renderItem(item)}
+              </div>
+            );
+          })}
         </div>
         <div className={highlightOverlay} />
       </div>

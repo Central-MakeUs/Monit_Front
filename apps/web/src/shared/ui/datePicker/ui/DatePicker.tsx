@@ -13,6 +13,7 @@ export interface DatePickerProps {
   minYear?: number;
   maxYear?: number;
   formatters?: DatePickerFormatters;
+  allowFuture?: boolean;
 }
 
 export const DatePicker = ({
@@ -21,11 +22,33 @@ export const DatePicker = ({
   minYear,
   maxYear,
   formatters,
+  allowFuture = true,
 }: DatePickerProps): React.JSX.Element => {
   const mergedFormatters = React.useMemo(() => mergeFormatters(formatters), [formatters]);
 
-  const { years, months, yearIndex, monthIndex, handleYearChange, handleMonthChange } =
-    useDatePicker({ value, onChange, minYear, maxYear });
+  const {
+    years,
+    months,
+    yearIndex,
+    monthIndex,
+    handleYearChange,
+    handleMonthChange,
+    selectedYear,
+  } = useDatePicker({ value, onChange, minYear, maxYear });
+
+  const isMonthDisabled = React.useMemo(() => {
+    if (allowFuture) return undefined;
+
+    const today = new Date();
+    const currentYear = today.getFullYear();
+    const currentMonth = today.getMonth() + 1;
+
+    return (month: number) => {
+      if (selectedYear > currentYear) return true;
+      if (selectedYear === currentYear && month > currentMonth) return true;
+      return false;
+    };
+  }, [allowFuture, selectedYear]);
 
   return (
     <div className={pickerContainer}>
@@ -41,6 +64,7 @@ export const DatePicker = ({
         selectedIndex={monthIndex}
         onChange={handleMonthChange}
         renderItem={mergedFormatters.month}
+        isDisabled={isMonthDisabled}
       />
     </div>
   );
