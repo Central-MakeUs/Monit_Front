@@ -1,6 +1,5 @@
 import { Button, Text, vars } from '@/shared/ui';
-import ArrowRight from 'public/icons/ic-right-chevron.svg';
-import IcAttention from 'public/icons/ic-attention.svg';
+import { IcAttention, IcRightChevron } from 'public/icons';
 import * as styles from './NotFoundPage.css';
 
 interface NotFoundPageProps {
@@ -25,7 +24,7 @@ export function NotFoundPage({ onBack }: NotFoundPageProps): React.JSX.Element {
               이전 화면으로
             </Text>
             <div className={styles.arrowWrapper}>
-              <ArrowRight />
+              <IcRightChevron />
             </div>
           </div>
         </Button>
