@@ -1,10 +1,9 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
-import * as styles from './Login.css';
+import * as styles from './OnboardingSlider.css';
 import { PageIndicator, Text, vars } from '@/shared/ui';
 import Image from 'next/image';
-import { IcApple, IcKakao } from 'public/icons';
 
 const SLIDES = [
   {
@@ -26,7 +25,11 @@ const SLIDES = [
 
 const SWIPE_THRESHOLD = 50;
 
-export const Login = () => {
+interface OnboardingSliderProps {
+  onLastSlide?: () => void;
+}
+
+export const OnboardingSlider = ({ onLastSlide }: OnboardingSliderProps) => {
   const [currentPage, setCurrentPage] = useState(0);
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
@@ -44,14 +47,16 @@ export const Login = () => {
 
     if (Math.abs(diff) > SWIPE_THRESHOLD) {
       if (diff > 0 && currentPage < SLIDES.length - 1) {
-        setCurrentPage((prev) => prev + 1);
+        const newPage = currentPage + 1;
+        setCurrentPage(newPage);
+        if (newPage === SLIDES.length - 1) {
+          onLastSlide?.();
+        }
       } else if (diff < 0 && currentPage > 0) {
         setCurrentPage((prev) => prev - 1);
       }
     }
   };
-
-  const isLastPage = currentPage === SLIDES.length - 1;
 
   return (
     <div className={styles.container}>
@@ -88,21 +93,8 @@ export const Login = () => {
         ))}
       </div>
 
-      <div className={styles.bottomSection}>
+      <div className={styles.indicatorWrapper}>
         <PageIndicator currentPage={currentPage} totalPages={SLIDES.length} />
-
-        {isLastPage && (
-          <div className={styles.buttonContainer}>
-            <button className={styles.loginBtn({ social: 'kakao' })}>
-              <IcKakao className={styles.loginBtnIcon} />
-              <Text variant='h3'>카카오로 계속하기</Text>
-            </button>
-            <button className={styles.loginBtn({ social: 'apple' })}>
-              <IcApple className={styles.loginBtnIcon} />
-              <Text variant='h3'>Apple로 계속하기</Text>
-            </button>
-          </div>
-        )}
       </div>
     </div>
   );
