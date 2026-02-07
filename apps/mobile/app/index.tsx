@@ -8,6 +8,10 @@ import * as SplashScreen from 'expo-splash-screen';
 
 const BACKGROUND_COLOR = '#F6F7F9';
 
+const WEB_URL = __DEV__
+  ? process.env.EXPO_PUBLIC_DEV_WEB_URL
+  : process.env.EXPO_PUBLIC_PROD_WEB_URL;
+
 SplashScreen.preventAutoHideAsync();
 
 // 루트 배경색 설정 (iOS 노치 영역)
@@ -15,7 +19,7 @@ SystemUI.setBackgroundColorAsync(BACKGROUND_COLOR);
 
 export default function HomeScreen() {
   const webViewRef = useRef<WebViewType>(null);
-  const [initialUrl, setInitialUrl] = useState<string>(process.env.EXPO_PUBLIC_WEB_URL || '');
+  const [initialUrl, setInitialUrl] = useState<string>(WEB_URL || '');
 
   // 딥링크 URL 파싱
   const parseDeepLink = useCallback((url: string) => {
@@ -34,7 +38,7 @@ export default function HomeScreen() {
   // 딥링크 URL을 웹 URL로 변환
   const buildWebUrl = useCallback(
     (url: string): string => {
-      const baseUrl = process.env.EXPO_PUBLIC_WEB_URL;
+      const baseUrl = WEB_URL;
       if (!baseUrl) {
         throw new Error('EXPO_PUBLIC_WEB_URL is not set');
       }
