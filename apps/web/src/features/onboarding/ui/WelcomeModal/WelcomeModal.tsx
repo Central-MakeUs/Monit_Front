@@ -2,28 +2,19 @@
 
 import React from 'react';
 import { AlertDialog } from '@/shared/ui/alertDialog';
-import { useOnboardingStore } from '../model/onboardingStore';
 import { IcCheckCircle } from 'public/icons';
-import { useClientOnly } from '@/shared/hooks/useClientOnly';
+import { useWelcomeModal } from '../../lib/useWelcomeModal';
 
 export const WelcomeModal = () => {
-  const { flow, startTour } = useOnboardingStore();
-  const isMounted = useClientOnly();
+  const { isOpen, isMounted, handleClose, handleConfirm } = useWelcomeModal();
 
   if (!isMounted) return <div />;
 
-  const handleClose = () => {
-    const currentFlow = useOnboardingStore.getState().flow;
-    if (currentFlow !== 'tour') {
-      startTour();
-    }
-  };
-
   return (
     <AlertDialog
-      isOpen={flow === 'welcome'}
+      isOpen={isOpen}
       onClose={handleClose}
-      onConfirm={startTour}
+      onConfirm={handleConfirm}
       variant='center'
       title='모닛에 오신걸 환영해요'
       description={`지출을 기록하며\n나에게 맞는 소비 균형을 찾아볼까요?`}

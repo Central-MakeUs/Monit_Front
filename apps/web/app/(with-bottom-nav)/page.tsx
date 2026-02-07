@@ -8,6 +8,8 @@ export default function HomePage(): React.JSX.Element {
   return (
     <>
       <Home />
+
+      {/* 온보딩 전용 컴포넌트 */}
       <WelcomeModal />
       <OnboardingTour />
     </>

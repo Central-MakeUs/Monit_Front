@@ -1,25 +1,11 @@
-import { keyframes, style } from '@vanilla-extract/css';
+import { keyframes } from '@vanilla-extract/css';
 import { recipe } from '@vanilla-extract/recipes';
 import { vars } from '@/shared/ui/theme.css';
-
-export const zIndex = {
-  overlay: 1000,
-  highlight: 1001,
-  tooltip: 1002,
-};
+import { zIndex } from '../../config/zIndex';
 
 const fadeIn = keyframes({
   '0%': { opacity: 0 },
   '100%': { opacity: 1 },
-});
-
-export const overlay = style({
-  position: 'fixed',
-  inset: 0,
-  background: 'transparent',
-  zIndex: zIndex.overlay,
-  cursor: 'pointer',
-  pointerEvents: 'auto',
 });
 
 export const highlightBox = recipe({
@@ -42,11 +28,4 @@ export const highlightBox = recipe({
   defaultVariants: {
     glow: true,
   },
-});
-
-export const tooltipPositioner = style({
-  position: 'fixed',
-  zIndex: zIndex.tooltip,
-  animation: `${fadeIn} 0.3s ease-out forwards`,
-  pointerEvents: 'none',
 });

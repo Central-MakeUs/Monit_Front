@@ -47,8 +47,6 @@ export const useOnboardingStore = create<OnboardingState>()(
         set({ flow: 'none', isOnboardingCompleted: true });
         // TODO: 여기서 서버에 PATCH /users/me/onboarding 호출 (body: { onboardingCompleted: true })
       },
-
-      resetOnboarding: () => set({ flow: 'welcome', step: 0, isOnboardingCompleted: false }),
     }),
     {
       name: 'onboarding/status',
