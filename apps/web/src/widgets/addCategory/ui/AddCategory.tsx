@@ -182,7 +182,7 @@ export const AddCategory = () => {
           onClose={closeBottomSheet}
         />
       </BottomSheet>
-      <BottomFixedArea zIndex={-1}>
+      <BottomFixedArea zIndex={1}>
         <Button variant='primary' disabled={!isValid || isPending} size='lg' onClick={handleSubmit}>
           {isEditMode ? '수정하기' : '추가하기'}
         </Button>

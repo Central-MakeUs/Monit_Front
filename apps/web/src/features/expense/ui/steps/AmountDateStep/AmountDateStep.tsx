@@ -97,7 +97,7 @@ export const AmountDateStep = ({ onNext, defaultAmount, defaultDate }: AmountDat
         />
       </BottomSheet>
 
-      <BottomFixedArea zIndex={-1}>
+      <BottomFixedArea zIndex={1}>
         <Button variant='primary' onClick={handleNext} disabled={!isValid} size='lg'>
           다음
         </Button>
