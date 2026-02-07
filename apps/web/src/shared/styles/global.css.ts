@@ -21,8 +21,8 @@ globalStyle('a', {
 
 globalStyle('body', {
   width: '100%',
-  maxWidth: '430px',
-  minWidth: '320px',
+  maxWidth: '43rem',
+  minWidth: '32rem',
   minHeight: '100dvh',
   margin: '0 auto',
   background: '#F6F7F9',
