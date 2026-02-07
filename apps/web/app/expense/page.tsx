@@ -1,14 +1,11 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { ExpenseRecordFunnel } from '@/widgets/expenseRecordFunnel';
+import { useClientOnly } from '@/shared/hooks/useClientOnly';
 
 export default function ExpensePage(): React.ReactElement | null {
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  const isMounted = useClientOnly();
 
   if (!isMounted) return null;
 
