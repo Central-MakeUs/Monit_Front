@@ -29,6 +29,8 @@ interface OnboardingSliderProps {
   onLastSlide?: () => void;
 }
 
+export type { OnboardingSliderProps };
+
 export const OnboardingSlider = ({ onLastSlide }: OnboardingSliderProps) => {
   const [currentPage, setCurrentPage] = useState(0);
   const touchStartX = useRef(0);
