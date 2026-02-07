@@ -3,6 +3,9 @@ import { useAuthStore } from '@/shared/stores/authStore';
 import { API_BASE_URL, API_TIMEOUT, API_RETRY_LIMIT, API_RETRY_BACKOFF_LIMIT } from './constants';
 import { ENDPOINT } from './endpoint';
 import type { ApiResponse } from './types';
+import type { components } from './schema';
+
+type TokenReissueResult = components['schemas']['TokenReissueResultDTO'];
 
 /**
  * 인증이 필요 없는 기본 API 클라이언트
@@ -73,7 +76,7 @@ export const authenticatedApiClient = apiClient.extend({
               .post(ENDPOINT.AUTH.REISSUE, {
                 credentials: 'include',
               })
-              .json<ApiResponse<{ accessToken: string }>>();
+              .json<ApiResponse<TokenReissueResult>>();
 
             if (tokenResponse.result?.accessToken) {
               // 새로운 Access Token을 스토어에 저장
