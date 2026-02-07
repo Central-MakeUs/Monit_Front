@@ -20,5 +20,15 @@ globalStyle('a', {
 });
 
 globalStyle('body', {
+  width: '100%',
+  maxWidth: '43rem',
+  minWidth: '32rem',
+  minHeight: '100dvh',
+  margin: '0 auto',
   background: '#F6F7F9',
+  '@media': {
+    '(min-width: 431px)': {
+      boxShadow: '0 0 16px rgba(0,0,0,0.2)',
+    },
+  },
 });

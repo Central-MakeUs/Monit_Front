@@ -1,7 +1,7 @@
 import React, { PropsWithChildren, HTMLAttributes } from 'react';
 import * as styles from './Text.css';
 
-type TypographyVariant =
+export type TypographyVariant =
   | 't5'
   | 't4'
   | 't3'

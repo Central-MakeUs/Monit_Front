@@ -1,6 +1,10 @@
 import { AddCategory } from '@/widgets/addCategory';
-import React from 'react';
+import React, { Suspense } from 'react';
 
 export default function CategoryPage() {
-  return <AddCategory />;
+  return (
+    <Suspense>
+      <AddCategory />
+    </Suspense>
+  );
 }

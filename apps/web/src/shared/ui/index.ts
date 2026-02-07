@@ -62,3 +62,6 @@ export { DateLabel } from './dateLabel';
 export { RatingBtn } from './ratingBtn';
 
 export { Divider } from './divider';
+
+export { Tooltip } from './tooltip/Tooltip';
+export type { TooltipProps } from './tooltip/Tooltip';

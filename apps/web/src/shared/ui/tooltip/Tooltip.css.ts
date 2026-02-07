@@ -45,3 +45,41 @@ export const arrowContainerVariants = styleVariants({
 export const arrowFlipped = style({
   transform: 'scaleY(-1)',
 });
+
+const wrapperHorizontalBase = style({
+  display: 'inline-flex',
+  flexDirection: 'row',
+  alignItems: 'center',
+  filter:
+    'drop-shadow(0px 2px 8px rgba(0, 0, 0, 0.04)) drop-shadow(0px 0px 2px rgba(0, 0, 0, 0.05))',
+});
+
+export const wrapperHorizontalVariants = styleVariants({
+  top: [wrapperHorizontalBase, { alignItems: 'flex-start' }],
+  center: [wrapperHorizontalBase, { alignItems: 'center' }],
+  bottom: [wrapperHorizontalBase, { alignItems: 'flex-end' }],
+});
+
+const arrowContainerHorizontalBase = style({
+  display: 'flex',
+  flexShrink: 0,
+});
+
+export const arrowContainerHorizontalVariants = styleVariants({
+  left: [arrowContainerHorizontalBase, { marginRight: '-3px' }],
+  right: [arrowContainerHorizontalBase, { marginLeft: '-3px' }],
+});
+
+export const arrowVerticalPosition = styleVariants({
+  top: { alignSelf: 'flex-start', paddingTop: '8px' },
+  center: { alignSelf: 'center' },
+  bottom: { alignSelf: 'flex-end', paddingBottom: '8px' },
+});
+
+export const arrowRotateLeft = style({
+  transform: 'rotate(90deg)',
+});
+
+export const arrowRotateRight = style({
+  transform: 'rotate(-90deg)',
+});

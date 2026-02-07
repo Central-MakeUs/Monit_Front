@@ -92,6 +92,7 @@ export const description = style({
   ...typography.body.b3,
   color: vars.color.text.secondary,
   margin: 0,
+  whiteSpace: 'pre-line',
 });
 
 export const buttonGroup = styleVariants({
