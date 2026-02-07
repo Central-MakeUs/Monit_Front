@@ -32,3 +32,8 @@ export const buttonContent = style({
   alignItems: 'center',
   gap: vars.spacing.xs,
 });
+
+export const buttonWrapper = style({
+  width: '100%',
+  maxWidth: '11.6rem',
+});
