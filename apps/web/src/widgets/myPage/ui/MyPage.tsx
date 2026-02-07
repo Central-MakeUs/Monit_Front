@@ -1,6 +1,7 @@
 'use client';
 
 import { MenuItem, MenuLabel } from '@/features/my';
+import { EXTERNAL_URLS } from '@/shared/constants/urls';
 import { TopBar, vars, Text, Divider, AlertDialog, useToast } from '@/shared/ui';
 import { IcLeftChevron } from 'public/icons';
 import React from 'react';
@@ -59,19 +60,12 @@ export const MyPage = () => {
         <MenuItem
           type='arrow'
           label='서비스 이용약관'
-          onClick={() =>
-            window.open('https://www.notion.so/1-0-2e214c814b498037a7f1d4905a2aa4ce', '_blank')
-          }
+          onClick={() => window.open(EXTERNAL_URLS.TERMS_OF_SERVICE, '_blank')}
         />
         <MenuItem
           type='arrow'
           label='개인정보 수집 및 이용 동의'
-          onClick={() =>
-            window.open(
-              'https://wise-sunspot-cba.notion.site/1-0-2e214c814b4980358041edd610580fca',
-              '_blank'
-            )
-          }
+          onClick={() => window.open(EXTERNAL_URLS.PRIVACY_POLICY, '_blank')}
         />
         <MenuItem type='toggle' label='알림 설정 허용' />
         <div className={styles.dividerWrapper}>
