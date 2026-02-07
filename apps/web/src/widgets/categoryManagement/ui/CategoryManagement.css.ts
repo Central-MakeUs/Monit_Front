@@ -1,5 +1,14 @@
 import { spacing } from '@/shared/ui/theme.css';
-import { style } from '@vanilla-extract/css';
+import { style, styleVariants } from '@vanilla-extract/css';
+
+const sortableItemBase = style({
+  position: 'relative',
+});
+
+export const sortableItem = styleVariants({
+  default: [sortableItemBase, { zIndex: 'auto', opacity: 1 }],
+  dragging: [sortableItemBase, { zIndex: 1000, opacity: 0.5 }],
+});
 
 export const categoryGrid = style({
   marginTop: '2.25rem',

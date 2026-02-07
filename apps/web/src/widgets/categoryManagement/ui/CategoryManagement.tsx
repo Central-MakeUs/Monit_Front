@@ -38,16 +38,18 @@ const SortableCategoryItem = ({
     id: category.id,
   });
 
-  const style = {
+  const inlineStyle = {
     transform: CSS.Transform.toString(transform),
     transition,
-    zIndex: isDragging ? 1000 : 'auto',
-    opacity: isDragging ? 0.5 : 1,
-    position: 'relative' as const,
   };
 
   return (
-    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+    <div
+      ref={setNodeRef}
+      className={isDragging ? styles.sortableItem.dragging : styles.sortableItem.default}
+      style={inlineStyle}
+      {...attributes}
+      {...listeners}>
       <CategoryBtn
         icon={category.icon ?? 'coin'}
         label={category.name}
