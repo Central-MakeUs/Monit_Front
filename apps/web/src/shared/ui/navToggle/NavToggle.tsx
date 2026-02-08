@@ -8,7 +8,7 @@ import { Text } from '../text';
 
 export type NavToggleOption = 'home' | 'report';
 
-export interface NavToggleProps {
+export interface NavToggleProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange'> {
   value?: NavToggleOption;
   defaultValue?: NavToggleOption;
   onChange?: (value: NavToggleOption) => void;
@@ -18,6 +18,8 @@ export const NavToggle = ({
   value: controlledValue,
   defaultValue = 'home',
   onChange,
+  className,
+  ...props
 }: NavToggleProps) => {
   const [uncontrolledValue, setUncontrolledValue] = useState<NavToggleOption>(defaultValue);
 
@@ -44,7 +46,11 @@ export const NavToggle = ({
   };
 
   return (
-    <div className={styles.container} role='tablist' aria-label='nav-toggle'>
+    <div
+      className={`${styles.container} ${className || ''}`}
+      role='tablist'
+      aria-label='nav-toggle'
+      {...props}>
       <div ref={containerRef} className={styles.itemsRow} style={indicatorStyle}>
         <div className={styles.indicator} aria-hidden />
 

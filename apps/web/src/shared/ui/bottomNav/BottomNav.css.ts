@@ -9,12 +9,12 @@ export const container = style({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  padding: `${vars.spacing.md} 0`,
+  padding: `${vars.spacing.md} ${vars.spacing.xl}`,
   backgroundColor: 'transparent',
   zIndex: 100,
 });
 
 export const plusButtonWrapper = style({
   position: 'absolute',
-  right: 0,
+  right: vars.spacing.xl,
 });

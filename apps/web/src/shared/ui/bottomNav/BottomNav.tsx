@@ -20,9 +20,14 @@ export const BottomNav = ({
 }: BottomNavProps) => {
   return (
     <nav className={styles.container} aria-label='bottom-navigation'>
-      <NavToggle value={activeTab} defaultValue={defaultTab} onChange={onTabChange} />
+      <NavToggle
+        value={activeTab}
+        defaultValue={defaultTab}
+        onChange={onTabChange}
+        data-onboarding-id='nav-toggle'
+      />
       <div className={styles.plusButtonWrapper}>
-        <PlusBtn onClick={onPlusClick} />
+        <PlusBtn onClick={onPlusClick} data-onboarding-id='plus-btn' />
       </div>
     </nav>
   );
