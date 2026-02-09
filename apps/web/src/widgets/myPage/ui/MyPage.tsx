@@ -49,11 +49,12 @@ export const MyPage = () => {
       />
       <div className={styles.container}>
         {/* 서비스 */}
-        <MenuLabel label='서비스' />
+        {/* TODO: 카테고리 관리 페이지 만들면 주석 해제 */}
+        {/* <MenuLabel label='서비스' />
         <MenuItem type='arrow' label='카테고리 관리' onClick={() => router.push('/my/category')} />
         <div className={styles.dividerWrapper}>
           <Divider />
-        </div>
+        </div> */}
 
         {/* 약관 */}
         <MenuLabel label='약관' />
