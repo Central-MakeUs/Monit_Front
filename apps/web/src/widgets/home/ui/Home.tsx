@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useRouter } from 'next/navigation';
 import { DatePickerFeature } from '@/features/datePickerModal';
 import { useClientOnly } from '@/shared/hooks';
 import { useHomeStore } from '../model/useHomeStore';
@@ -11,6 +12,7 @@ import { ExpenseContent } from './ExpenseContent';
 import * as styles from './Home.css';
 
 export const Home = () => {
+  const router = useRouter();
   const isMounted = useClientOnly();
 
   const currentDate = useHomeStore((state) => state.currentDate);
@@ -34,7 +36,13 @@ export const Home = () => {
   return (
     <div className={styles.container}>
       <DatePickerFeature currentDate={currentDate} onDateConfirm={setDateFromPicker}>
-        {({ onOpen }) => <HomeHeader currentDate={currentDate} onDateButtonClick={onOpen} />}
+        {({ onOpen }) => (
+          <HomeHeader
+            currentDate={currentDate}
+            onDateButtonClick={onOpen}
+            onSettingsClick={() => router.push('/my')}
+          />
+        )}
       </DatePickerFeature>
 
       <div className={styles.content}>

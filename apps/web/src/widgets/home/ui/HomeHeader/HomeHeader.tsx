@@ -1,23 +1,25 @@
 'use client';
 
 import React from 'react';
+import { koFormatter } from '@/shared/ui/datePicker/config/formatters';
 import { TopBar } from '@/shared/ui/topBar';
 import { Text } from '@/shared/ui/text';
-import IcBell from 'public/icons/ic-bell.svg';
-import IcMenu from 'public/icons/ic-menu.svg';
-import IcChevron from 'public/icons/ic-right-chevron.svg';
+import { IcRightChevron, IcSetting } from 'public/icons';
 import * as styles from './HomeHeader.css';
 
 export interface HomeHeaderProps {
   currentDate: Date;
   onDateButtonClick: () => void;
+  onSettingsClick: () => void;
 }
 
-export const HomeHeader = ({ currentDate, onDateButtonClick }: HomeHeaderProps) => {
+export const HomeHeader = ({
+  currentDate,
+  onDateButtonClick,
+  onSettingsClick,
+}: HomeHeaderProps): React.JSX.Element => {
   const formatDateHeader = (date: Date) => {
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1;
-    return `${year}년 ${month}월`;
+    return `${koFormatter.year(date.getFullYear())} ${koFormatter.month(date.getMonth() + 1)}`;
   };
 
   return (
@@ -32,18 +34,22 @@ export const HomeHeader = ({ currentDate, onDateButtonClick }: HomeHeaderProps) 
             {formatDateHeader(currentDate)}
           </Text>
           <div className={styles.dropdownIcon}>
-            <IcChevron />
+            <IcRightChevron />
           </div>
         </button>
       }
       right={
         <div className={styles.headerActions}>
-          <button className={styles.iconButton} aria-label='알림'>
-            <IcBell className={`${styles.alarmIc} ${styles.icon}`} />
+          <button className={styles.iconButton} aria-label='설정' onClick={onSettingsClick}>
+            <IcSetting className={styles.settingIc} />
+          </button>
+          {/* 1차 배포에선 사용하지 않음 */}
+          {/* <button className={styles.iconButton} aria-label='알림'>
+            <IcBell className={styles.alarmIc} />
           </button>
           <button className={styles.iconButton} aria-label='메뉴'>
-            <IcMenu className={`${styles.menuIc} ${styles.icon}`} />
-          </button>
+            <IcMenu className={styles.menuIc} />
+          </button> */}
         </div>
       }
     />

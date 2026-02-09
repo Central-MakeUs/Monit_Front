@@ -31,3 +31,4 @@ export { default as IcGrayNormal } from './ic-gray-normal.svg';
 export { default as IcGrayDisappointed } from './ic-gray-disappointed.svg';
 export { default as IcGrayVeryDisappointed } from './ic-gray-very-disappointed.svg';
 export { default as IcBadge } from './ic-badge.svg';
+export { default as IcSetting } from './ic-setting.svg';
