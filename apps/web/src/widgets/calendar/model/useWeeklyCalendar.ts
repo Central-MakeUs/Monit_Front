@@ -1,7 +1,13 @@
 'use client';
 
 import { useMemo, useState, useEffect } from 'react';
-import { generateWeeklyDates, addDays, subDays, isCurrentWeek } from '@/shared/lib/calendar';
+import {
+  generateWeeklyDates,
+  addDays,
+  subDays,
+  isCurrentWeek,
+  isAfterToday,
+} from '@/shared/lib/calendar';
 import { useWeeklyCarousel } from '@/features/calendarCarousel';
 
 interface UseWeeklyCalendarProps {
@@ -21,6 +27,16 @@ export const useWeeklyCalendar = ({
   const [internalSelectedDate, setInternalSelectedDate] = useState<Date | null>(null);
 
   const effectiveSelectedDate = selectedDate !== undefined ? selectedDate : internalSelectedDate;
+
+  // 공통 함수: 미래 날짜면 오늘로 강제 변경
+  const ensureNotFutureDate = (date: Date): Date => {
+    if (isAfterToday(date)) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      return today;
+    }
+    return date;
+  };
 
   // currentDate prop이 변경되면 internalCurrentDate 업데이트
   // 월이 변경된 경우 selectedDate가 포함된 주로 이동
@@ -43,8 +59,20 @@ export const useWeeklyCalendar = ({
   }, [internalCurrentDate]);
 
   const handleDateSelect = (date: Date) => {
-    setInternalSelectedDate(date);
-    onDateSelect?.(date);
+    // 미래 날짜면 오늘로 강제 변경
+    const validDate = ensureNotFutureDate(date);
+
+    // 선택한 날짜가 현재 표시 중인 달과 다르면 currentDate 업데이트
+    if (
+      validDate.getMonth() !== internalCurrentDate.getMonth() ||
+      validDate.getFullYear() !== internalCurrentDate.getFullYear()
+    ) {
+      setInternalCurrentDate(validDate);
+      onWeekChange?.(validDate);
+    }
+
+    setInternalSelectedDate(validDate);
+    onDateSelect?.(validDate);
   };
 
   const handlePrevWeek = () => {
@@ -52,10 +80,13 @@ export const useWeeklyCalendar = ({
     setInternalCurrentDate(newDate);
     onWeekChange?.(newDate);
 
+    // 선택된 날짜가 있을 때만 자동으로 이전 주 같은 요일 선택
     if (effectiveSelectedDate) {
       const newSelectedDate = subDays(effectiveSelectedDate, 7);
-      setInternalSelectedDate(newSelectedDate);
-      onDateSelect?.(newSelectedDate);
+      // 미래 날짜면 오늘로 강제 변경
+      const validDate = ensureNotFutureDate(newSelectedDate);
+      setInternalSelectedDate(validDate);
+      onDateSelect?.(validDate);
     }
   };
 
@@ -68,10 +99,13 @@ export const useWeeklyCalendar = ({
     setInternalCurrentDate(newDate);
     onWeekChange?.(newDate);
 
+    // 선택된 날짜가 있을 때만 자동으로 다음 주 같은 요일 선택
     if (effectiveSelectedDate) {
       const newSelectedDate = addDays(effectiveSelectedDate, 7);
-      setInternalSelectedDate(newSelectedDate);
-      onDateSelect?.(newSelectedDate);
+      // 미래 날짜면 오늘로 강제 변경
+      const validDate = ensureNotFutureDate(newSelectedDate);
+      setInternalSelectedDate(validDate);
+      onDateSelect?.(validDate);
     }
   };
 

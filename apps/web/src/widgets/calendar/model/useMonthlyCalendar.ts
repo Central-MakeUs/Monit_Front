@@ -7,6 +7,7 @@ import {
   subMonths,
   formatYearMonth,
   isAfterCurrentMonth,
+  isAfterToday,
 } from '@/shared/lib/calendar';
 import { useMonthlyCarousel } from '@/features/calendarCarousel';
 
@@ -28,6 +29,16 @@ export const useMonthlyCalendar = ({
   const [internalCurrentDate, setInternalCurrentDate] = useState<Date>(currentDate);
   const [internalSelectedDate, setInternalSelectedDate] = useState<Date | null>(null);
 
+  // 공통 함수: 미래 날짜면 오늘로 강제 변경
+  const ensureNotFutureDate = (date: Date): Date => {
+    if (isAfterToday(date)) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      return today;
+    }
+    return date;
+  };
+
   // currentDate prop이 변경되면 internalCurrentDate 업데이트
   useEffect(() => {
     setInternalCurrentDate(currentDate);
@@ -40,22 +51,32 @@ export const useMonthlyCalendar = ({
   }, [internalCurrentDate]);
 
   const handleDateSelect = (date: Date) => {
+    // 미래 날짜면 오늘로 강제 변경
+    const validDate = ensureNotFutureDate(date);
+
     if (
-      date.getMonth() !== internalCurrentDate.getMonth() ||
-      date.getFullYear() !== internalCurrentDate.getFullYear()
+      validDate.getMonth() !== internalCurrentDate.getMonth() ||
+      validDate.getFullYear() !== internalCurrentDate.getFullYear()
     ) {
-      setInternalCurrentDate(date);
-      onMonthChange?.(date);
+      setInternalCurrentDate(validDate);
+      onMonthChange?.(validDate);
     }
 
-    setInternalSelectedDate(date);
-    onDateSelect?.(date);
+    setInternalSelectedDate(validDate);
+    onDateSelect?.(validDate);
   };
 
   const handlePrevMonth = () => {
     const newDate = subMonths(internalCurrentDate, 1);
     setInternalCurrentDate(newDate);
     onMonthChange?.(newDate);
+
+    // 선택된 날짜가 미래라면 오늘로 재설정
+    if (effectiveSelectedDate) {
+      const validDate = ensureNotFutureDate(effectiveSelectedDate);
+      setInternalSelectedDate(validDate);
+      onDateSelect?.(validDate);
+    }
   };
 
   const handleNextMonth = () => {
@@ -66,6 +87,13 @@ export const useMonthlyCalendar = ({
     }
     setInternalCurrentDate(newDate);
     onMonthChange?.(newDate);
+
+    // 선택된 날짜가 미래라면 오늘로 재설정
+    if (effectiveSelectedDate) {
+      const validDate = ensureNotFutureDate(effectiveSelectedDate);
+      setInternalSelectedDate(validDate);
+      onDateSelect?.(validDate);
+    }
   };
 
   const formattedMonth = formatYearMonth(internalCurrentDate);
