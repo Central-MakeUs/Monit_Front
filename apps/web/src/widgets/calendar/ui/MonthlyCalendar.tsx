@@ -80,6 +80,7 @@ export const MonthlyCalendar = ({
           showText={shouldShowText}
           renderDateText={renderDateText}
           onDateSelect={handleDateSelect}
+          hideOutsideMonth={true}
         />
       )}
     </>

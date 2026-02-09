@@ -6,16 +6,9 @@
  */
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { BaseBottomSheetTemplate, Button } from '@/shared/ui';
-import { CalendarHeader, CalendarGrid } from '@/shared/ui/calendar';
-import {
-  generateCalendarDates,
-  addMonths,
-  subMonths,
-  formatYearMonth,
-  isAfterCurrentMonth,
-} from '@/shared/lib/calendar';
+import { MonthlyCalendar } from '@/widgets/calendar';
 
 interface CalendarBottomSheetTemplateProps {
   selectedDate?: Date;
@@ -33,24 +26,12 @@ export const CalendarBottomSheetTemplate = ({
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(initialDate);
   const [currentDate, setCurrentDate] = useState<Date>(initialDate || new Date());
 
-  const dates = useMemo(() => {
-    return generateCalendarDates(currentDate);
-  }, [currentDate]);
-
   const handleDateSelect = (date: Date) => {
     setSelectedDate(date);
     onSelectDate?.(date);
   };
 
-  const handlePrevMonth = () => {
-    setCurrentDate(subMonths(currentDate, 1));
-  };
-
-  const handleNextMonth = () => {
-    const newDate = addMonths(currentDate, 1);
-    if (isAfterCurrentMonth(newDate)) {
-      return;
-    }
+  const handleMonthChange = (newDate: Date) => {
     setCurrentDate(newDate);
   };
 
@@ -60,24 +41,17 @@ export const CalendarBottomSheetTemplate = ({
     }
   };
 
-  const formattedMonth = formatYearMonth(currentDate);
-  const isNextMonthDisabled = isAfterCurrentMonth(addMonths(currentDate, 1));
-
   return (
     <BaseBottomSheetTemplate>
       <BaseBottomSheetTemplate.Header type='close' text='소비일 수정' onClose={onClose} />
       <div>
-        <CalendarHeader
-          formattedMonth={formattedMonth}
-          onPrevMonth={handlePrevMonth}
-          onNextMonth={handleNextMonth}
-          hideNextButton={isNextMonthDisabled}
-        />
-        <CalendarGrid
-          dates={dates}
-          selectedDate={selectedDate || null}
-          size='md'
+        <MonthlyCalendar
+          currentDate={currentDate}
+          selectedDate={selectedDate}
+          variant='modal'
+          showText={false}
           onDateSelect={handleDateSelect}
+          onMonthChange={handleMonthChange}
         />
       </div>
       <Button variant='brand' onClick={handleConfirm} disabled={!selectedDate}>
