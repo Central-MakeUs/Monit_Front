@@ -33,3 +33,7 @@ export const charCount = style({
 export const charCountActive = style({
   color: vars.color.text.primary,
 });
+
+export const charCountLimit = style({
+  color: vars.color.text.status.danger,
+});

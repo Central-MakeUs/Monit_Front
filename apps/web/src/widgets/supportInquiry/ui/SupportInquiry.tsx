@@ -45,10 +45,11 @@ export const SupportInquiry = () => {
           <InputField label={'답변받을 이메일'} labelVariant='b2'>
             <TextInput
               placeholder='답변받을 이메일 주소를 입력해주세요'
+              inputMode='email'
               value={email}
               onValueChange={setEmail}
               error={isEmailError}
-              errorMessage={isEmailError ? '이메일 형식이 올바르지 않아요' : undefined}
+              errorMessage={isEmailError ? '이메일 형식이 올바르지 않아요.' : undefined}
             />
           </InputField>
           <div className={styles.textAreaWrapper}>
