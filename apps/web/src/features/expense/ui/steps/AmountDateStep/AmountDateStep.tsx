@@ -70,7 +70,7 @@ export const AmountDateStep = ({ onNext, defaultAmount, defaultDate }: AmountDat
     }
   };
 
-  const errorMessage = showError ? '소비금액을 입력해주세요' : undefined;
+  const errorMessage = showError ? '소비금액을 입력해주세요.' : undefined;
 
   return (
     <>
