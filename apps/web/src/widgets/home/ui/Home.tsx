@@ -1,33 +1,45 @@
 'use client';
 
 import React from 'react';
-import { useRouter } from 'next/navigation';
+import { useShallow } from 'zustand/react/shallow';
 import { DatePickerFeature } from '@/features/datePickerModal';
 import { useClientOnly } from '@/shared/hooks';
 import { useHomeStore } from '../model/useHomeStore';
+import { HOME_MOCK_DATA } from '../model/mock';
 import { HomeHeader } from './HomeHeader';
 import { MonthlyExpenseInfo } from './MonthlyExpenseInfo';
 import { CalendarSection } from './CalendarSection';
 import { ExpenseContent } from './ExpenseContent';
 import * as styles from './Home.css';
 
-export const Home = () => {
-  const router = useRouter();
+export interface HomeProps {
+  onSettingsClick: () => void;
+}
+
+export const Home = ({ onSettingsClick }: HomeProps) => {
   const isMounted = useClientOnly();
 
-  const currentDate = useHomeStore((state) => state.currentDate);
-  const selectedDate = useHomeStore((state) => state.selectedDate);
-  const viewMode = useHomeStore((state) => state.viewMode);
-  const setCurrentDate = useHomeStore((state) => state.setCurrentDate);
-  const setSelectedDate = useHomeStore((state) => state.setSelectedDate);
-  const setViewMode = useHomeStore((state) => state.setViewMode);
-  const setDateFromPicker = useHomeStore((state) => state.setDateFromPicker);
+  const {
+    currentDate,
+    selectedDate,
+    viewMode,
+    setCurrentDate,
+    setSelectedDate,
+    setViewMode,
+    setDateFromPicker,
+  } = useHomeStore(
+    useShallow((state) => ({
+      currentDate: state.currentDate,
+      selectedDate: state.selectedDate,
+      viewMode: state.viewMode,
+      setCurrentDate: state.setCurrentDate,
+      setSelectedDate: state.setSelectedDate,
+      setViewMode: state.setViewMode,
+      setDateFromPicker: state.setDateFromPicker,
+    }))
+  );
 
-  // TODO: API 연동 후 실제 데이터로 교체
-  const hasExpenses = false;
-  const emptyStateType = 'date';
-  const expenseCount = 0;
-  const totalExpenseAmount = 0;
+  const { hasExpenses, emptyStateType, expenseCount, totalExpenseAmount } = HOME_MOCK_DATA;
 
   if (!isMounted) {
     return null;
@@ -40,7 +52,7 @@ export const Home = () => {
           <HomeHeader
             currentDate={currentDate}
             onDateButtonClick={onOpen}
-            onSettingsClick={() => router.push('/my')}
+            onSettingsClick={onSettingsClick}
           />
         )}
       </DatePickerFeature>
