@@ -3,6 +3,7 @@ export {
   CategoryBottomSheetTemplate,
   DatePickerBottomSheetTemplate,
   IconPickerBottomSheetTemplate,
+  AmountInput,
 } from './ui';
 
 export type {
