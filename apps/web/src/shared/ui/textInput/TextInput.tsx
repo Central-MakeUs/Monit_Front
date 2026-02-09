@@ -151,7 +151,9 @@ export const TextInput = React.forwardRef<HTMLInputElement, TextInputProps>(
 
     return (
       <div className={styles.textInputContainer}>
-        <div className={styles.inputFieldVariants[fieldState]}>
+        <div
+          className={styles.inputFieldVariants[fieldState]}
+          onClick={() => inputRef.current?.focus()}>
           <div className={styles.inputWrapper}>
             <input
               {...restProps}
