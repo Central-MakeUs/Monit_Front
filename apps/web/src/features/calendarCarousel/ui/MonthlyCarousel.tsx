@@ -79,6 +79,7 @@ export const MonthlyCarousel = ({
             showText={showText}
             renderDateText={renderDateText}
             onDateSelect={onDateSelect}
+            hideOutsideMonth={true}
           />
         </div>
 
@@ -90,6 +91,7 @@ export const MonthlyCarousel = ({
             showText={showText}
             renderDateText={renderDateText}
             onDateSelect={onDateSelect}
+            hideOutsideMonth={true}
           />
         </div>
 
@@ -101,6 +103,7 @@ export const MonthlyCarousel = ({
             showText={showText}
             renderDateText={renderDateText}
             onDateSelect={onDateSelect}
+            hideOutsideMonth={true}
           />
         </div>
       </div>
