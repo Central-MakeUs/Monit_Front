@@ -4,14 +4,19 @@
  * FSD: features layer
  */
 
-import { style } from '@vanilla-extract/css';
+import { style, createVar } from '@vanilla-extract/css';
 
 // ==================== Monthly Carousel ====================
+
+export const containerHeightVar = createVar();
+export const heightTransitionVar = createVar();
 
 export const monthlyCarouselContainer = style({
   width: '100%',
   overflow: 'hidden',
   position: 'relative',
+  height: containerHeightVar,
+  transition: heightTransitionVar,
 });
 
 export const monthlyCarouselTrack = style({
@@ -19,6 +24,7 @@ export const monthlyCarouselTrack = style({
   gap: 0,
   willChange: 'transform',
   backfaceVisibility: 'hidden',
+  alignItems: 'flex-start',
 });
 
 export const monthlyCarouselSlide = style({

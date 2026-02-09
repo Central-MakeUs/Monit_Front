@@ -36,6 +36,8 @@ export interface UseMonthlyCarouselReturn {
   handleTransitionEnd: () => void;
   getTransform: () => string;
   getTransition: () => string;
+  containerHeight: number;
+  shouldTransitionHeight: boolean;
 }
 
 export const useMonthlyCarousel = ({
@@ -50,6 +52,7 @@ export const useMonthlyCarousel = ({
   const [isDragging, setIsDragging] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [slideWidth, setSlideWidth] = useState(0);
+  const [containerHeight, setContainerHeight] = useState(0);
 
   const trackRef = useRef<HTMLDivElement>(null);
   const pendingActionRef = useRef<'left' | 'right' | null>(null);
@@ -67,29 +70,72 @@ export const useMonthlyCarousel = ({
     };
   }, [currentDate]);
 
-  // 클라이언트에서 실제 너비 측정
+  // 클라이언트에서 실제 너비와 높이 측정
   useEffect(() => {
-    const updateWidth = () => {
+    const updateDimensions = () => {
       if (trackRef.current) {
         const containerWidth = trackRef.current.parentElement?.offsetWidth || 0;
         setSlideWidth(containerWidth);
+
+        // 가운데 슬라이드(현재 보이는 슬라이드)의 높이 측정
+        const slides = trackRef.current.children;
+        if (slides.length >= 2) {
+          const currentSlide = slides[1] as HTMLElement; // 가운데 슬라이드 (index 1)
+          const slideHeight = currentSlide.offsetHeight;
+          setContainerHeight((prevHeight) => {
+            if (prevHeight !== slideHeight) {
+              return slideHeight;
+            }
+            return prevHeight;
+          });
+        }
       }
     };
 
-    updateWidth();
+    updateDimensions();
 
-    window.addEventListener('resize', updateWidth);
-    return () => window.removeEventListener('resize', updateWidth);
+    window.addEventListener('resize', updateDimensions);
+    return () => window.removeEventListener('resize', updateDimensions);
   }, []);
+
+  // currentMonth가 변경될 때마다 높이 재측정
+  useEffect(() => {
+    const updateHeight = () => {
+      if (trackRef.current) {
+        const slides = trackRef.current.children;
+        if (slides.length >= 2) {
+          const currentSlide = slides[1] as HTMLElement;
+          const slideHeight = currentSlide.offsetHeight;
+          // 높이가 실제로 변경된 경우에만 업데이트
+          setContainerHeight((prevHeight) => {
+            if (prevHeight !== slideHeight) {
+              return slideHeight;
+            }
+            return prevHeight;
+          });
+        }
+      }
+    };
+
+    // DOM 업데이트 후 높이 측정을 위해 약간의 지연
+    const timeoutId = setTimeout(updateHeight, 0);
+    return () => clearTimeout(timeoutId);
+  }, [currentMonth]);
 
   const handleTransitionEnd = () => {
     if (pendingActionRef.current && isTransitioning) {
+      const action = pendingActionRef.current;
+
       setIsTransitioning(false);
 
-      if (pendingActionRef.current === 'left') {
+      if (action === 'left') {
         setCurrentMonth(nextMonth);
+        // 전환 완료 후 콜백 호출
+        onSwipeLeft?.();
       } else {
         setCurrentMonth(prevMonth);
+        // 전환 완료 후 콜백 호출
+        onSwipeRight?.();
       }
 
       setDragOffset(0);
@@ -110,6 +156,11 @@ export const useMonthlyCarousel = ({
       }
     },
     onSwiped: (eventData) => {
+      // 전환 중이면 새로운 스와이프 무시
+      if (isTransitioning) {
+        return;
+      }
+
       const delta = eventData.deltaX;
       setIsDragging(false);
 
@@ -120,14 +171,12 @@ export const useMonthlyCarousel = ({
           setIsTransitioning(true);
           pendingActionRef.current = 'left';
           setDragOffset(-slideWidth);
-          // 스와이프 시작 시 즉시 콜백 호출
-          onSwipeLeft?.();
+          // 콜백은 handleTransitionEnd에서 호출
         } else if (delta > swipeThreshold) {
           setIsTransitioning(true);
           pendingActionRef.current = 'right';
           setDragOffset(slideWidth);
-          // 스와이프 시작 시 즉시 콜백 호출
-          onSwipeRight?.();
+          // 콜백은 handleTransitionEnd에서 호출
         } else {
           setDragOffset(0);
         }
@@ -160,5 +209,7 @@ export const useMonthlyCarousel = ({
     handleTransitionEnd,
     getTransform,
     getTransition,
+    containerHeight,
+    shouldTransitionHeight: !isDragging && !isTransitioning,
   };
 };

@@ -69,6 +69,8 @@ export const MonthlyCalendar = ({
           transform={carousel.getTransform()}
           transition={carousel.getTransition()}
           onTransitionEnd={carousel.handleTransitionEnd}
+          containerHeight={carousel.containerHeight}
+          shouldTransitionHeight={carousel.shouldTransitionHeight}
         />
       ) : (
         <CalendarGrid
