@@ -44,7 +44,7 @@ export const SatisfactionStep = ({
           마음 하나를 선택해 주세요
         </Text>
         <Text variant='b3' color={vars.color.text.secondary}>
-          정답은 없어요. 마음 가는 대로 선택해 주세요
+          정답은 없어요, 마음 가는 대로 선택해 주세요.
         </Text>
       </div>
       <EmotionSelector defaultIndex={selectedIndex} onChange={handleChange} />
