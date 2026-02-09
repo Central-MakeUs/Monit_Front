@@ -1,10 +1,21 @@
 'use client';
 
-import { TopBar, Text, vars, Button, InputField, TextInput, TextArea, useToast } from '@/shared/ui';
+import {
+  TopBar,
+  Text,
+  vars,
+  Button,
+  InputField,
+  TextInput,
+  TextArea,
+  useToast,
+  AlertDialog,
+} from '@/shared/ui';
 import { IcLeftChevron } from 'public/icons';
 import React, { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import * as styles from './SupportInquiry.css';
+import { useModal } from '@/shared/hooks';
 
 export const SupportInquiry = () => {
   const router = useRouter();
@@ -12,6 +23,7 @@ export const SupportInquiry = () => {
   const [email, setEmail] = useState('');
   const [content, setContent] = useState('');
   const [isPending, startTransition] = useTransition();
+  const { isOpen, openModal, closeModal } = useModal();
 
   const isValidEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -30,13 +42,21 @@ export const SupportInquiry = () => {
     });
   };
 
+  const handleBackBtn = () => {
+    if (email || content) {
+      openModal();
+    } else {
+      router.back();
+    }
+  };
+
   return (
     <>
       <TopBar
-        left={<IcLeftChevron onClick={() => router.back()} />}
+        left={<IcLeftChevron onClick={handleBackBtn} />}
         center={
           <Text variant='t1' color={vars.color.text.primary}>
-            {'1:1 문의'}
+            1:1 문의
           </Text>
         }
       />
@@ -67,6 +87,16 @@ export const SupportInquiry = () => {
         <Button disabled={!isValid || isPending} onClick={handleSubmit}>
           등록하기
         </Button>
+        <AlertDialog
+          isOpen={isOpen}
+          onClose={closeModal}
+          variant='left'
+          title='작성 중인 문의에서 나가시겠어요?'
+          description='지금 나가면 작성한 내용이 저장되지 않아요.'
+          cancelText='나가기'
+          confirmText='작성 계속하기'
+          onCancel={() => router.back()}
+        />
       </div>
     </>
   );
