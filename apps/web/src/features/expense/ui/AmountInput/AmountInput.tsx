@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { InputField, TextInput } from '@/shared/ui';
 import { formatNumberWithComma } from '@/shared/utils';
-import { EXPENSE_CONSTANTS, EXPENSE_ERROR_MESSAGES } from '../../config/constants';
+import { EXPENSE_CONSTANTS, EXPENSE_ERROR_MESSAGES } from '@/entities/expense';
 
 export interface AmountInputProps {
   value: string;
