@@ -48,7 +48,7 @@ export const SupportInquiry = () => {
               value={email}
               onValueChange={setEmail}
               error={isEmailError}
-              errorMessage={isEmailError ? '이메일 형식이 올바르지 않아요' : undefined}
+              errorMessage={isEmailError ? '이메일 형식이 올바르지 않아요.' : undefined}
             />
           </InputField>
           <div className={styles.textAreaWrapper}>
