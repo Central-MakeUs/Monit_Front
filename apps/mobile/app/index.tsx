@@ -5,12 +5,9 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import * as SystemUI from 'expo-system-ui';
 import type WebViewType from 'react-native-webview';
 import * as SplashScreen from 'expo-splash-screen';
+import { WEBVIEW_URL } from '@/shared/constants/url';
 
 const BACKGROUND_COLOR = '#F6F7F9';
-
-const WEB_URL = __DEV__
-  ? process.env.EXPO_PUBLIC_DEV_WEB_URL
-  : process.env.EXPO_PUBLIC_PROD_WEB_URL;
 
 SplashScreen.preventAutoHideAsync();
 
@@ -19,7 +16,7 @@ SystemUI.setBackgroundColorAsync(BACKGROUND_COLOR);
 
 export default function HomeScreen() {
   const webViewRef = useRef<WebViewType>(null);
-  const [initialUrl, setInitialUrl] = useState<string>(WEB_URL || '');
+  const [initialUrl, setInitialUrl] = useState<string>(WEBVIEW_URL || '');
 
   // 딥링크 URL 파싱
   const parseDeepLink = useCallback((url: string) => {
@@ -38,9 +35,9 @@ export default function HomeScreen() {
   // 딥링크 URL을 웹 URL로 변환
   const buildWebUrl = useCallback(
     (url: string): string => {
-      const baseUrl = WEB_URL;
+      const baseUrl = WEBVIEW_URL;
       if (!baseUrl) {
-        throw new Error('EXPO_PUBLIC_WEB_URL is not set');
+        throw new Error('WEBVIEW_URL is not set');
       }
 
       const { path, queryParams } = parseDeepLink(url);
