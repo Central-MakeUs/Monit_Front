@@ -67,7 +67,8 @@ export const MyPage = () => {
           label='개인정보 수집 및 이용 동의'
           onClick={() => window.open(EXTERNAL_URLS.PRIVACY_POLICY, '_blank')}
         />
-        <MenuItem type='toggle' label='알림 설정 허용' />
+        {/*  */}
+        {/* <MenuItem type='toggle' label='알림 설정 허용' /> */}
         <div className={styles.dividerWrapper}>
           <Divider />
         </div>
