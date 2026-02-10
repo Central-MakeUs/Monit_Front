@@ -42,3 +42,5 @@ export { default as IcBeauty } from './ic-beauty.svg';
 export { default as IcBeer } from './ic-beer.svg';
 export { default as IcCamera } from './ic-camera.svg';
 export { default as IcCup } from './ic-cup.svg';
+export { default as IcAppLogo } from './ic-app-logo.svg';
+export { default as IcBigGrayLogo } from './ic-big-gray-logo.svg';
