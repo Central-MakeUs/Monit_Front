@@ -12,7 +12,7 @@ export interface CalendarProps {
   viewMode?: 'monthly' | 'weekly';
   showText?: boolean;
   renderDateText?: (date: Date) => string | undefined;
-  onDateSelect?: (date: Date) => void;
+  onDateSelect?: (date: Date | null) => void;
   onWeekChange?: (newDate: Date) => void;
   onMonthChange?: (newDate: Date) => void;
 }

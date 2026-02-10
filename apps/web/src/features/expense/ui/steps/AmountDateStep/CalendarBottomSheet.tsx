@@ -12,7 +12,7 @@ import { MonthlyCalendar } from '@/widgets/calendar';
 
 interface CalendarBottomSheetTemplateProps {
   selectedDate?: Date;
-  onSelectDate?: (date: Date) => void;
+  onSelectDate?: (date: Date | null) => void;
   onConfirm?: () => void;
   onClose?: () => void;
 }
@@ -23,10 +23,10 @@ export const CalendarBottomSheetTemplate = ({
   onConfirm,
   onClose,
 }: CalendarBottomSheetTemplateProps) => {
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(initialDate);
+  const [selectedDate, setSelectedDate] = useState<Date | null | undefined>(initialDate);
   const [currentDate, setCurrentDate] = useState<Date>(initialDate || new Date());
 
-  const handleDateSelect = (date: Date) => {
+  const handleDateSelect = (date: Date | null) => {
     setSelectedDate(date);
     onSelectDate?.(date);
   };
