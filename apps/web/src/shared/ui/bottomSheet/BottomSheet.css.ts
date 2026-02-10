@@ -5,7 +5,7 @@ import { vars, radius, spacing, shadows } from '../theme.css';
 export const container = style({
   position: 'fixed',
   inset: 0,
-  zIndex: 200,
+  zIndex: vars.zIndex.overlay,
 });
 
 export const backdrop = recipe({
@@ -51,6 +51,7 @@ export const sheet = recipe({
     padding: `${spacing.lg} ${spacing.xl}`,
     paddingTop: spacing['2xl'],
     boxShadow: shadows.shadow2,
+    zIndex: vars.zIndex.modal,
     transition: 'transform 300ms ease-out',
   },
   variants: {

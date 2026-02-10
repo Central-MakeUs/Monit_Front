@@ -9,7 +9,7 @@ export const overlay = style({
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  zIndex: 1000,
+  zIndex: vars.zIndex.overlay,
 });
 
 export const dialogContainer = recipe({
@@ -21,6 +21,7 @@ export const dialogContainer = recipe({
     backgroundColor: vars.color.primitive.static.white,
     borderRadius: radius.lg,
     boxShadow: shadows.shadow2,
+    zIndex: vars.zIndex.modal,
   },
   variants: {
     variant: {
