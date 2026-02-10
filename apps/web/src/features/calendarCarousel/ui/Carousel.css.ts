@@ -5,6 +5,7 @@
  */
 
 import { style, createVar } from '@vanilla-extract/css';
+import { spacing } from '@/shared/ui/tokens/spacing';
 
 // ==================== Monthly Carousel ====================
 
@@ -31,6 +32,8 @@ export const monthlyCarouselSlide = style({
   width: '100%',
   minWidth: '100%',
   flexShrink: 0,
+  padding: `0 ${spacing.xl}`,
+  boxSizing: 'border-box',
 });
 
 // ==================== Weekly Carousel ====================
