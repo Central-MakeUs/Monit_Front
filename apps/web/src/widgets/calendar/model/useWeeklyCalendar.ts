@@ -13,7 +13,7 @@ import { useWeeklyCarousel } from '@/features/calendarCarousel';
 interface UseWeeklyCalendarProps {
   currentDate: Date;
   selectedDate?: Date | null;
-  onDateSelect?: (date: Date) => void;
+  onDateSelect?: (date: Date | null) => void;
   onWeekChange?: (newDate: Date) => void;
 }
 
@@ -23,7 +23,9 @@ export const useWeeklyCalendar = ({
   onDateSelect,
   onWeekChange,
 }: UseWeeklyCalendarProps) => {
-  const [internalCurrentDate, setInternalCurrentDate] = useState<Date>(currentDate);
+  const [internalCurrentDate, setInternalCurrentDate] = useState<Date>(
+    selectedDate ? new Date(selectedDate.getTime()) : new Date(currentDate.getTime())
+  );
   const [internalSelectedDate, setInternalSelectedDate] = useState<Date | null>(null);
 
   const effectiveSelectedDate = selectedDate !== undefined ? selectedDate : internalSelectedDate;
@@ -38,21 +40,14 @@ export const useWeeklyCalendar = ({
     return date;
   };
 
-  // currentDate prop이 변경되면 internalCurrentDate 업데이트
-  // 월이 변경된 경우 selectedDate가 포함된 주로 이동
+  // selectedDate나 currentDate prop이 변경되면 internalCurrentDate 업데이트
   useEffect(() => {
-    const currentMonth = internalCurrentDate.getMonth();
-    const currentYear = internalCurrentDate.getFullYear();
-    const newMonth = currentDate.getMonth();
-    const newYear = currentDate.getFullYear();
-
-    // 월이나 연도가 변경된 경우
-    if (currentMonth !== newMonth || currentYear !== newYear) {
-      // selectedDate가 있으면 그 날짜를 기준으로, 없으면 currentDate를 기준으로 설정
-      const baseDate = effectiveSelectedDate || currentDate;
-      setInternalCurrentDate(baseDate);
+    if (selectedDate) {
+      setInternalCurrentDate(new Date(selectedDate.getTime()));
+    } else {
+      setInternalCurrentDate(new Date(currentDate.getTime()));
     }
-  }, [currentDate, internalCurrentDate, effectiveSelectedDate]);
+  }, [currentDate, selectedDate]);
 
   const dates = useMemo(() => {
     return generateWeeklyDates(internalCurrentDate);

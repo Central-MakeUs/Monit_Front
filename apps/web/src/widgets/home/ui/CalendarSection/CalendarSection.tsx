@@ -9,7 +9,7 @@ export interface CalendarSectionProps {
   viewMode: ViewMode;
   currentDate: Date;
   selectedDate: Date | null;
-  onDateSelect: (date: Date) => void;
+  onDateSelect: (date: Date | null) => void;
   onMonthChange: (date: Date) => void;
 }
 

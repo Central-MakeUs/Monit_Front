@@ -7,7 +7,7 @@ import { WeeklyCarousel } from '@/features/calendarCarousel';
 interface WeeklyCalendarProps {
   currentDate: Date;
   selectedDate?: Date | null;
-  onDateSelect?: (date: Date) => void;
+  onDateSelect?: (date: Date | null) => void;
   onWeekChange?: (newDate: Date) => void;
 }
 

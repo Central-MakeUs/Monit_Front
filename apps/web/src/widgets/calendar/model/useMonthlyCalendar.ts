@@ -15,7 +15,7 @@ interface UseMonthlyCalendarProps {
   currentDate: Date;
   selectedDate?: Date | null;
   variant: 'modal' | 'home';
-  onDateSelect?: (date: Date) => void;
+  onDateSelect?: (date: Date | null) => void;
   onMonthChange?: (newDate: Date) => void;
 }
 
@@ -71,11 +71,27 @@ export const useMonthlyCalendar = ({
     setInternalCurrentDate(newDate);
     onMonthChange?.(newDate);
 
-    // 선택된 날짜가 미래라면 오늘로 재설정
+    // 선택된 날짜가 있다면 동일한 일자로 유지 (예: 2월 1일 -> 1월 1일)
     if (effectiveSelectedDate) {
-      const validDate = ensureNotFutureDate(effectiveSelectedDate);
-      setInternalSelectedDate(validDate);
-      onDateSelect?.(validDate);
+      // 스와이프 시작 시 즉시 선택 상태 초기화 (깜빡임 방지)
+      setInternalSelectedDate(null);
+      onDateSelect?.(null); // 선택 해제
+
+      // 애니메이션이 완전히 끝난 후 새로운 날짜 선택
+      setTimeout(() => {
+        const year = newDate.getFullYear();
+        const month = newDate.getMonth();
+        const day = effectiveSelectedDate.getDate();
+
+        // 해당 월의 마지막 날짜를 확인하여 유효한 날짜 생성
+        const lastDayOfMonth = new Date(year, month + 1, 0).getDate();
+        const validDay = Math.min(day, lastDayOfMonth);
+        const targetDate = new Date(year, month, validDay);
+
+        const validDate = ensureNotFutureDate(targetDate);
+        setInternalSelectedDate(validDate);
+        onDateSelect?.(validDate);
+      }, 400); // 애니메이션 시간(300ms) + 여유(100ms)
     }
   };
 
@@ -88,11 +104,27 @@ export const useMonthlyCalendar = ({
     setInternalCurrentDate(newDate);
     onMonthChange?.(newDate);
 
-    // 선택된 날짜가 미래라면 오늘로 재설정
+    // 선택된 날짜가 있다면 동일한 일자로 유지 (예: 1월 1일 -> 2월 1일)
     if (effectiveSelectedDate) {
-      const validDate = ensureNotFutureDate(effectiveSelectedDate);
-      setInternalSelectedDate(validDate);
-      onDateSelect?.(validDate);
+      // 스와이프 시작 시 즉시 선택 상태 초기화 (깜빡임 방지)
+      setInternalSelectedDate(null);
+      onDateSelect?.(null); // 선택 해제
+
+      // 애니메이션이 완전히 끝난 후 새로운 날짜 선택
+      setTimeout(() => {
+        const year = newDate.getFullYear();
+        const month = newDate.getMonth();
+        const day = effectiveSelectedDate.getDate();
+
+        // 해당 월의 마지막 날짜를 확인하여 유효한 날짜 생성
+        const lastDayOfMonth = new Date(year, month + 1, 0).getDate();
+        const validDay = Math.min(day, lastDayOfMonth);
+        const targetDate = new Date(year, month, validDay);
+
+        const validDate = ensureNotFutureDate(targetDate);
+        setInternalSelectedDate(validDate);
+        onDateSelect?.(validDate);
+      }, 400); // 애니메이션 시간(300ms) + 여유(100ms)
     }
   };
 
@@ -103,7 +135,6 @@ export const useMonthlyCalendar = ({
 
   const carousel = useMonthlyCarousel({
     dates,
-    currentDate: internalCurrentDate,
     onSwipeLeft: handleNextMonth,
     onSwipeRight: handlePrevMonth,
     disableNext: isNextMonthDisabled,

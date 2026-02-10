@@ -11,7 +11,7 @@ interface MonthlyCalendarProps {
   variant: 'modal' | 'home';
   showText: boolean;
   renderDateText?: (date: Date) => string | undefined;
-  onDateSelect?: (date: Date) => void;
+  onDateSelect?: (date: Date | null) => void;
   onMonthChange?: (newDate: Date) => void;
 }
 
