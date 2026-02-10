@@ -1,12 +1,12 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { useRouter, notFound } from 'next/navigation';
 import { useKakaoCode } from '@/features/auth/model/useKakaoCode';
 import { usePlatform } from '@/shared/lib/bridge';
 import { Spinner } from '@/shared/ui/spinner';
 
-export default function KakaoCallbackPage() {
+function KakaoCallbackContent() {
   const { isSuccess, error, invalidAccess } = useKakaoCode();
   const [platformReady, setPlatformReady] = useState(false);
 
@@ -36,4 +36,12 @@ export default function KakaoCallbackPage() {
   }
 
   return <Spinner message='로그인 처리 중...' />;
+}
+
+export default function KakaoCallbackPage() {
+  return (
+    <Suspense>
+      <KakaoCallbackContent />
+    </Suspense>
+  );
 }
