@@ -1,15 +1,17 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { DatePickerFeature } from '@/features/datePickerModal';
-import { useClientOnly } from '@/shared/hooks';
+import { useClientOnly, useModal } from '@/shared/hooks';
+import { ExpenseEditBottomSheet } from '@/features/expense';
 import { useHomeStore } from '../model/useHomeStore';
 import { HOME_MOCK_DATA } from '../model/mock';
 import { HomeHeader } from './HomeHeader';
 import { MonthlyExpenseInfo } from './MonthlyExpenseInfo';
 import { CalendarSection } from './CalendarSection';
 import { ExpenseContent } from './ExpenseContent';
+import { Expense } from './ExpenseList';
 import * as styles from './Home.css';
 
 export interface HomeProps {
@@ -18,6 +20,8 @@ export interface HomeProps {
 
 export const Home = ({ onSettingsClick }: HomeProps) => {
   const isMounted = useClientOnly();
+  const { isOpen, openModal, closeModal } = useModal();
+  const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
 
   const {
     currentDate,
@@ -41,6 +45,11 @@ export const Home = ({ onSettingsClick }: HomeProps) => {
 
   const { hasExpenses, emptyStateType, expenseCount, totalExpenseAmount, expenses } =
     HOME_MOCK_DATA;
+
+  const handleExpenseClick = (expense: Expense) => {
+    setSelectedExpense(expense);
+    openModal();
+  };
 
   if (!isMounted) {
     return null;
@@ -76,8 +85,17 @@ export const Home = ({ onSettingsClick }: HomeProps) => {
           totalExpenseAmount={totalExpenseAmount}
           selectedDate={selectedDate}
           expenses={expenses}
+          onExpenseClick={handleExpenseClick}
         />
       </div>
+
+      <ExpenseEditBottomSheet
+        isOpen={isOpen}
+        expense={selectedExpense}
+        onClose={closeModal}
+        onConfirm={(updated) => console.log('Confirm edit:', updated)}
+        onDelete={(id) => console.log('Delete expense:', id)}
+      />
     </div>
   );
 };

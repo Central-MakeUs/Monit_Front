@@ -14,6 +14,7 @@ export interface ExpenseContentProps {
   totalExpenseAmount: number;
   selectedDate: Date | null;
   expenses?: Expense[];
+  onExpenseClick?: (expense: Expense) => void;
 }
 
 export const ExpenseContent = ({
@@ -23,6 +24,7 @@ export const ExpenseContent = ({
   totalExpenseAmount,
   selectedDate,
   expenses = [],
+  onExpenseClick,
 }: ExpenseContentProps) => {
   return (
     <div className={styles.container}>
@@ -37,7 +39,11 @@ export const ExpenseContent = ({
 
       {hasExpenses ? (
         <div className={styles.expenseSection}>
-          <ExpenseList selectedDate={selectedDate} expenses={expenses} />
+          <ExpenseList
+            selectedDate={selectedDate}
+            expenses={expenses}
+            onExpenseClick={onExpenseClick}
+          />
         </div>
       ) : (
         <div className={styles.emptySection}>

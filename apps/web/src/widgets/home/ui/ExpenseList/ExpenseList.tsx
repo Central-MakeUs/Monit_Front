@@ -19,9 +19,10 @@ export interface Expense {
 export interface ExpenseListProps {
   selectedDate: Date | null;
   expenses?: Expense[];
+  onExpenseClick?: (expense: Expense) => void;
 }
 
-export const ExpenseList = ({ expenses = [] }: ExpenseListProps) => {
+export const ExpenseList = ({ expenses = [], onExpenseClick }: ExpenseListProps) => {
   // TODO: selectedDate에 따라 필터링된 데이터 사용
   // 현재는 props로 받은 expenses를 그대로 사용
 
@@ -35,7 +36,7 @@ export const ExpenseList = ({ expenses = [] }: ExpenseListProps) => {
           price={expense.amount}
           categoryName={expense.categoryName}
           onClick={() => {
-            // TODO: 상세 페이지로 이동
+            onExpenseClick?.(expense);
             console.log('Expense clicked:', expense.expenseId);
           }}
         />

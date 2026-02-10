@@ -3,6 +3,7 @@ export {
   CategoryBottomSheetTemplate,
   DatePickerBottomSheetTemplate,
   IconPickerBottomSheetTemplate,
+  ExpenseEditBottomSheet,
 } from './ui';
 
 export type {
@@ -11,4 +12,5 @@ export type {
   CategoryBottomSheetTemplateProps,
   DatePickerBottomSheetTemplateProps,
   IconPickerBottomSheetTemplateProps,
+  ExpenseEditBottomSheetProps,
 } from './ui';

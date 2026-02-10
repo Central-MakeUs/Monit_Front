@@ -4,6 +4,7 @@ export {
   DatePickerBottomSheetTemplate,
   IconPickerBottomSheetTemplate,
 } from './expenseBottomSheet';
+export { ExpenseEditBottomSheet } from './ExpenseEditBottomSheet';
 
 export type {
   ExpenseFormBottomSheetProps,
@@ -12,3 +13,4 @@ export type {
   DatePickerBottomSheetTemplateProps,
   IconPickerBottomSheetTemplateProps,
 } from './expenseBottomSheet';
+export type { ExpenseEditBottomSheetProps } from './ExpenseEditBottomSheet';
