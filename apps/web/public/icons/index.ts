@@ -34,3 +34,4 @@ export { default as IcBadge } from './ic-badge.svg';
 export { default as IcSetting } from './ic-setting.svg';
 export { default as IcKakao } from './ic-kakao.svg';
 export { default as IcApple } from './ic-apple.svg';
+export { default as IcAppLogo } from './ic-app-logo.svg';
