@@ -23,14 +23,20 @@ import { useCategoryStore } from '@/entities/category/model/store';
 import { useExpenseFormStore } from '@/widgets/expenseRecordFunnel/model/store';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { categoryQueries } from '@/features/expense/model/categoryQueries';
+import { CategoryDetailsDTO } from '@/features/expense/model/types';
 
 const VALID_NAME_REGEX = /^[가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z0-9]*$/;
 
 const ICON_OPTIONS: Category[] = [
-  //TODO: 확정되면 수정
-  { id: 'coin', icon: 'coin', label: '코인' },
-  { id: 'percent', icon: 'percent', label: '할인' },
   { id: 'shopping', icon: 'shopping', label: '쇼핑' },
+  { id: 'cook', icon: 'cook', label: '요리' },
+  { id: 'coffee', icon: 'coffee', label: '커피' },
+  { id: 'credit', icon: 'credit', label: '카드' },
+  { id: 'book', icon: 'book', label: '도서' },
+  { id: 'beauty', icon: 'beauty', label: '뷰티' },
+  { id: 'beer', icon: 'beer', label: '맥주' },
+  { id: 'camera', icon: 'camera', label: '카메라' },
+  { id: 'cup', icon: 'cup', label: '컵' },
 ];
 
 export const AddCategory = () => {
@@ -138,7 +144,7 @@ export const AddCategory = () => {
     } else {
       createCategory({
         name: categoryName,
-        icon: selectedIcon.icon as 'coin' | 'percent' | 'shopping' | 'plus', // TODO: 확정되면 다시 수정
+        icon: selectedIcon.icon as CategoryDetailsDTO['icon'],
       });
     }
   };
