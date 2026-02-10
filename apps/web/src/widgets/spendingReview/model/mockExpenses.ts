@@ -5,7 +5,7 @@ export const MOCK_EXPENSES: ExpenseResponseDTO[] = [
   {
     expenseId: 1,
     date: '2026-01-16',
-    categoryIconType: 'coin',
+    categoryIconType: 'book',
     usageHistory: '영어 회화 교습권',
     categoryName: '자기계발',
     amount: 23000,
@@ -23,7 +23,7 @@ export const MOCK_EXPENSES: ExpenseResponseDTO[] = [
   {
     expenseId: 3,
     date: '2026-01-16',
-    categoryIconType: 'percent',
+    categoryIconType: 'credit',
     usageHistory: '넷플릭스 구독',
     categoryName: '구독',
     amount: 17000,

@@ -386,7 +386,6 @@ export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         InquiryRequest: {
-            title?: string;
             content?: string;
             userEmail?: string;
         };
@@ -414,7 +413,7 @@ export interface components {
         CategoryDetailsDTO: {
             name?: string;
             /** @enum {string} */
-            icon?: "coin" | "percent" | "shopping" | "plus";
+            icon?: "cook" | "coffee" | "credit" | "book" | "beauty" | "beer" | "shopping" | "camera" | "cup";
         };
         ApiResponseCategoryIdResponseDTO: {
             isSuccess?: boolean;
@@ -427,7 +426,7 @@ export interface components {
             id?: number;
             name?: string;
             /** @enum {string} */
-            icon?: "coin" | "percent" | "shopping" | "plus";
+            icon?: "cook" | "coffee" | "credit" | "book" | "beauty" | "beer" | "shopping" | "camera" | "cup";
         };
         ApiResponseTokenReissueResultDTO: {
             isSuccess?: boolean;
@@ -467,7 +466,7 @@ export interface components {
         CategoryUpdateRequestDTO: {
             name: string;
             /** @enum {string} */
-            icon?: "coin" | "percent" | "shopping" | "plus";
+            icon?: "cook" | "coffee" | "credit" | "book" | "beauty" | "beer" | "shopping" | "camera" | "cup";
         };
         ApiResponseWeeklyDetailReportResponse: {
             isSuccess?: boolean;
@@ -543,7 +542,7 @@ export interface components {
             /** Format: date */
             date?: string;
             /** @enum {string} */
-            categoryIconType?: "coin" | "percent" | "shopping" | "plus";
+            categoryIconType?: "cook" | "coffee" | "credit" | "book" | "beauty" | "beer" | "shopping" | "camera" | "cup";
             usageHistory?: string;
             categoryName?: string;
             /** Format: int64 */
@@ -575,7 +574,7 @@ export interface components {
             usageHistory?: string;
             categoryName?: string;
             /** @enum {string} */
-            categoryIconType?: "coin" | "percent" | "shopping" | "plus";
+            categoryIconType?: "cook" | "coffee" | "credit" | "book" | "beauty" | "beer" | "shopping" | "camera" | "cup";
             /** @enum {string} */
             emotionType?: "기분전환" | "그냥저냥" | "필수템" | "홀린듯이" | "살기위해";
             /** @enum {string} */
@@ -592,7 +591,7 @@ export interface components {
             id?: number;
             name?: string;
             /** @enum {string} */
-            icon?: "coin" | "percent" | "shopping" | "plus";
+            icon?: "cook" | "coffee" | "credit" | "book" | "beauty" | "beer" | "shopping" | "camera" | "cup";
         };
         ApiResponseAuthResponse: {
             isSuccess?: boolean;
