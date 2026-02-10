@@ -75,9 +75,10 @@ export const ExpenseRecordFunnel = () => {
       history.push('만족도입력', { usageHistory, categoryId });
     };
 
-  const { mutate: submitExpense } = useMutation(expenseQueries.recordMutation());
+  const { mutate: submitExpense, isPending } = useMutation(expenseQueries.recordMutation());
 
   const handleSubmit = (emotionType: EmotionType) => {
+    if (isPending) return;
     formStore.setEmotionType(emotionType);
     const context = funnel.context as SatisfactionStepType;
     submitExpense(
@@ -132,7 +133,11 @@ export const ExpenseRecordFunnel = () => {
           />
         )}
         만족도입력={() => (
-          <SatisfactionStep defaultEmotionType={formStore.emotionType} onNext={handleSubmit} />
+          <SatisfactionStep
+            defaultEmotionType={formStore.emotionType}
+            onNext={handleSubmit}
+            isSubmitting={isPending}
+          />
         )}
         제출={() => null}
       />

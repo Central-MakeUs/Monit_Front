@@ -11,11 +11,13 @@ import { EmotionType } from '@/features/expense/model/types';
 export interface SatisfactionStepProps {
   onNext: (emotionType: EmotionType) => void;
   defaultEmotionType?: string;
+  isSubmitting?: boolean;
 }
 
 export const SatisfactionStep = ({
   onNext,
   defaultEmotionType,
+  isSubmitting = false,
 }: SatisfactionStepProps): React.JSX.Element => {
   const [selectedIndex, setSelectedIndex] = useState(() => {
     if (defaultEmotionType) {
@@ -55,7 +57,11 @@ export const SatisfactionStep = ({
         </div>
       )}
       <BottomFixedArea>
-        <Button variant='primary' onClick={handleNext} disabled={!selectedEmotion} size='lg'>
+        <Button
+          variant='primary'
+          onClick={handleNext}
+          disabled={!selectedEmotion || isSubmitting}
+          size='lg'>
           완료
         </Button>
       </BottomFixedArea>
