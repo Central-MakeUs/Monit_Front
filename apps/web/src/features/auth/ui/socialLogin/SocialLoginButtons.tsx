@@ -26,12 +26,16 @@ export const SocialLoginButtons = () => {
         className={styles.loginBtn({ social: 'kakao' })}
         onClick={handleKakaoLoginClick}
         disabled={isKakaoLoading}>
-        <IcKakao />
+        <span className={styles.iconWrapper({ social: 'kakao' })}>
+          <IcKakao />
+        </span>
         <Text variant='h3'>{isKakaoLoading ? '로딩 중...' : '카카오로 계속하기'}</Text>
       </button>
       {platform === 'ios' && (
         <button className={styles.loginBtn({ social: 'apple' })} onClick={() => {}}>
-          <IcApple />
+          <span className={styles.iconWrapper({ social: 'apple' })}>
+            <IcApple />
+          </span>
           <Text variant='h3'>{'Apple로 계속하기'}</Text>
         </button>
       )}

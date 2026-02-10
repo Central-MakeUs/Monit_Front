@@ -39,17 +39,27 @@ export const boldText = style({
 });
 
 export const bigGrayLogo = style({
-  position: 'absolute',
   bottom: '10rem',
-  right: '-4rem',
   width: '28rem',
-  height: 'auto',
-  pointerEvents: 'none',
-  zIndex: 0,
+  marginBottom: '4.4rem',
 });
 
 export const buttonWrapper = style({
   position: 'relative',
   zIndex: 1,
-  paddingBottom: '3.4rem',
+  marginBottom: '3.4rem',
+  marginRight: '1.8rem',
+  marginLeft: '1.8rem',
+});
+
+export const gradationOverlay = style({
+  content: '""',
+  position: 'absolute',
+  bottom: 0,
+  left: 0,
+  width: '100%',
+  height: '100%',
+  opacity: 0.5,
+  background: 'linear-gradient(180deg, rgba(219, 222, 230, 0.00) 0%, #E1E4EA 100%)',
+  zIndex: 0,
 });

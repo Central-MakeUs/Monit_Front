@@ -8,6 +8,7 @@ import { SocialLoginButtons } from '@/features/auth';
 export const LoginWidget = () => {
   return (
     <div className={styles.container}>
+      <div className={styles.gradationOverlay} />
       <div className={styles.topSection}>
         <IcAppLogo />
         <div className={styles.textWrapper}>
