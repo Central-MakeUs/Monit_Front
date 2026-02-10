@@ -1,1 +1,1 @@
-export { LoginBottomSheet } from './loginBottomSheet';
+export { SocialLoginButtons } from './socialLogin';

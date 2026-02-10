@@ -1,0 +1,1 @@
+export { OnboardingSlider } from './ui';
