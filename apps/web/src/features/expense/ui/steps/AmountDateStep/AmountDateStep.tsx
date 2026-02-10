@@ -6,7 +6,7 @@ import { CalendarBottomSheetTemplate } from './CalendarBottomSheet';
 import { useModal } from '@/shared/hooks';
 import * as styles from './AmountDateStep.css';
 import { formatDate, formatNumberWithComma } from '@/shared/utils';
-import { AmountInput } from '../../AmountInput';
+import { AmountInput } from '../../amountInput';
 
 export interface AmountDateStepProps {
   onNext: (amount: number, expendedAt: string) => void;
