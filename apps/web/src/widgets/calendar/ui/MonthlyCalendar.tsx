@@ -11,7 +11,7 @@ interface MonthlyCalendarProps {
   variant: 'modal' | 'home';
   showText: boolean;
   renderDateText?: (date: Date) => string | undefined;
-  onDateSelect?: (date: Date) => void;
+  onDateSelect?: (date: Date | null) => void;
   onMonthChange?: (newDate: Date) => void;
 }
 
@@ -69,6 +69,8 @@ export const MonthlyCalendar = ({
           transform={carousel.getTransform()}
           transition={carousel.getTransition()}
           onTransitionEnd={carousel.handleTransitionEnd}
+          containerHeight={carousel.containerHeight}
+          shouldTransitionHeight={carousel.shouldTransitionHeight}
         />
       ) : (
         <CalendarGrid
@@ -78,6 +80,7 @@ export const MonthlyCalendar = ({
           showText={shouldShowText}
           renderDateText={renderDateText}
           onDateSelect={handleDateSelect}
+          hideOutsideMonth={true}
         />
       )}
     </>

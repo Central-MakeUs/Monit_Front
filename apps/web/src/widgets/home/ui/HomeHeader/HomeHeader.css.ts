@@ -9,9 +9,6 @@ export const dateButton = style({
   border: 'none',
   padding: 0,
   cursor: 'pointer',
-  ':hover': {
-    opacity: 0.7,
-  },
 });
 
 export const dateText = style({
@@ -22,7 +19,7 @@ export const dropdownIcon = style({
   width: '1.6rem',
   height: '1.6rem',
   transform: 'rotate(90deg)',
-  fill: vars.color.icon.primary,
+  color: vars.color.icon.tertiary,
 });
 
 export const headerActions = style({
@@ -41,16 +38,20 @@ export const iconButton = style({
   cursor: 'pointer',
 });
 
-export const icon = style({
-  fill: vars.color.icon.tertiary,
-});
-
 export const alarmIc = style({
   width: '2rem',
   height: '2.36rem',
+  fill: vars.color.icon.tertiary,
 });
 
 export const menuIc = style({
   width: '2.2rem',
   height: '1.6rem',
+  fill: vars.color.icon.tertiary,
+});
+
+export const settingIc = style({
+  width: '3.2rem',
+  height: '3.2rem',
+  fill: vars.color.bg.neutral.secondary,
 });

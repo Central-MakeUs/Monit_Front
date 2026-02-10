@@ -18,5 +18,4 @@ export const list = style({
   display: 'flex',
   flexDirection: 'column',
   gap: vars.spacing.sm,
-  marginTop: vars.spacing.md,
 });

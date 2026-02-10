@@ -7,10 +7,13 @@
 'use client';
 
 import React from 'react';
+import { assignInlineVars } from '@vanilla-extract/dynamic';
 import {
   monthlyCarouselContainer,
   monthlyCarouselTrack,
   monthlyCarouselSlide,
+  containerHeightVar,
+  heightTransitionVar,
 } from './Carousel.css';
 import { CalendarGrid } from '@/shared/ui/calendar';
 import type { CalendarDate } from '@/shared/lib/calendar';
@@ -29,6 +32,8 @@ interface MonthlyCarouselProps {
   transform: string;
   transition: string;
   onTransitionEnd: () => void;
+  containerHeight: number;
+  shouldTransitionHeight: boolean;
 }
 
 export const MonthlyCarousel = ({
@@ -45,9 +50,19 @@ export const MonthlyCarousel = ({
   transform,
   transition,
   onTransitionEnd,
+  containerHeight,
+  shouldTransitionHeight,
 }: MonthlyCarouselProps) => {
   return (
-    <div className={monthlyCarouselContainer} {...handlers}>
+    <div
+      className={monthlyCarouselContainer}
+      {...handlers}
+      style={assignInlineVars({
+        [containerHeightVar]: containerHeight > 0 ? `${containerHeight}px` : 'auto',
+        [heightTransitionVar]: shouldTransitionHeight
+          ? 'height 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+          : 'none',
+      })}>
       <div
         ref={trackRef}
         className={monthlyCarouselTrack}
@@ -64,6 +79,7 @@ export const MonthlyCarousel = ({
             showText={showText}
             renderDateText={renderDateText}
             onDateSelect={onDateSelect}
+            hideOutsideMonth={true}
           />
         </div>
 
@@ -75,6 +91,7 @@ export const MonthlyCarousel = ({
             showText={showText}
             renderDateText={renderDateText}
             onDateSelect={onDateSelect}
+            hideOutsideMonth={true}
           />
         </div>
 
@@ -86,6 +103,7 @@ export const MonthlyCarousel = ({
             showText={showText}
             renderDateText={renderDateText}
             onDateSelect={onDateSelect}
+            hideOutsideMonth={true}
           />
         </div>
       </div>

@@ -33,7 +33,7 @@ export const toastContainer = style({
   flexDirection: 'column',
   alignItems: 'center',
   gap: '1rem',
-  zIndex: 99999,
+  zIndex: vars.zIndex.toast,
   pointerEvents: 'none',
 });
 

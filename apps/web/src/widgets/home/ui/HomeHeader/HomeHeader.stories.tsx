@@ -10,9 +10,11 @@ const meta = {
   tags: ['autodocs'],
   argTypes: {
     onDateButtonClick: { action: 'dateButtonClicked' },
+    onSettingsClick: { action: 'settingsClicked' },
   },
   args: {
     onDateButtonClick: () => {},
+    onSettingsClick: () => {},
   },
 } satisfies Meta<typeof HomeHeader>;
 
