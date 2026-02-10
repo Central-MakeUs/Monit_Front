@@ -65,3 +65,5 @@ export { Divider } from './divider';
 
 export { Tooltip } from './tooltip/Tooltip';
 export type { TooltipProps } from './tooltip/Tooltip';
+
+export { SelectionTile } from './selectionTile';
