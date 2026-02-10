@@ -39,7 +39,8 @@ export const Home = ({ onSettingsClick }: HomeProps) => {
     }))
   );
 
-  const { hasExpenses, emptyStateType, expenseCount, totalExpenseAmount } = HOME_MOCK_DATA;
+  const { hasExpenses, emptyStateType, expenseCount, totalExpenseAmount, expenses } =
+    HOME_MOCK_DATA;
 
   if (!isMounted) {
     return null;
@@ -74,6 +75,7 @@ export const Home = ({ onSettingsClick }: HomeProps) => {
           expenseCount={expenseCount}
           totalExpenseAmount={totalExpenseAmount}
           selectedDate={selectedDate}
+          expenses={expenses}
         />
       </div>
     </div>

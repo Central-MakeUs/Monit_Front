@@ -4,7 +4,7 @@ import React, { HTMLAttributes } from 'react';
 import * as styles from './HistoryCard.css';
 import { CategoryBtn, CategoryIconType } from '../categoryBtn';
 import { Text } from '../text';
-import { Badge } from '../badge';
+// import { Badge } from '../badge';
 import { vars } from '../theme.css';
 
 export interface HistoryCardProps extends Omit<HTMLAttributes<HTMLDivElement>, 'className'> {
@@ -14,12 +14,8 @@ export interface HistoryCardProps extends Omit<HTMLAttributes<HTMLDivElement>, '
   category: CategoryIconType;
   /** 금액 */
   price: number;
-
-  // TODO: Badge 종류 나오면 뱃지 타입 하나로 통일
-  /** 뱃지 라벨 (없으면 뱃지 미표시) */
-  badgeLabel?: string;
-  /** 뱃지 아이콘 */
-  badgeIcon?: React.ReactNode;
+  /** 카테고리 이름 (예: 식비) */
+  categoryName?: string;
   disabled?: boolean;
 }
 
@@ -27,8 +23,7 @@ export const HistoryCard = ({
   title,
   category,
   price,
-  badgeLabel,
-  badgeIcon,
+  categoryName,
   onClick,
   disabled = false,
   ...props
@@ -48,11 +43,12 @@ export const HistoryCard = ({
             <Text variant='b3' color={vars.color.text.primary}>
               {title}
             </Text>
-            <Text variant='b1' color={vars.color.text.tertiary}>
-              {category}
-            </Text>
+            {categoryName && (
+              <Text variant='b1' color={vars.color.text.tertiary}>
+                {categoryName}
+              </Text>
+            )}
           </div>
-          {badgeLabel && <Badge label={badgeLabel} icon={badgeIcon} />}
         </div>
       </div>
       <Text variant='b4' color={vars.color.text.primary} align='center' as='div'>

@@ -21,8 +21,7 @@ const meta = {
           '- **title**: 소비처 제목',
           '- **category**: 카테고리 아이콘 타입 (coin, percent, shopping, plus)',
           '- **price**: 금액 (숫자, 자동으로 천단위 구분자 적용)',
-          '- **badgeLabel**: 뱃지 라벨 (선택, 없으면 뱃지 미표시)',
-          '- **badgeIcon**: 뱃지 아이콘 (선택)',
+          '- **categoryName**: 카테고리 이름 (예: 식비, 간식 등)',
           '- **disabled**: 비활성화 상태',
           '',
           '## 사용 예시',
@@ -31,7 +30,7 @@ const meta = {
           '  title="스타벅스"',
           '  category="shopping"',
           '  price={5500}',
-          '  badgeLabel="절약"',
+          '  categoryName="간식"',
           '/>',
           '```',
         ].join('\n'),
@@ -66,9 +65,9 @@ const meta = {
         type: { summary: 'number' },
       },
     },
-    badgeLabel: {
+    categoryName: {
       control: { type: 'text' },
-      description: '뱃지 라벨 (없으면 뱃지 미표시)',
+      description: '카테고리 이름 (예: 식비, 간식 등)',
       table: {
         type: { summary: 'string' },
       },
@@ -93,16 +92,7 @@ export const Default: Story = {
     title: '스타벅스',
     category: 'shopping',
     price: 5500,
-  },
-};
-
-export const WithBadge: Story = {
-  name: '뱃지 포함',
-  args: {
-    title: '스타벅스',
-    category: 'shopping',
-    price: 5500,
-    badgeLabel: '절약',
+    categoryName: '간식',
   },
 };
 
@@ -112,6 +102,7 @@ export const Disabled: Story = {
     title: '스타벅스',
     category: 'shopping',
     price: 5500,
+    categoryName: '간식',
     disabled: true,
   },
 };
@@ -132,7 +123,7 @@ export const AllCategories: Story = {
           }}>
           Shopping
         </h3>
-        <HistoryCard title='스타벅스' category='shopping' price={5500} />
+        <HistoryCard title='스타벅스' category='shopping' price={5500} categoryName='간식' />
       </div>
 
       <div>
@@ -147,7 +138,7 @@ export const AllCategories: Story = {
           }}>
           Coin
         </h3>
-        <HistoryCard title='월급' category='coin' price={3500000} />
+        <HistoryCard title='월급' category='coin' price={3500000} categoryName='수입' />
       </div>
 
       <div>
@@ -162,7 +153,7 @@ export const AllCategories: Story = {
           }}>
           Percent
         </h3>
-        <HistoryCard title='적금 이자' category='percent' price={25000} badgeLabel='수익' />
+        <HistoryCard title='적금 이자' category='percent' price={25000} categoryName='보너스' />
       </div>
 
       <div>
@@ -177,7 +168,7 @@ export const AllCategories: Story = {
           }}>
           Plus
         </h3>
-        <HistoryCard title='용돈' category='plus' price={100000} />
+        <HistoryCard title='용돈' category='plus' price={100000} categoryName='수입' />
       </div>
     </div>
   ),
