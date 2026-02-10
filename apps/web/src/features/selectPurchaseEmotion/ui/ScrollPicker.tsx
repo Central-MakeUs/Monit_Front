@@ -84,8 +84,17 @@ export const ScrollPicker = ({ selectedIndex, onIndexChange }: ScrollPickerProps
     [onIndexChange]
   );
 
+  const handleWheel = useCallback((e: React.WheelEvent) => {
+    e.preventDefault();
+    if (!listRef.current) return;
+
+    const scrollAmount = e.deltaY;
+    listRef.current.scrollTop += scrollAmount;
+  }, []);
+
   return (
-    <div className={styles.pickerContainer}>
+    <div className={styles.pickerContainer} onWheel={handleWheel}>
+      <div className={styles.pickerOverlay} />
       <div ref={listRef} className={styles.pickerList} onScroll={handleScroll}>
         <div className={styles.pickerPadding} />
         {emotions.map((emotion, index) => {

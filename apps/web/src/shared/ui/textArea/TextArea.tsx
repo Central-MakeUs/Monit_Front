@@ -28,6 +28,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
     };
 
     const hasValue = currentValue.length > 0;
+    const isAtLimit = maxLength !== undefined && currentValue.length >= maxLength;
 
     return (
       <div className={styles.container}>
@@ -39,7 +40,8 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
           placeholder={placeholder}
           {...restProps}
         />
-        <span className={`${styles.charCount} ${hasValue ? styles.charCountActive : ''}`}>
+        <span
+          className={`${styles.charCount} ${isAtLimit ? styles.charCountLimit : hasValue ? styles.charCountActive : ''}`}>
           {currentValue.length}/{maxLength}
         </span>
       </div>

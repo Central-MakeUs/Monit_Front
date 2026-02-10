@@ -13,12 +13,29 @@ export const pickerContainer = style({
   overflow: 'hidden',
 });
 
+export const pickerOverlay = style({
+  position: 'absolute',
+  top: `${(TOTAL_ITEM_HEIGHT * VISIBLE_ITEMS) / 2 - ITEM_HEIGHT / 2}px`,
+  left: '50%',
+  transform: 'translateX(-50%)',
+  width: '17rem',
+  height: `${ITEM_HEIGHT}px`,
+  backgroundColor: vars.color.primitive.static.white,
+  borderBottom: `0.1rem solid ${vars.color.border.default}`,
+  borderTop: `0.1rem solid ${vars.color.border.default}`,
+  pointerEvents: 'none',
+  zIndex: 0,
+});
+
 export const pickerList = style({
   position: 'relative',
   height: '100%',
   overflowY: 'auto',
   scrollSnapType: 'y mandatory',
   scrollBehavior: 'smooth',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: `${ITEM_GAP}px`,
   '::-webkit-scrollbar': {
     display: 'none',
   },
@@ -26,29 +43,29 @@ export const pickerList = style({
 });
 
 export const pickerPadding = style({
-  height: `${TOTAL_ITEM_HEIGHT}px`, // 1개 높이 (3개 중 가운데가 선택되도록)
+  height: `${(TOTAL_ITEM_HEIGHT * VISIBLE_ITEMS) / 2 - ITEM_HEIGHT / 2 - ITEM_GAP}px`, // 52px
+  flexShrink: 0,
 });
 
 export const pickerItem = recipe({
   base: {
     width: '17rem',
-    padding: '1.2rem 2rem',
+    height: `${ITEM_HEIGHT}px`,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    flexShrink: 0,
     scrollSnapAlign: 'center',
     cursor: 'pointer',
-    transition: 'all 0.2s ease',
+    transition: 'color 0.2s ease',
     userSelect: 'none',
-    marginBottom: vars.spacing.sm,
+    position: 'relative',
+    zIndex: 1,
   },
   variants: {
     active: {
       true: {
         color: vars.color.text.primary,
-        backgroundColor: vars.color.primitive.static.white,
-        borderBottom: `0.1rem solid ${vars.color.border.default}`,
-        borderTop: `0.1rem solid ${vars.color.border.default}`,
       },
       false: {
         color: vars.color.text.tertiary,

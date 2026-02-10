@@ -4,6 +4,7 @@ export {
   DatePickerBottomSheetTemplate,
   IconPickerBottomSheetTemplate,
   ExpenseEditBottomSheet,
+  AmountInput,
 } from './ui';
 
 export type {
