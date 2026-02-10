@@ -4,7 +4,6 @@ import * as styles from './CategoryManagement.css';
 import { TopBar, vars, Text, CategoryBtn, Tooltip } from '@/shared/ui';
 import { IcLeftChevron, IcPlusCircle } from 'public/icons';
 import { useRouter } from 'next/navigation';
-import { useCategoryStore } from '@/entities/category/model/store';
 import {
   DndContext,
   closestCenter,
@@ -21,7 +20,9 @@ import {
   useSortable,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { CategoryListResponseDTO } from '@/entities/category/model/categoryTypes';
+import { useQuery } from '@tanstack/react-query';
+import { categoryQueries } from '@/features/expense/model/categoryQueries';
+import type { CategoryListResponseDTO } from '@/features/expense/model/types';
 
 const ONBOARDING_KEY = 'category-management-onboarding-completed';
 
@@ -63,7 +64,8 @@ const SortableCategoryItem = ({
 
 export const CategoryManagement = () => {
   const router = useRouter();
-  const { categories, reorderCategories } = useCategoryStore();
+  const { data: categoryData } = useQuery(categoryQueries.listQuery());
+  const categories = categoryData?.result ?? [];
   const [onboardingStep, setOnboardingStep] = useState<number | null>(null);
 
   useEffect(() => {
@@ -88,10 +90,7 @@ export const CategoryManagement = () => {
     const { active, over } = event;
 
     if (over && active.id !== over.id) {
-      const oldIndex = categories.findIndex((cat) => cat.id === active.id);
-      const newIndex = categories.findIndex((cat) => cat.id === over.id);
-
-      reorderCategories(oldIndex, newIndex);
+      // TODO: 서버에 순서 저장 API 연결
     }
   };
 

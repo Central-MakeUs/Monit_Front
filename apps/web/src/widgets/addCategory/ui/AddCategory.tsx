@@ -13,7 +13,7 @@ import {
   AlertDialog,
 } from '@/shared/ui';
 import { IcLeftChevron } from 'public/icons';
-import React, { useState, useTransition, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import * as styles from './AddCategory.css';
 import { IconPickerBottomSheetTemplate } from '@/features/expense';
 import type { Category } from '@/features/expense';
@@ -21,6 +21,8 @@ import { useModal } from '@/shared/hooks';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCategoryStore } from '@/entities/category/model/store';
 import { useExpenseFormStore } from '@/widgets/expenseRecordFunnel/model/store';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { categoryQueries } from '@/features/expense/model/categoryQueries';
 
 const VALID_NAME_REGEX = /^[가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z0-9]*$/;
 
@@ -46,8 +48,25 @@ export const AddCategory = () => {
   const editId = searchParams.get('id') ? Number(searchParams.get('id')) : null;
   const isEditMode = mode === 'edit' && editId !== null;
 
-  const { categories, addCategory, updateCategory } = useCategoryStore();
+  const queryClient = useQueryClient();
+  const { selectCategory } = useCategoryStore();
   const { setCategoryId } = useExpenseFormStore();
+  const { data: categoryData } = useQuery(categoryQueries.listQuery());
+  const categories = useMemo(() => categoryData?.result ?? [], [categoryData?.result]);
+
+  const { mutate: createCategory, isPending } = useMutation({
+    ...categoryQueries.createMutation(queryClient),
+    onSuccess: (response) => {
+      queryClient.invalidateQueries({ queryKey: categoryQueries.all });
+      const newId = response.result?.id;
+      if (newId && !isFromMypage) {
+        selectCategory(newId);
+        setCategoryId(newId);
+      }
+      toast.success('카테고리가 추가되었어요!');
+      router.back();
+    },
+  });
 
   // 수정 모드일 때 기존 카테고리 찾기
   const editingCategory = isEditMode ? categories.find((c) => c.id === editId) : null;
@@ -55,7 +74,6 @@ export const AddCategory = () => {
   const [categoryName, setCategoryName] = useState('');
   const [selectedIcon, setSelectedIcon] = useState<Category | null>(null);
   const [tempIcon, setTempIcon] = useState<Category | null>(null);
-  const [isPending, startTransition] = useTransition();
 
   // 수정 모드일 때 초기값 설정
   useEffect(() => {
@@ -113,32 +131,16 @@ export const AddCategory = () => {
 
   const handleSubmit = () => {
     if (!selectedIcon) return;
-    startTransition(async () => {
-      if (isEditMode && editId) {
-        // 수정 모드
-        updateCategory(editId, {
-          name: categoryName,
-          icon: selectedIcon.icon as 'coin' | 'percent' | 'shopping' | 'plus',
-        });
-        toast.success('수정한 내용이 저장되었어요!');
-      } else {
-        // 추가 모드
-        // TODO: API 호출 후 응답 id 사용
-        // 임시로 timestamp를 id로 사용 -> 서버 응답 오면 응답 ID 넣기
-        const newId = Date.now();
-        addCategory({
-          id: newId,
-          name: categoryName,
-          icon: selectedIcon.icon as 'coin' | 'percent' | 'shopping' | 'plus',
-        });
-        // 지출 기록 플로우에서 온 경우에만 새 카테고리 자동 선택
-        if (!isFromMypage) {
-          setCategoryId(newId);
-        }
-        toast.success('카테고리가 추가되었어요!');
-      }
+    if (isEditMode && editId) {
+      // 수정 모드 - TODO: patchCategoryUpdate 구현 시 연결
+      toast.success('수정한 내용이 저장되었어요!');
       router.back();
-    });
+    } else {
+      createCategory({
+        name: categoryName,
+        icon: selectedIcon.icon as 'coin' | 'percent' | 'shopping' | 'plus', // TODO: 확정되면 다시 수정
+      });
+    }
   };
 
   return (
