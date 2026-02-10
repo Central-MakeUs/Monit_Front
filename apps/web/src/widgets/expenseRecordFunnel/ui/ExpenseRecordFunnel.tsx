@@ -19,6 +19,7 @@ import { AmountDateStep, SatisfactionStep, UsageCategoryStep } from '@/features/
 import { expenseQueries } from '@/features/expense/model/expenseQueries';
 import type { EmotionType } from '@/features/expense/model/types';
 import { useMutation } from '@tanstack/react-query';
+import { ROUTES } from '@/shared/constants';
 
 const STEP_NUMBER = {
   금액날짜입력: 1,
@@ -88,7 +89,7 @@ export const ExpenseRecordFunnel = () => {
         onSuccess: () => {
           formStore.reset();
           toast.success('소비 기록이 저장되었어요.');
-          router.push('/');
+          router.push(ROUTES.HOME);
         },
         onError: () => {
           toast.attention('저장에 실패했어요. 다시 시도해 주세요.');
@@ -145,7 +146,7 @@ export const ExpenseRecordFunnel = () => {
         confirmText='계속 하기'
         onCancel={() => {
           formStore.reset();
-          router.push('/');
+          router.push(ROUTES.HOME);
         }}
       />
     </div>
