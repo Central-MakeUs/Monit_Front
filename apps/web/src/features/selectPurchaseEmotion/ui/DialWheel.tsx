@@ -153,7 +153,7 @@ export const DialWheel = ({ selectedIndex, onIndexChange }: DialWheelProps) => {
             <Text
               as='span'
               variant='h1'
-              key={`${emotion.value}-${index}`}
+              key={`${emotion.label}-${index}`}
               className={styles.wheelItem({ active: isActive })}
               style={{
                 transform: `rotate(${itemAngle}deg) translateX(${WHEEL_RADIUS}px) translateX(-50%)`,

@@ -17,7 +17,7 @@ import { useExpenseFormStore } from '@/widgets/expenseRecordFunnel/model/store';
 import { useCategoryStore } from '@/entities/category/model/store';
 
 const MAX_LENGTH = 20;
-const VALID_NAME_REGEX = /^[가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z0-9\s]*$/;
+const VALID_NAME_REGEX = /^[가-힣a-zA-Z0-9\s]*$/;
 
 export interface UsageCategoryStepProps {
   onNext: (usageHistory: string, categoryId: number) => void;
@@ -79,7 +79,7 @@ export const UsageCategoryStep = ({
 
   const handleNext = () => {
     if (!isValid || !selectedCategory) return;
-    onNext(usageHistory, Number(selectedCategory.id));
+    onNext(usageHistory.trim(), Number(selectedCategory.id));
   };
 
   const handleOpenBottomSheet = () => {

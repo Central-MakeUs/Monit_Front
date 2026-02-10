@@ -13,8 +13,12 @@ import type {
 import { useExpenseFormStore } from '../model/store';
 import { StepIndicator, TopBar, Text, vars, AlertDialog, useToast } from '@/shared/ui';
 import { useModal } from '@/shared/hooks';
+import { formatDateToISO } from '@/shared/utils';
 import { IcLeftChevron } from 'public/icons';
 import { AmountDateStep, SatisfactionStep, UsageCategoryStep } from '@/features/expense/ui/steps';
+import { expenseQueries } from '@/features/expense/model/expenseQueries';
+import type { EmotionType } from '@/features/expense/model/types';
+import { useMutation } from '@tanstack/react-query';
 
 const STEP_NUMBER = {
   금액날짜입력: 1,
@@ -39,7 +43,7 @@ export const ExpenseRecordFunnel = () => {
       step: '금액날짜입력',
       context: {
         amount: formStore.amount || 0,
-        expendedAt: formStore.expendedAt || new Date().toISOString(),
+        expendedAt: formStore.expendedAt || formatDateToISO(new Date()),
       } satisfies AmountDateStepType,
     },
   });
@@ -70,13 +74,27 @@ export const ExpenseRecordFunnel = () => {
       history.push('만족도입력', { usageHistory, categoryId });
     };
 
-  const handleSubmit = (emotionType: string) => {
+  const { mutate: submitExpense } = useMutation(expenseQueries.recordMutation());
+
+  const handleSubmit = (emotionType: EmotionType) => {
     formStore.setEmotionType(emotionType);
-    // TODO: API 호출
-    console.log('제출:', { ...funnel.context, emotionType });
-    formStore.reset();
-    toast.success('소비 기록이 저장되었어요.');
-    router.push('/');
+    const context = funnel.context as SatisfactionStepType;
+    submitExpense(
+      {
+        ...context,
+        emotionType,
+      },
+      {
+        onSuccess: () => {
+          formStore.reset();
+          toast.success('소비 기록이 저장되었어요.');
+          router.push('/');
+        },
+        onError: () => {
+          toast.attention('저장에 실패했어요. 다시 시도해 주세요.');
+        },
+      }
+    );
   };
 
   return (

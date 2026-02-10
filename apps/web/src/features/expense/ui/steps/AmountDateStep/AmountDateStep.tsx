@@ -5,7 +5,7 @@ import { BottomFixedArea, BottomSheet, Button, DateInfoField } from '@/shared/ui
 import { CalendarBottomSheetTemplate } from './CalendarBottomSheet';
 import { useModal } from '@/shared/hooks';
 import * as styles from './AmountDateStep.css';
-import { formatDate, formatNumberWithComma } from '@/shared/utils';
+import { formatDate, formatDateToISO, formatNumberWithComma } from '@/shared/utils';
 import { AmountInput } from '../../amountInput';
 
 export interface AmountDateStepProps {
@@ -29,7 +29,7 @@ export const AmountDateStep = ({ onNext, defaultAmount, defaultDate }: AmountDat
 
   const handleNext = () => {
     if (!isValid) return;
-    onNext(+cleanAmount, selectedDate.toISOString());
+    onNext(+cleanAmount, formatDateToISO(selectedDate));
   };
 
   return (

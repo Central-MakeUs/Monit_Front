@@ -3,12 +3,13 @@
 import React, { useState } from 'react';
 import { EmotionSelector, EmotionDescription } from '@/features/selectPurchaseEmotion';
 import { emotions } from '@/shared/constants';
-import { EmotionValue } from '@/shared/types';
+import type { Emotion } from '@/shared/types';
 import { BottomFixedArea, Button, Text, vars } from '@/shared/ui';
 import * as styles from './SatisfactionStep.css';
+import { EmotionType } from '@/features/expense/model/types';
 
 export interface SatisfactionStepProps {
-  onNext: (emotionType: string) => void;
+  onNext: (emotionType: EmotionType) => void;
   defaultEmotionType?: string;
 }
 
@@ -18,13 +19,13 @@ export const SatisfactionStep = ({
 }: SatisfactionStepProps): React.JSX.Element => {
   const [selectedIndex, setSelectedIndex] = useState(() => {
     if (defaultEmotionType) {
-      const idx = emotions.findIndex((e) => e.value === defaultEmotionType);
+      const idx = emotions.findIndex((e) => e.label === defaultEmotionType);
       return idx !== -1 ? idx : 2;
     }
     return 2;
   });
 
-  const handleChange = (_value: EmotionValue, index: number) => {
+  const handleChange = (_emotion: Emotion, index: number) => {
     setSelectedIndex(index);
   };
 
@@ -32,7 +33,7 @@ export const SatisfactionStep = ({
 
   const handleNext = () => {
     if (!selectedEmotion) return;
-    onNext(selectedEmotion.value);
+    onNext(selectedEmotion.label as EmotionType);
   };
 
   return (
