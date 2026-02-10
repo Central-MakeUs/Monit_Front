@@ -30,12 +30,7 @@ const getEmptyMessage = (type: EmptyStateType): React.ReactNode => {
     case 'date':
       return <>지출한 내역이 없어요</>;
     default:
-      return (
-        <>
-          모닛에서의
-          <br />첫 소비를 남겨볼까요?
-        </>
-      );
+      return <>지출한 내역이 없어요</>;
   }
 };
 

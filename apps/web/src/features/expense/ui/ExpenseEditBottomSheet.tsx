@@ -27,8 +27,8 @@ export const ExpenseEditBottomSheet = ({
 
   useEffect(() => {
     if (expense) {
-      setAmount(expense.amount);
-      setUsage(expense.usageHistory);
+      setAmount(expense.amount ?? 0);
+      setUsage(expense.usageHistory ?? '');
       // categoryIconType 등에 따른 ID 매핑이 필요할 수 있음
     }
   }, [expense]);
@@ -48,7 +48,7 @@ export const ExpenseEditBottomSheet = ({
   };
 
   const handleDelete = () => {
-    if (expense) {
+    if (expense?.expenseId) {
       onDelete?.(expense.expenseId);
     }
     onClose();

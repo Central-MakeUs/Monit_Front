@@ -7,13 +7,13 @@ import * as styles from './ExpenseList.css';
 import { CategoryIconType } from '@/shared/ui/categoryBtn';
 
 export interface Expense {
-  expenseId: number;
-  usageHistory: string;
-  categoryIconType: CategoryIconType;
-  categoryName: string;
-  amount: number;
-  emotionType: string;
-  evaluationType: string;
+  expenseId?: number;
+  usageHistory?: string;
+  categoryIconType?: CategoryIconType;
+  categoryName?: string;
+  amount?: number;
+  emotionType?: string;
+  evaluationType?: string;
 }
 
 export interface ExpenseListProps {
@@ -30,11 +30,11 @@ export const ExpenseList = ({ expenses = [], onExpenseClick }: ExpenseListProps)
     <div className={styles.list}>
       {expenses.map((expense) => (
         <HistoryCard
-          key={expense.expenseId}
-          title={expense.usageHistory}
-          category={expense.categoryIconType}
-          price={expense.amount}
-          categoryName={expense.categoryName}
+          key={expense.expenseId ?? 0}
+          title={expense.usageHistory ?? ''}
+          category={expense.categoryIconType ?? 'coin'}
+          price={expense.amount ?? 0}
+          categoryName={expense.categoryName ?? ''}
           onClick={() => {
             onExpenseClick?.(expense);
             console.log('Expense clicked:', expense.expenseId);
