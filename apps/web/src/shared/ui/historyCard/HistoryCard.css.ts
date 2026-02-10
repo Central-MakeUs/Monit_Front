@@ -14,6 +14,8 @@ export const historyCardWrapper = style({
 export const contentWrapper = style({
   display: 'flex',
   gap: spacing.lg,
+  alignItems: 'center',
+  justifyContent: 'center',
 });
 
 export const textWrapper = style({

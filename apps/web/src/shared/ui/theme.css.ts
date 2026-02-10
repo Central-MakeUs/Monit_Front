@@ -10,6 +10,7 @@ import {
   fontWeight,
   fontSize,
   lineHeight,
+  zIndex,
 } from './tokens';
 
 export const vars = createGlobalTheme(':root', {
@@ -189,6 +190,11 @@ export const vars = createGlobalTheme(':root', {
       t4: lineHeight.t4,
     },
   },
+  zIndex: {
+    toast: String(zIndex.toast),
+    overlay: String(zIndex.overlay),
+    modal: String(zIndex.modal),
+  },
 });
 
 // Re-export tokens for direct usage
@@ -203,6 +209,7 @@ export {
   fontWeight,
   fontSize,
   lineHeight,
+  zIndex,
 } from './tokens';
 
 // Export typography styles for use in components

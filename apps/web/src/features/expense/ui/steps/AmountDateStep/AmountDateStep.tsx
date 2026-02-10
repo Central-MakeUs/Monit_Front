@@ -41,7 +41,9 @@ export const AmountDateStep = ({ onNext, defaultAmount, defaultDate }: AmountDat
       <BottomSheet isOpen={isOpen} onClose={closeModal}>
         <CalendarBottomSheetTemplate
           selectedDate={selectedDate}
-          onSelectDate={setSelectedDate}
+          onSelectDate={(date) => {
+            if (date) setSelectedDate(date);
+          }}
           onClose={closeModal}
           onConfirm={closeModal}
         />

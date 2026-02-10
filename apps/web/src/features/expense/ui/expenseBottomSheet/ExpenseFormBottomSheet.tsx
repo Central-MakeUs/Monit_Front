@@ -15,7 +15,7 @@ import {
   Divider,
 } from '@/shared/ui';
 
-import { IcPlusCircle, IcTrash } from 'public/icons';
+import { IcTrash } from 'public/icons';
 import { formatDate } from '@/shared/utils';
 export interface Category {
   id: string;
@@ -135,9 +135,7 @@ export const ExpenseFormBottomSheet = ({
           <IcTrash />
         </button>
         <Button variant='brand' onClick={onConfirm}>
-          <IcPlusCircle />
-          Button
-          <IcPlusCircle />
+          완료
         </Button>
       </div>
     </BaseBottomSheetTemplate>
