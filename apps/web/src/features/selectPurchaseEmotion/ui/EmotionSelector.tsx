@@ -4,12 +4,12 @@ import React, { useState, useCallback } from 'react';
 import { DialWheel } from './DialWheel';
 import { ScrollPicker } from './ScrollPicker';
 import { emotions } from '@/shared/constants';
-import type { EmotionValue } from '@/shared/types';
+import type { Emotion } from '@/shared/types';
 import * as styles from './EmotionSelector.css';
 
 interface EmotionSelectorProps {
   defaultIndex?: number;
-  onChange?: (value: EmotionValue, index: number) => void;
+  onChange?: (emotion: Emotion, index: number) => void;
 }
 
 export const EmotionSelector = ({ defaultIndex = 2, onChange }: EmotionSelectorProps) => {
@@ -20,7 +20,7 @@ export const EmotionSelector = ({ defaultIndex = 2, onChange }: EmotionSelectorP
       setSelectedIndex(index);
       const emotion = emotions[index];
       if (emotion) {
-        onChange?.(emotion.value, index);
+        onChange?.(emotion, index);
       }
     },
     [onChange]

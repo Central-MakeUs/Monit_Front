@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { EmotionSelector } from './EmotionSelector';
 import { EmotionDescription } from './EmotionDescription';
 import { emotions } from '@/shared/constants';
-import type { EmotionValue } from '@/shared/types';
+import type { Emotion } from '@/shared/types';
 
 // TODO: Figma연결(아직 명확히 안나와 있어서 보류)
 const meta: Meta<typeof EmotionSelector> = {
@@ -63,7 +63,7 @@ export const Default: Story = {
 const WithDescriptionRender = () => {
   const [selectedIndex, setSelectedIndex] = useState(1);
 
-  const handleChange = (_value: EmotionValue, index: number) => {
+  const handleChange = (_emotion: Emotion, index: number) => {
     setSelectedIndex(index);
   };
 

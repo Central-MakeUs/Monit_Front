@@ -4,6 +4,23 @@
  */
 
 export interface paths {
+    "/api/inquiry/send": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** 1:1 문의 메일 발송 */
+        post: operations["sendInquiry"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/expense/record": {
         parameters: {
             query?: never;
@@ -161,7 +178,7 @@ export interface paths {
          * 소비기록 회고
          * @description 유저가 하루일과동안 쓴 지출기록에 소비회고를 추가적으로 남깁니다.
          */
-        patch: operations["remindExpense"];
+        patch: operations["remindExpenses"];
         trace?: never;
     };
     "/api/expense/category_update/{categoryId}": {
@@ -324,6 +341,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/expense/delete/{expenseId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * 지출 기록 삭제
+         * @description 조회된 리스트의 expenseId를 사용하여 기록을 삭제합니다.
+         */
+        delete: operations["deleteExpense"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/auth/withdraw": {
         parameters: {
             query?: never;
@@ -348,6 +385,11 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        InquiryRequest: {
+            title?: string;
+            content?: string;
+            userEmail?: string;
+        };
         ExpenseDetailsDTO: {
             /** Format: int32 */
             amount: number;
@@ -357,7 +399,7 @@ export interface components {
             categoryId: number;
             usageHistory: string;
             /** @enum {string} */
-            emotionType: "기분 전환" | "그냥 저냥" | "필수템" | "홀린 듯이" | "살기 위해";
+            emotionType: "기분전환" | "그냥저냥" | "필수템" | "홀린듯이" | "살기위해";
         };
         ApiResponseIdResponse: {
             isSuccess?: boolean;
@@ -415,6 +457,12 @@ export interface components {
             expenseId?: number;
             /** @enum {string} */
             evaluationType?: "VERY_SATISFIED" | "SATISFIED" | "NORMAL" | "DISAPPOINTED" | "VERY_DISAPPOINTED";
+        };
+        ApiResponseListIdResponse: {
+            isSuccess?: boolean;
+            code?: string;
+            message?: string;
+            result?: components["schemas"]["IdResponse"][];
         };
         CategoryUpdateRequestDTO: {
             name: string;
@@ -515,6 +563,7 @@ export interface components {
             monthlyTotalAmount?: number;
             bannerMessage?: string;
             bannerSubMessage?: string;
+            hasAnyExpense?: boolean;
             expenses?: components["schemas"]["ExpenseListDTO"][];
             retrospectCompleted?: boolean;
         };
@@ -528,7 +577,7 @@ export interface components {
             /** @enum {string} */
             categoryIconType?: "coin" | "percent" | "shopping" | "plus";
             /** @enum {string} */
-            emotionType?: "기분 전환" | "그냥 저냥" | "필수템" | "홀린 듯이" | "살기 위해";
+            emotionType?: "기분전환" | "그냥저냥" | "필수템" | "홀린듯이" | "살기위해";
             /** @enum {string} */
             evaluationType?: "VERY_SATISFIED" | "SATISFIED" | "NORMAL" | "DISAPPOINTED" | "VERY_DISAPPOINTED";
         };
@@ -574,6 +623,30 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    sendInquiry: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InquiryRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": string;
+                };
+            };
+        };
+    };
     registerExpense: {
         parameters: {
             query?: never;
@@ -736,7 +809,7 @@ export interface operations {
             };
         };
     };
-    remindExpense: {
+    remindExpenses: {
         parameters: {
             query?: never;
             header?: never;
@@ -745,7 +818,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["ExpenseRemindRequestDTO"];
+                "application/json": components["schemas"]["ExpenseRemindRequestDTO"][];
             };
         };
         responses: {
@@ -755,7 +828,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ApiResponseIdResponse"];
+                    "*/*": components["schemas"]["ApiResponseListIdResponse"];
                 };
             };
         };
@@ -920,6 +993,7 @@ export interface operations {
         parameters: {
             query: {
                 code: string;
+                redirect_uri?: string;
             };
             header?: never;
             path?: never;
@@ -934,6 +1008,28 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ApiResponseAuthResponse"];
+                };
+            };
+        };
+    };
+    deleteExpense: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                expenseId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseString"];
                 };
             };
         };

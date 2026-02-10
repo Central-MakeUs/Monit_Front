@@ -103,7 +103,7 @@ export const ScrollPicker = ({ selectedIndex, onIndexChange }: ScrollPickerProps
             <Text
               variant='b5'
               as='div'
-              key={emotion.value}
+              key={emotion.label}
               className={styles.pickerItem({ active: isActive })}
               onClick={() => handleItemClick(index)}>
               {emotion.label}

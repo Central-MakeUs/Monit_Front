@@ -10,7 +10,7 @@ export const descriptionContainer = style({
 
 export const tagsContainer = style({
   display: 'flex',
-  gap: vars.spacing.xs2,
+  gap: `${vars.spacing.xs2} ${vars.spacing.sm2}`,
   justifyContent: 'center',
 });
 
