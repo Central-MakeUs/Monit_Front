@@ -93,6 +93,7 @@ export const description = style({
   color: vars.color.text.secondary,
   margin: 0,
   whiteSpace: 'pre-line',
+  textAlign: 'center',
 });
 
 export const buttonGroup = styleVariants({

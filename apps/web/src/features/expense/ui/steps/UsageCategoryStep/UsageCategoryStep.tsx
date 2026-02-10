@@ -17,6 +17,7 @@ import { useExpenseFormStore } from '@/widgets/expenseRecordFunnel/model/store';
 import { useCategoryStore } from '@/entities/category/model/store';
 
 const MAX_LENGTH = 20;
+const VALID_NAME_REGEX = /^[가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z0-9\s]*$/;
 
 export interface UsageCategoryStepProps {
   onNext: (usageHistory: string, categoryId: number) => void;
@@ -58,7 +59,9 @@ export const UsageCategoryStep = ({
       : null
   );
   const [tempCategory, setTempCategory] = useState<Category | null>(null);
-  const isValid = usageHistory.trim() !== '' && selectedCategory !== null;
+
+  const hasValidationError = usageHistory !== '' && !VALID_NAME_REGEX.test(usageHistory);
+  const isValid = usageHistory.trim() !== '' && !hasValidationError && selectedCategory !== null;
 
   useEffect(() => {
     if (selectedCategory || defaultCategoryId == null) return;
@@ -107,6 +110,7 @@ export const UsageCategoryStep = ({
           placeholder='사용처를 입력해주세요'
           value={usageHistory}
           onValueChange={setUsageHistory}
+          error={hasValidationError}
           errorMessage='한글, 영문, 숫자만 20자 이내로 입력가능해요.'
           maxLength={MAX_LENGTH}
         />

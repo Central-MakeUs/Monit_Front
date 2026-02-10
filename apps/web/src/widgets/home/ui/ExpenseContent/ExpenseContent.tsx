@@ -28,6 +28,7 @@ export const ExpenseContent = ({
   return (
     <div className={styles.container}>
       <Banner
+        data-onboarding-id='banner'
         isActive={false}
         title='오늘의 소비는 내일 돌아볼 수 있어요'
         subText='5단계로 만족도를 남겨볼 수 있어요'

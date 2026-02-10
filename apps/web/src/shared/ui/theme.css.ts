@@ -147,6 +147,7 @@ export const vars = createGlobalTheme(':root', {
     shadow2: shadows.shadow2,
     shadow3: shadows.shadow3,
     shadow4: shadows.shadow4,
+    glow: shadows.glow,
   },
   font: {
     family: {
