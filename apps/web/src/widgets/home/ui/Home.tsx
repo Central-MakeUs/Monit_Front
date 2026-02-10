@@ -5,6 +5,7 @@ import { useShallow } from 'zustand/react/shallow';
 import { DatePickerFeature } from '@/features/datePickerModal';
 import { useClientOnly, useModal } from '@/shared/hooks';
 import { ExpenseEditBottomSheet } from '@/features/expense';
+import { useHomeExpenseData } from '@/features/homeExpenseData';
 import { useHomeStore } from '../model/useHomeStore';
 import { HOME_MOCK_DATA } from '../model/mock';
 import { HomeHeader } from './HomeHeader';
@@ -22,6 +23,9 @@ export const Home = ({ onSettingsClick }: HomeProps) => {
   const isMounted = useClientOnly();
   const { isOpen, openModal, closeModal } = useModal();
   const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
+
+  // Features 레이어의 훅을 통해 데이터 페칭
+  const { monthlyTotalAmount } = useHomeExpenseData();
 
   const {
     currentDate,
@@ -68,7 +72,11 @@ export const Home = ({ onSettingsClick }: HomeProps) => {
       </DatePickerFeature>
 
       <div className={styles.content}>
-        <MonthlyExpenseInfo viewMode={viewMode} onViewModeChange={setViewMode} />
+        <MonthlyExpenseInfo
+          viewMode={viewMode}
+          onViewModeChange={setViewMode}
+          monthlyTotalAmount={monthlyTotalAmount}
+        />
 
         <CalendarSection
           viewMode={viewMode}

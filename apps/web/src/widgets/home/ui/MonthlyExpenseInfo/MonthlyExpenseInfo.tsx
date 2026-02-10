@@ -9,9 +9,14 @@ import * as styles from './MonthlyExpenseInfo.css';
 export interface MonthlyExpenseInfoProps {
   viewMode: ViewMode;
   onViewModeChange: (mode: ViewMode) => void;
+  monthlyTotalAmount?: number;
 }
 
-export const MonthlyExpenseInfo = ({ viewMode, onViewModeChange }: MonthlyExpenseInfoProps) => {
+export const MonthlyExpenseInfo = ({
+  viewMode,
+  onViewModeChange,
+  monthlyTotalAmount = 0,
+}: MonthlyExpenseInfoProps) => {
   return (
     <div className={styles.container}>
       <div className={styles.info}>
@@ -19,7 +24,7 @@ export const MonthlyExpenseInfo = ({ viewMode, onViewModeChange }: MonthlyExpens
           이번달 소비
         </Text>
         <Text variant='t5' className={styles.amountText}>
-          0원
+          {monthlyTotalAmount.toLocaleString()}원
         </Text>
       </div>
       <div className={styles.viewToggleWrapper}>
