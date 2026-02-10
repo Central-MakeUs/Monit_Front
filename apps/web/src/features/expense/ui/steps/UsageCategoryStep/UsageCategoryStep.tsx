@@ -40,14 +40,14 @@ export const UsageCategoryStep = ({
   const categories = useMemo(() => categoryResponse?.result ?? [], [categoryResponse?.result]);
 
   useEffect(() => {
-    if (pinnedCategoryIds.length === 0 && categories.length > 0) {
+    if (pinnedCategoryIds === null && categories.length > 0) {
       const ids = categories
         .filter((c) => c.id != null)
         .slice(0, 7)
         .map((c) => c.id);
       setPinnedCategoryIds(ids);
     }
-  }, [categories, pinnedCategoryIds.length, setPinnedCategoryIds]);
+  }, [categories, pinnedCategoryIds, setPinnedCategoryIds]);
 
   // store 데이터를 Category 타입으로 변환
   const categoryOptions = useMemo<Category[]>(
@@ -62,7 +62,7 @@ export const UsageCategoryStep = ({
 
   // 홈에 고정 노출되는 카테고리
   const pinnedCategories = useMemo<Category[]>(() => {
-    return pinnedCategoryIds
+    return (pinnedCategoryIds ?? [])
       .map((id) => categoryOptions.find((c) => c.id === String(id)))
       .filter((c): c is Category => c !== undefined);
   }, [pinnedCategoryIds, categoryOptions]);
@@ -115,7 +115,7 @@ export const UsageCategoryStep = ({
       usageHistory,
       ...(selectedCategory && { categoryId: +selectedCategory.id }),
     });
-    router.push(ROUTES.EXPENCE_CATEGORY);
+    router.push(ROUTES.EXPENSE_CATEGORY);
   };
 
   return (
