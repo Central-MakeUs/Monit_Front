@@ -13,6 +13,9 @@ const suit = localFont({
 export const metadata: Metadata = {
   title: '질소 가계부',
   description: '내 소비의 거품을 빼다',
+  icons: {
+    icon: '/icons/ic-favicon.jpg',
+  },
 };
 
 export const viewport: Viewport = {

@@ -5,19 +5,19 @@ export const container = style({
   display: 'flex',
   flexDirection: 'column',
   gap: '12px',
-  paddingInline: '20px',
 });
 
 export const loginBtn = recipe({
   base: {
+    padding: '1.2rem 1rem',
     width: '100%',
-    height: '56px',
-    borderRadius: '12px',
+    height: '4.8rem',
+    borderRadius: '5px',
     border: 'none',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: '8px',
+    position: 'relative',
     cursor: 'pointer',
     transition: 'opacity 0.2s',
     ':active': {
@@ -34,6 +34,23 @@ export const loginBtn = recipe({
         backgroundColor: '#000000',
         color: '#FFFFFF',
       },
+    },
+  },
+});
+
+export const iconWrapper = recipe({
+  base: {
+    position: 'absolute',
+    left: '1rem',
+    display: 'flex',
+    alignItems: 'center',
+  },
+  variants: {
+    social: {
+      kakao: {
+        padding: '1rem',
+      },
+      apple: {},
     },
   },
 });
