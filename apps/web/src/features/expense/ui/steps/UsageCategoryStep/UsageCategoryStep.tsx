@@ -17,6 +17,7 @@ import { useExpenseFormStore } from '@/widgets/expenseRecordFunnel/model/store';
 import { useCategoryStore } from '@/entities/category/model/store';
 import { useQuery } from '@tanstack/react-query';
 import { categoryQueries } from '@/features/expense/model/categoryQueries';
+import { ROUTES } from '@/shared/constants';
 
 const MAX_LENGTH = 20;
 const VALID_NAME_REGEX = /^[가-힣a-zA-Z0-9\s]*$/;
@@ -114,7 +115,7 @@ export const UsageCategoryStep = ({
       usageHistory,
       ...(selectedCategory && { categoryId: +selectedCategory.id }),
     });
-    router.push('/expense/category');
+    router.push(ROUTES.EXPENCE_CATEGORY);
   };
 
   return (

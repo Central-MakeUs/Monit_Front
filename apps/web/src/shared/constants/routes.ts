@@ -3,4 +3,5 @@ export const ROUTES = {
   MY: '/my',
   EXPENSE: '/expense',
   REPORT: '/report',
+  EXPENCE_CATEGORY: '/expense/category',
 } as const;
