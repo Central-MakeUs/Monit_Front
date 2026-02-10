@@ -1,5 +1,5 @@
-export { AmountInput } from './amountInput';
-export type { AmountInputProps } from './amountInput';
+export { AmountInput } from './AmountInput';
+export type { AmountInputProps } from './AmountInput';
 
 export {
   ExpenseFormBottomSheet,
