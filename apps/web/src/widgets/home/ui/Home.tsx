@@ -43,36 +43,9 @@ export const Home = ({ onSettingsClick }: HomeProps) => {
     }))
   );
 
-  // Features 레이어의 훅을 통해 데이터 페칭
-  const { monthlyTotalAmount, expenses, hasExpenses, expenseCount, dailyTotalAmount } =
+  // Features 레이어의 훅을 통해 데이터 페칭 및 로직 처리
+  const { monthlyTotalAmount, expenses, expenseCount, dailyTotalAmount, emptyStateType } =
     useHomeExpenseData(selectedDate);
-
-  // emptyStateType 결정 로직
-  const getEmptyStateType = (): 'never' | 'today' | 'date' => {
-    // hasAnyExpense가 false면 한 번도 지출한 적 없음
-    if (!hasExpenses) {
-      return 'never';
-    }
-
-    // hasAnyExpense가 true인데 현재 선택된 날짜에 지출이 없는 경우
-    if (expenses.length === 0) {
-      const today = new Date();
-      const selected = selectedDate || today;
-
-      // 오늘 날짜인지 확인
-      const isToday =
-        selected.getFullYear() === today.getFullYear() &&
-        selected.getMonth() === today.getMonth() &&
-        selected.getDate() === today.getDate();
-
-      return isToday ? 'today' : 'date';
-    }
-
-    // 지출이 있는 경우 (실제로는 EmptyState가 표시되지 않음)
-    return 'date';
-  };
-
-  const emptyStateType = getEmptyStateType();
 
   const handleExpenseClick = (expense: Expense) => {
     setSelectedExpense(expense);

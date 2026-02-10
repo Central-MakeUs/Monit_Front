@@ -6,6 +6,8 @@ import {
   type DailyExpenseResponseDTO,
 } from '@/entities/expense';
 
+type EmptyStateType = 'never' | 'today' | 'date';
+
 /**
  * 홈 화면에 필요한 소비 데이터를 페칭하고 가공하는 훅
  * @description API로부터 월간 리포트와 일일 지출 내역을 조회하여 필요한 데이터를 제공합니다.
@@ -38,12 +40,40 @@ export const useHomeExpenseData = (selectedDate: Date | null) => {
   );
   const expenseCount = expenses.length;
 
+  // emptyStateType 결정 로직
+  const getEmptyStateType = (): EmptyStateType => {
+    // hasAnyExpense가 false면 한 번도 지출한 적 없음
+    if (!hasExpenses) {
+      return 'never';
+    }
+
+    // hasAnyExpense가 true인데 현재 선택된 날짜에 지출이 없는 경우
+    if (expenses.length === 0) {
+      const today = new Date();
+      const selected = selectedDate || today;
+
+      // 오늘 날짜인지 확인
+      const isToday =
+        selected.getFullYear() === today.getFullYear() &&
+        selected.getMonth() === today.getMonth() &&
+        selected.getDate() === today.getDate();
+
+      return isToday ? 'today' : 'date';
+    }
+
+    // 지출이 있는 경우 (실제로는 EmptyState가 표시되지 않음)
+    return 'date';
+  };
+
+  const emptyStateType = getEmptyStateType();
+
   return {
     monthlyTotalAmount,
     expenses,
     hasExpenses,
     expenseCount,
     dailyTotalAmount,
+    emptyStateType,
     isLoading: isSummaryLoading || isDailyLoading,
     error: summaryError || dailyError,
   };
