@@ -2,7 +2,6 @@ import { useCallback } from 'react';
 
 interface KakaoLoginOptions {
   redirectUri?: string;
-  onSuccess?: () => void;
   onError?: (error: Error) => void;
 }
 
@@ -13,7 +12,7 @@ interface KakaoLoginReturn {
 const KAKAO_REDIRECT_URI = process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI;
 
 export const useKakaoLogin = (options: KakaoLoginOptions = {}): KakaoLoginReturn => {
-  const { redirectUri = KAKAO_REDIRECT_URI, onSuccess, onError } = options;
+  const { redirectUri = KAKAO_REDIRECT_URI, onError } = options;
 
   const loginWithKakao = useCallback(() => {
     try {
@@ -34,14 +33,12 @@ export const useKakaoLogin = (options: KakaoLoginOptions = {}): KakaoLoginReturn
       window.Kakao.Auth.authorize({
         redirectUri: redirectUri as string,
       });
-
-      onSuccess?.();
     } catch (error) {
       const errorMessage = '카카오 로그인 중 에러가 발생했습니다.';
       console.error(errorMessage, error);
       onError?.(error instanceof Error ? error : new Error(errorMessage));
     }
-  }, [redirectUri, onSuccess, onError]);
+  }, [redirectUri, onError]);
 
   return { handleKakaoLogin: loginWithKakao };
 };

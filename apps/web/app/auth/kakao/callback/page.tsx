@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter, notFound } from 'next/navigation';
 import { useKakaoCode } from '@/features/auth/model/useKakaoCode';
 import { usePlatform } from '@/shared/lib/bridge';
@@ -8,20 +8,30 @@ import { Spinner } from '@/shared/ui/spinner';
 
 export default function KakaoCallbackPage() {
   const { isSuccess, error, invalidAccess } = useKakaoCode();
+  const [platformReady, setPlatformReady] = useState(false);
+
   const router = useRouter();
   const platform = usePlatform();
 
   useEffect(() => {
-    if (isSuccess) {
+    setPlatformReady(true);
+  }, [platform]);
+
+  useEffect(() => {
+    if (isSuccess && platformReady) {
       if (platform === 'ios') {
         router.push('/agreement');
       } else {
         router.push('/');
       }
     }
-  }, [isSuccess, platform, router]);
+  }, [isSuccess, platform, platformReady, router]);
 
-  if (error && invalidAccess) {
+  if (invalidAccess) {
+    notFound();
+  }
+
+  if (error) {
     notFound();
   }
 

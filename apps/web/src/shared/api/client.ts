@@ -8,6 +8,40 @@ import type { components } from './schema';
 type TokenReissueResult = components['schemas']['TokenReissueResultDTO'];
 
 /**
+ * 동시 다발적 401 응답 시 reissue를 한 번만 호출하기 위한 Promise 잠금
+ */
+let refreshPromise: Promise<string | null> | null = null;
+
+const refreshAccessToken = async (): Promise<string | null> => {
+  if (refreshPromise) return refreshPromise;
+
+  refreshPromise = (async () => {
+    try {
+      const tokenResponse = await apiClient
+        .post(ENDPOINT.AUTH.REISSUE, { credentials: 'include' })
+        .json<ApiResponse<TokenReissueResult>>();
+
+      if (tokenResponse.result?.accessToken) {
+        useAuthStore.getState().setAccessToken(tokenResponse.result.accessToken);
+        return tokenResponse.result.accessToken;
+      }
+      return null;
+    } catch (error) {
+      console.error('[API] Token refresh failed:', error);
+      useAuthStore.getState().clearAuth();
+      if (typeof window !== 'undefined') {
+        window.location.href = '/login';
+      }
+      return null;
+    } finally {
+      refreshPromise = null;
+    }
+  })();
+
+  return refreshPromise;
+};
+
+/**
  * 인증이 필요 없는 기본 API 클라이언트
  */
 export const apiClient = ky.create({
@@ -36,7 +70,7 @@ export const authenticatedApiClient = apiClient.extend({
   retry: {
     limit: API_RETRY_LIMIT,
     backoffLimit: API_RETRY_BACKOFF_LIMIT,
-    statusCodes: [401],
+    statusCodes: [408, 429, 500, 502, 503, 504],
   },
   hooks: {
     // 요청 전 Authorization 헤더에 Access Token 추가
@@ -68,36 +102,13 @@ export const authenticatedApiClient = apiClient.extend({
 
     // 401 에러 발생 시 토큰 갱신 후 재시도
     afterResponse: [
-      async (request, _options, response, state) => {
-        if (response.status === 401 && state.retryCount === 0) {
-          try {
-            // Refresh Token으로 새로운 Access Token 발급
-            const tokenResponse = await apiClient
-              .post(ENDPOINT.AUTH.REISSUE, {
-                credentials: 'include',
-              })
-              .json<ApiResponse<TokenReissueResult>>();
+      async (request, _options, response) => {
+        if (response.status === 401 || response.status === 403) {
+          const newToken = await refreshAccessToken();
 
-            if (tokenResponse.result?.accessToken) {
-              // 새로운 Access Token을 스토어에 저장
-              useAuthStore.getState().setAccessToken(tokenResponse.result.accessToken);
-
-              // 새 토큰으로 재시도
-              request.headers.set('Authorization', `Bearer ${tokenResponse.result.accessToken}`);
-              return ky.retry({
-                request: new Request(request),
-                code: 'TOKEN_REFRESHED',
-              });
-            }
-          } catch (error) {
-            console.error('[API] Token refresh failed:', error);
-
-            // Refresh 실패 시 로그아웃 처리
-            useAuthStore.getState().clearAuth();
-
-            if (typeof window !== 'undefined') {
-              window.location.href = '/login';
-            }
+          if (newToken) {
+            request.headers.set('Authorization', `Bearer ${newToken}`);
+            return ky(new Request(request));
           }
         }
 

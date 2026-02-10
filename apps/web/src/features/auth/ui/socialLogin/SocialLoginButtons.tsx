@@ -8,14 +8,10 @@ import { useKakaoLogin, useKakaoSDK } from '@/features/auth/model';
 import { usePlatform } from '@/shared/lib/bridge';
 
 export const SocialLoginButtons = () => {
-  const { isLoaded, isLoading } = useKakaoSDK();
+  const { isLoaded, isLoading: isKakaoLoading } = useKakaoSDK();
   const { handleKakaoLogin } = useKakaoLogin();
+  // const { handleAppleLogin, isLoading: isAppleLoading } = useAppleLogin();
   const platform = usePlatform();
-
-  const handleAppleLogin = () => {
-    // TODO: 애플 로그인 구현
-    console.log('Apple login clicked');
-  };
 
   const handleKakaoLoginClick = () => {
     if (!isLoaded) {
@@ -29,14 +25,14 @@ export const SocialLoginButtons = () => {
       <button
         className={styles.loginBtn({ social: 'kakao' })}
         onClick={handleKakaoLoginClick}
-        disabled={isLoading}>
+        disabled={isKakaoLoading}>
         <IcKakao />
-        <Text variant='h3'>{isLoading ? '로딩 중...' : '카카오로 계속하기'}</Text>
+        <Text variant='h3'>{isKakaoLoading ? '로딩 중...' : '카카오로 계속하기'}</Text>
       </button>
       {platform === 'ios' && (
-        <button className={styles.loginBtn({ social: 'apple' })} onClick={handleAppleLogin}>
+        <button className={styles.loginBtn({ social: 'apple' })} onClick={() => {}}>
           <IcApple />
-          <Text variant='h3'>Apple로 계속하기</Text>
+          <Text variant='h3'>{'Apple로 계속하기'}</Text>
         </button>
       )}
     </div>
