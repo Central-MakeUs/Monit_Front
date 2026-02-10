@@ -15,9 +15,12 @@ import * as styles from './UsageCategoryStep.css';
 import { useModal } from '@/shared/hooks';
 import { useExpenseFormStore } from '@/widgets/expenseRecordFunnel/model/store';
 import { useCategoryStore } from '@/entities/category/model/store';
+import { useQuery } from '@tanstack/react-query';
+import { categoryQueries } from '@/features/expense/model/categoryQueries';
+import { ROUTES } from '@/shared/constants';
 
 const MAX_LENGTH = 20;
-const VALID_NAME_REGEX = /^[가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z0-9\s]*$/;
+const VALID_NAME_REGEX = /^[가-힣a-zA-Z0-9\s]*$/;
 
 export interface UsageCategoryStepProps {
   onNext: (usageHistory: string, categoryId: number) => void;
@@ -32,30 +35,42 @@ export const UsageCategoryStep = ({
 }: UsageCategoryStepProps) => {
   const { isOpen, openModal, closeModal } = useModal();
   const router = useRouter();
-  const { categories: storeCategories, displayCategoryIds, selectCategory } = useCategoryStore();
+  const { pinnedCategoryIds, selectCategory, setPinnedCategoryIds } = useCategoryStore();
+  const { data: categoryResponse } = useQuery(categoryQueries.listQuery());
+  const categories = useMemo(() => categoryResponse?.result ?? [], [categoryResponse?.result]);
+
+  useEffect(() => {
+    if (pinnedCategoryIds === null && categories.length > 0) {
+      const ids = categories
+        .filter((c) => c.id != null)
+        .slice(0, 7)
+        .map((c) => c.id);
+      setPinnedCategoryIds(ids);
+    }
+  }, [categories, pinnedCategoryIds, setPinnedCategoryIds]);
 
   // store 데이터를 Category 타입으로 변환
-  const allCategories = useMemo<Category[]>(
+  const categoryOptions = useMemo<Category[]>(
     () =>
-      storeCategories.map((c) => ({
+      categories.map((c) => ({
         id: String(c.id),
         icon: c.icon ?? 'shopping',
         label: c.name ?? '',
       })),
-    [storeCategories]
+    [categories]
   );
 
-  // 홈에 보여줄 카테고리
-  const displayCategories = useMemo<Category[]>(() => {
-    return displayCategoryIds
-      .map((id) => allCategories.find((c) => c.id === String(id)))
+  // 홈에 고정 노출되는 카테고리
+  const pinnedCategories = useMemo<Category[]>(() => {
+    return (pinnedCategoryIds ?? [])
+      .map((id) => categoryOptions.find((c) => c.id === String(id)))
       .filter((c): c is Category => c !== undefined);
-  }, [displayCategoryIds, allCategories]);
+  }, [pinnedCategoryIds, categoryOptions]);
 
   const [usageHistory, setUsageHistory] = useState<string>(defaultUsageHistory ?? '');
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
     defaultCategoryId != null
-      ? (allCategories.find((c) => c.id === String(defaultCategoryId)) ?? null)
+      ? (categoryOptions.find((c) => c.id === String(defaultCategoryId)) ?? null)
       : null
   );
   const [tempCategory, setTempCategory] = useState<Category | null>(null);
@@ -65,21 +80,21 @@ export const UsageCategoryStep = ({
 
   useEffect(() => {
     if (selectedCategory || defaultCategoryId == null) return;
-    const found = allCategories.find((c) => c.id === String(defaultCategoryId));
+    const found = categoryOptions.find((c) => c.id === String(defaultCategoryId));
     if (found) setSelectedCategory(found);
-  }, [allCategories, defaultCategoryId, selectedCategory]);
+  }, [categoryOptions, defaultCategoryId, selectedCategory]);
 
   // 바텀시트용: 선택된 카테고리가 맨 앞에 오도록 정렬
-  const sortedCategories = useMemo(() => {
-    if (!selectedCategory) return allCategories;
-    const selected = allCategories.find((c) => c.id === selectedCategory.id);
-    const rest = allCategories.filter((c) => c.id !== selectedCategory.id);
-    return selected ? [selected, ...rest] : allCategories;
-  }, [allCategories, selectedCategory]);
+  const sheetCategories = useMemo(() => {
+    if (!selectedCategory) return categoryOptions;
+    const selected = categoryOptions.find((c) => c.id === selectedCategory.id);
+    const rest = categoryOptions.filter((c) => c.id !== selectedCategory.id);
+    return selected ? [selected, ...rest] : categoryOptions;
+  }, [categoryOptions, selectedCategory]);
 
   const handleNext = () => {
     if (!isValid || !selectedCategory) return;
-    onNext(usageHistory, Number(selectedCategory.id));
+    onNext(usageHistory.trim(), +selectedCategory.id);
   };
 
   const handleOpenBottomSheet = () => {
@@ -89,7 +104,7 @@ export const UsageCategoryStep = ({
 
   const handleConfirm = () => {
     if (tempCategory) {
-      selectCategory(Number(tempCategory.id));
+      selectCategory(+tempCategory.id);
     }
     setSelectedCategory(tempCategory);
     closeModal();
@@ -98,9 +113,9 @@ export const UsageCategoryStep = ({
   const handleAddCategory = () => {
     useExpenseFormStore.setState({
       usageHistory,
-      ...(selectedCategory && { categoryId: Number(selectedCategory.id) }),
+      ...(selectedCategory && { categoryId: +selectedCategory.id }),
     });
-    router.push('/expense/category');
+    router.push(ROUTES.EXPENSE_CATEGORY);
   };
 
   return (
@@ -118,7 +133,7 @@ export const UsageCategoryStep = ({
 
       <CategoryGrid
         type='expense'
-        categories={displayCategories}
+        categories={pinnedCategories}
         selectedId={selectedCategory?.id}
         onSelect={setSelectedCategory}
         onMoreClick={handleOpenBottomSheet}
@@ -126,7 +141,7 @@ export const UsageCategoryStep = ({
 
       <BottomSheet isOpen={isOpen} onClose={closeModal}>
         <CategoryBottomSheetTemplate
-          categories={sortedCategories}
+          categories={sheetCategories}
           selectedId={tempCategory?.id}
           onSelect={setTempCategory}
           onConfirm={handleConfirm}
