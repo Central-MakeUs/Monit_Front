@@ -35,7 +35,10 @@ export const ExpenseEditBottomSheet = ({
 
   // 카테고리 목록 조회
   const { data: categoryData } = useQuery(categoryQueries.listQuery());
-  const categories: CategoryListResponseDTO[] = categoryData?.result ?? [];
+
+  const categories = React.useMemo(() => {
+    return (categoryData?.result ?? []) as CategoryListResponseDTO[];
+  }, [categoryData]);
 
   // 지출 수정 mutation
   const updateMutation = useMutation({
@@ -61,9 +64,15 @@ export const ExpenseEditBottomSheet = ({
     if (expense) {
       setAmount(expense.amount ?? 0);
       setUsage(expense.usageHistory ?? '');
-      // categoryIconType 등에 따른 ID 매핑이 필요할 수 있음
+
+      if (categories.length > 0 && expense.categoryName) {
+        const matchedCategory = categories.find((c) => c.name === expense.categoryName);
+        if (matchedCategory) {
+          setSelectedCategoryId(String(matchedCategory.id));
+        }
+      }
     }
-  }, [expense]);
+  }, [expense, categories]);
 
   const handleAmountChange = (value: string) => {
     const numericValue = parseInt(value.replace(/[^0-9]/g, ''), 10);
