@@ -56,24 +56,13 @@ export interface ExpenseFormBottomSheetProps {
   onClose?: () => void;
 }
 
-//TODO: 나중엔 API 호출 or 전역에서 불러오는 방식으로 ㄱ
-//TODO: 나머지도 여기서 불러오는 방식이 나을 듯
-const expenseCategories: Category[] = [
-  { id: '1', icon: 'shopping', label: '간식' },
-  { id: '2', icon: 'coin', label: '자기계발비' },
-  { id: '3', icon: 'percent', label: '감식' },
-  { id: '4', icon: 'shopping', label: '카테고리명' },
-  { id: '5', icon: 'shopping', label: '간식' },
-  { id: '6', icon: 'coin', label: '자기계발비' },
-  { id: '7', icon: 'percent', label: '감식' },
-];
-
 export const ExpenseFormBottomSheet = ({
   amount,
   onAmountChange,
   usage,
   onUsageChange,
   selectedDate = new Date(),
+  categories,
   selectedCategoryId,
   onCategorySelect,
   onMoreCategoryClick,
@@ -112,7 +101,7 @@ export const ExpenseFormBottomSheet = ({
 
       {/* 카테고리 */}
       <CategoryGrid
-        categories={expenseCategories}
+        categories={categories ?? []}
         selectedId={selectedCategoryId}
         onSelect={onCategorySelect}
         onMoreClick={onMoreCategoryClick}

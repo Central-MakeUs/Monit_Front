@@ -10,3 +10,7 @@ export type CategoryListResponseDTO = components['schemas']['CategoryListRespons
 };
 export type CategoryDetailsDTO = components['schemas']['CategoryDetailsDTO'];
 export type CategoryIdResponseDTO = components['schemas']['CategoryIdResponseDTO'];
+
+// Update Expense
+export type UpdateExpenseRequest = ExpenseDetailsDTO;
+export type UpdateExpenseResponse = IdResponse;
