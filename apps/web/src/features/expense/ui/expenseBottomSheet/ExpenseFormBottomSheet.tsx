@@ -14,7 +14,7 @@ import {
   Badge,
   Divider,
 } from '@/shared/ui';
-
+import { EXPENSE_CONSTANTS, EXPENSE_ERROR_MESSAGES } from '@/entities/expense';
 import { IcTrash } from 'public/icons';
 import { formatDate } from '@/shared/utils';
 export interface Category {
@@ -56,6 +56,13 @@ export interface ExpenseFormBottomSheetProps {
   onClose?: () => void;
   /** 확인 버튼 비활성화 여부 */
   confirmDisabled?: boolean;
+  /** 소비 금액 에러 메세지 */
+  amountErrorMessage?: string;
+  /** 소비 금액 에러 여부 */
+  isAmountError?: boolean;
+
+  /** 사용처 에러 여부 (빨간색 표시 여부) */
+  isUsageError?: boolean;
 }
 
 export const ExpenseFormBottomSheet = ({
@@ -73,6 +80,9 @@ export const ExpenseFormBottomSheet = ({
   onConfirm,
   onClose,
   confirmDisabled,
+  amountErrorMessage,
+  isAmountError,
+  isUsageError,
 }: ExpenseFormBottomSheetProps) => {
   return (
     <BaseBottomSheetTemplate>
@@ -84,6 +94,9 @@ export const ExpenseFormBottomSheet = ({
           value={amount?.toString()}
           onValueChange={onAmountChange}
           fieldType='number'
+          errorMessage={amountErrorMessage}
+          error={isAmountError}
+          allowZero={false}
         />
       </InputField>
 
@@ -94,6 +107,9 @@ export const ExpenseFormBottomSheet = ({
             placeholder='사용처를 입력해주세요'
             value={usage}
             onValueChange={onUsageChange}
+            errorMessage={EXPENSE_ERROR_MESSAGES.INVALID_USAGE}
+            error={isUsageError}
+            maxLength={EXPENSE_CONSTANTS.MAX_USAGE_LENGTH}
           />
         </InputField>
       </div>

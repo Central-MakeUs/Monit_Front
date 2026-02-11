@@ -16,6 +16,7 @@ import {
   deleteExpense,
   type UpdateExpenseRequest,
 } from '@/features/expense/model';
+import { EXPENSE_CONSTANTS, EXPENSE_ERROR_MESSAGES } from '@/entities/expense';
 import { Expense } from '@/widgets/home/ui/ExpenseList';
 
 export interface ExpenseEditBottomSheetProps {
@@ -44,6 +45,12 @@ export const ExpenseEditBottomSheet = ({
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [isCategorySheetOpen, setIsCategorySheetOpen] = useState(false);
   const [date, setDate] = useState<Date>(initialDate);
+
+  const [amountError, setAmountError] = useState<string | undefined>(undefined);
+  // Removed usageError state, derived from value
+
+  const isValidNameRegex = /^[가-힣a-zA-Z0-9\s]*$/;
+  const isUsageInvalid = usage !== '' && !isValidNameRegex.test(usage);
 
   // 카테고리 목록 조회
   const { data: categoryData } = useQuery(categoryQueries.listQuery());
@@ -97,6 +104,9 @@ export const ExpenseEditBottomSheet = ({
       setUsage(expense.usageHistory ?? '');
       setDate(initialDate);
 
+      // Reset errors when opening
+      setAmountError(undefined);
+
       if (categories.length > 0 && expense.categoryName) {
         const matchedCategory = categories.find((c) => c.name === expense.categoryName);
         if (matchedCategory) {
@@ -108,7 +118,24 @@ export const ExpenseEditBottomSheet = ({
 
   const handleAmountChange = (value: string) => {
     const numericValue = parseInt(value.replace(/[^0-9]/g, ''), 10);
-    setAmount(isNaN(numericValue) ? 0 : numericValue);
+    const validNumericValue = isNaN(numericValue) ? 0 : numericValue;
+
+    if (validNumericValue > EXPENSE_CONSTANTS.MAX_AMOUNT) {
+      setAmountError(EXPENSE_ERROR_MESSAGES.OVER_MAX_AMOUNT);
+      return;
+    }
+
+    if (validNumericValue === 0) {
+      setAmountError(EXPENSE_ERROR_MESSAGES.EMPTY_AMOUNT);
+    } else {
+      setAmountError(undefined);
+    }
+
+    setAmount(validNumericValue);
+  };
+
+  const handleUsageChange = (value: string) => {
+    setUsage(value);
   };
 
   const handleConfirm = () => {
@@ -169,7 +196,7 @@ export const ExpenseEditBottomSheet = ({
         amount={amount}
         onAmountChange={handleAmountChange}
         usage={usage}
-        onUsageChange={setUsage}
+        onUsageChange={handleUsageChange}
         categories={formattedCategories}
         selectedCategoryId={selectedCategoryId}
         onCategorySelect={(cat) => setSelectedCategoryId(cat.id)}
@@ -179,7 +206,12 @@ export const ExpenseEditBottomSheet = ({
         selectedDate={date}
         onDateClick={() => setIsCalendarOpen(true)}
         onMoreCategoryClick={() => setIsCategorySheetOpen(true)}
-        confirmDisabled={amount <= 0 || !usage || usage.trim().length === 0}
+        confirmDisabled={
+          amount <= 0 || !usage || usage.trim().length === 0 || !!amountError || isUsageInvalid
+        }
+        amountErrorMessage={amountError}
+        isAmountError={!!amountError}
+        isUsageError={isUsageInvalid}
       />
       <AlertDialog
         isOpen={isDeleteDialogOpen}
