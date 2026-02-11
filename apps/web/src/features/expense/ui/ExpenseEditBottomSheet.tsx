@@ -47,6 +47,8 @@ export const ExpenseEditBottomSheet = ({
     onSuccess: () => {
       // 일일 지출 데이터 캐시 무효화하여 리페칭
       queryClient.invalidateQueries({ queryKey: ['expense', 'daily'] });
+      // 월별 지출 데이터 캐시 무효화하여 리페칭 (Summary Record)
+      queryClient.invalidateQueries({ queryKey: ['expenseReport', 'summary'] });
       onConfirm?.({
         ...expense!,
         amount,
