@@ -1,10 +1,12 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { BottomSheet } from '@/shared/ui/bottomSheet';
 import { CategoryIconType } from '@/shared/ui';
 import { AlertDialog } from '@/shared/ui/alertDialog';
+import { CategoryBottomSheetTemplate } from '@/features/expense/ui/expenseBottomSheet/CategoryBottomSheet';
 import { CalendarBottomSheetTemplate } from '@/features/expense/ui/steps/AmountDateStep/CalendarBottomSheet';
 import { ExpenseFormBottomSheet } from './expenseBottomSheet';
 import {
@@ -33,12 +35,14 @@ export const ExpenseEditBottomSheet = ({
   onDelete,
   selectedDate: initialDate = new Date(),
 }: ExpenseEditBottomSheetProps) => {
+  const router = useRouter();
   const queryClient = useQueryClient();
   const [amount, setAmount] = useState<number>(0);
   const [usage, setUsage] = useState<string>('');
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>('1');
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const [isCategorySheetOpen, setIsCategorySheetOpen] = useState(false);
   const [date, setDate] = useState<Date>(initialDate);
 
   // 카테고리 목록 조회
@@ -138,12 +142,26 @@ export const ExpenseEditBottomSheet = ({
     }
   };
 
-  // CategoryListDTO를 ExpenseFormBottomSheet의 Category 타입으로 변환
-  const formattedCategories = categories.map((cat: CategoryListResponseDTO) => ({
-    id: String(cat.id),
-    icon: (cat.icon ?? 'shopping') as CategoryIconType,
-    label: cat.name ?? '',
-  }));
+  // CategoryListDTO를 ExpenseFormBottomSheet의 Category 타입으로 변환 및 정렬
+  const formattedCategories = React.useMemo(() => {
+    const list = categories.map((cat: CategoryListResponseDTO) => ({
+      id: String(cat.id),
+      icon: (cat.icon ?? 'shopping') as CategoryIconType,
+      label: cat.name ?? '',
+    }));
+
+    if (selectedCategoryId) {
+      const selectedIndex = list.findIndex((c) => c.id === selectedCategoryId);
+      if (selectedIndex > 0) {
+        const selected = list[selectedIndex];
+        if (selected) {
+          return [selected, ...list.filter((_, index) => index !== selectedIndex)];
+        }
+      }
+    }
+
+    return list;
+  }, [categories, selectedCategoryId]);
 
   return (
     <BottomSheet isOpen={isOpen} onClose={onClose}>
@@ -160,6 +178,7 @@ export const ExpenseEditBottomSheet = ({
         onClose={onClose}
         selectedDate={date}
         onDateClick={() => setIsCalendarOpen(true)}
+        onMoreCategoryClick={() => setIsCategorySheetOpen(true)}
       />
       <AlertDialog
         isOpen={isDeleteDialogOpen}
@@ -168,7 +187,7 @@ export const ExpenseEditBottomSheet = ({
         description='삭제된 소비 기록은 다시 복구할 수 없어요.'
         variant='left'
         confirmText='삭제하기'
-        cancelText='그만두기'
+        cancelText='취소'
         onConfirm={handleConfirmDelete}
       />
       <BottomSheet isOpen={isCalendarOpen} onClose={() => setIsCalendarOpen(false)}>
@@ -179,6 +198,18 @@ export const ExpenseEditBottomSheet = ({
           }}
           onConfirm={() => setIsCalendarOpen(false)}
           onClose={() => setIsCalendarOpen(false)}
+        />
+      </BottomSheet>
+      <BottomSheet isOpen={isCategorySheetOpen} onClose={() => setIsCategorySheetOpen(false)}>
+        <CategoryBottomSheetTemplate
+          categories={formattedCategories}
+          selectedId={selectedCategoryId}
+          onSelect={(category) => {
+            setSelectedCategoryId(category.id);
+            setIsCategorySheetOpen(false);
+          }}
+          onConfirm={() => setIsCategorySheetOpen(false)}
+          onAddClick={() => router.push('/expense/category')}
         />
       </BottomSheet>
     </BottomSheet>
