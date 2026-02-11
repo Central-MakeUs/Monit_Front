@@ -179,6 +179,7 @@ export const ExpenseEditBottomSheet = ({
         selectedDate={date}
         onDateClick={() => setIsCalendarOpen(true)}
         onMoreCategoryClick={() => setIsCategorySheetOpen(true)}
+        confirmDisabled={amount <= 0 || !usage || usage.trim().length === 0}
       />
       <AlertDialog
         isOpen={isDeleteDialogOpen}

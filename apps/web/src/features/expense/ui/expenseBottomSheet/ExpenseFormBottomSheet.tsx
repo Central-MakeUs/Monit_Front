@@ -54,6 +54,8 @@ export interface ExpenseFormBottomSheetProps {
   onConfirm?: () => void;
   /** X 버튼 클릭 시 콜백 */
   onClose?: () => void;
+  /** 확인 버튼 비활성화 여부 */
+  confirmDisabled?: boolean;
 }
 
 export const ExpenseFormBottomSheet = ({
@@ -70,6 +72,7 @@ export const ExpenseFormBottomSheet = ({
   onDelete,
   onConfirm,
   onClose,
+  confirmDisabled,
 }: ExpenseFormBottomSheetProps) => {
   return (
     <BaseBottomSheetTemplate>
@@ -124,7 +127,7 @@ export const ExpenseFormBottomSheet = ({
         <button className={styles.deleteButton} onClick={onDelete}>
           <IcTrash />
         </button>
-        <Button variant='brand' onClick={onConfirm}>
+        <Button variant='brand' onClick={onConfirm} disabled={confirmDisabled}>
           완료
         </Button>
       </div>
