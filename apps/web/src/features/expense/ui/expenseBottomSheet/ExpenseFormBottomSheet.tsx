@@ -62,6 +62,7 @@ export const ExpenseFormBottomSheet = ({
   usage,
   onUsageChange,
   selectedDate = new Date(),
+  onDateClick,
   categories,
   selectedCategoryId,
   onCategorySelect,
@@ -95,7 +96,7 @@ export const ExpenseFormBottomSheet = ({
       </div>
 
       {/* 소비일 */}
-      <DateInfoField label='소비일' value={formatDate(selectedDate)} onClick={() => {}} />
+      <DateInfoField label='소비일' value={formatDate(selectedDate)} onClick={onDateClick} />
 
       <Divider color='#E8E8E8' />
 

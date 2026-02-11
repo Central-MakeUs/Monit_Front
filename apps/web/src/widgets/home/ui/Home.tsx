@@ -100,6 +100,7 @@ export const Home = ({ onSettingsClick }: HomeProps) => {
         onClose={closeModal}
         onConfirm={(updated) => console.log('Confirm edit:', updated)}
         onDelete={(id) => console.log('Delete expense:', id)}
+        selectedDate={selectedDate || new Date()}
       />
     </div>
   );

@@ -5,6 +5,7 @@ import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { BottomSheet } from '@/shared/ui/bottomSheet';
 import { CategoryIconType } from '@/shared/ui';
 import { AlertDialog } from '@/shared/ui/alertDialog';
+import { CalendarBottomSheetTemplate } from '@/features/expense/ui/steps/AmountDateStep/CalendarBottomSheet';
 import { ExpenseFormBottomSheet } from './expenseBottomSheet';
 import {
   categoryQueries,
@@ -21,6 +22,7 @@ export interface ExpenseEditBottomSheetProps {
   onClose: () => void;
   onConfirm?: (updatedExpense: Expense) => void;
   onDelete?: (expenseId: number) => void;
+  selectedDate?: Date;
 }
 
 export const ExpenseEditBottomSheet = ({
@@ -29,12 +31,15 @@ export const ExpenseEditBottomSheet = ({
   onClose,
   onConfirm,
   onDelete,
+  selectedDate: initialDate = new Date(),
 }: ExpenseEditBottomSheetProps) => {
   const queryClient = useQueryClient();
   const [amount, setAmount] = useState<number>(0);
   const [usage, setUsage] = useState<string>('');
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>('1');
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const [date, setDate] = useState<Date>(initialDate);
 
   // 카테고리 목록 조회
   const { data: categoryData } = useQuery(categoryQueries.listQuery());
@@ -86,6 +91,7 @@ export const ExpenseEditBottomSheet = ({
     if (expense) {
       setAmount(expense.amount ?? 0);
       setUsage(expense.usageHistory ?? '');
+      setDate(initialDate);
 
       if (categories.length > 0 && expense.categoryName) {
         const matchedCategory = categories.find((c) => c.name === expense.categoryName);
@@ -94,7 +100,7 @@ export const ExpenseEditBottomSheet = ({
         }
       }
     }
-  }, [expense, categories]);
+  }, [expense, categories, initialDate]);
 
   const handleAmountChange = (value: string) => {
     const numericValue = parseInt(value.replace(/[^0-9]/g, ''), 10);
@@ -107,7 +113,7 @@ export const ExpenseEditBottomSheet = ({
     // API 요청 데이터 구성
     const requestData: UpdateExpenseRequest = {
       amount,
-      expendedAt: new Date().toISOString().split('T')[0] ?? '', // YYYY-MM-DD 형식
+      expendedAt: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`, // YYYY-MM-DD (Local Time) to prevent UTC offset issues
       categoryId: Number(selectedCategoryId ?? 1),
       usageHistory: usage,
       emotionType: (expense.emotionType as UpdateExpenseRequest['emotionType']) || '기분전환',
@@ -152,6 +158,8 @@ export const ExpenseEditBottomSheet = ({
         onConfirm={handleConfirm}
         onDelete={handleDelete}
         onClose={onClose}
+        selectedDate={date}
+        onDateClick={() => setIsCalendarOpen(true)}
       />
       <AlertDialog
         isOpen={isDeleteDialogOpen}
@@ -163,6 +171,16 @@ export const ExpenseEditBottomSheet = ({
         cancelText='그만두기'
         onConfirm={handleConfirmDelete}
       />
+      <BottomSheet isOpen={isCalendarOpen} onClose={() => setIsCalendarOpen(false)}>
+        <CalendarBottomSheetTemplate
+          selectedDate={date}
+          onSelectDate={(newDate) => {
+            if (newDate) setDate(newDate);
+          }}
+          onConfirm={() => setIsCalendarOpen(false)}
+          onClose={() => setIsCalendarOpen(false)}
+        />
+      </BottomSheet>
     </BottomSheet>
   );
 };
