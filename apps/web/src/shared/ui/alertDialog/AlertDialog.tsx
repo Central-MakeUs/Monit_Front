@@ -16,7 +16,7 @@ export interface AlertDialogProps {
   /** 제목 */
   title: string;
   /** 설명 */
-  description?: string;
+  description?: React.ReactNode;
   /** 아이콘 (center variant에서 사용) */
   icon?: React.ReactNode;
   /** 확인 버튼 텍스트 */
@@ -27,6 +27,8 @@ export interface AlertDialogProps {
   onConfirm?: () => void;
   /** 취소 버튼 클릭 핸들러 */
   onCancel?: () => void;
+  /** 확인 버튼 비활성화 */
+  isConfirmDisabled?: boolean;
   /** 인라인 모드 (overlay 없이 다이얼로그만 렌더링, Storybook 미리보기용) */
   inline?: boolean;
 }
@@ -49,7 +51,7 @@ const DialogContent = ({
       </h2>
 
       {description && (
-        <p id='alert-dialog-description' className={styles.description}>
+        <p id='alert-dialog-description' className={styles.description({ variant })}>
           {description}
         </p>
       )}
@@ -64,7 +66,8 @@ const DialogButtons = ({
   cancelText,
   onConfirm,
   onCancel,
-}: Pick<AlertDialogProps, 'variant' | 'confirmText' | 'cancelText'> & {
+  isConfirmDisabled,
+}: Pick<AlertDialogProps, 'variant' | 'confirmText' | 'cancelText' | 'isConfirmDisabled'> & {
   onConfirm: () => void;
   onCancel: () => void;
 }) => {
@@ -76,7 +79,7 @@ const DialogButtons = ({
         <Button variant='secondary' size='md' onClick={onCancel}>
           {cancelText}
         </Button>
-        <Button variant='brand' size='md' onClick={onConfirm}>
+        <Button variant='brand' size='md' onClick={onConfirm} disabled={isConfirmDisabled}>
           {confirmText}
         </Button>
       </div>
@@ -85,7 +88,7 @@ const DialogButtons = ({
 
   return (
     <div className={styles.buttonGroup.single}>
-      <Button variant='brand' size='md' onClick={onConfirm}>
+      <Button variant='brand' size='md' onClick={onConfirm} disabled={isConfirmDisabled}>
         {confirmText}
       </Button>
     </div>
@@ -103,6 +106,7 @@ export const AlertDialog = ({
   cancelText = '나중에 하기',
   onConfirm,
   onCancel,
+  isConfirmDisabled = false,
   inline = false,
 }: AlertDialogProps): React.JSX.Element | null => {
   if (!isOpen) return null;
@@ -140,6 +144,7 @@ export const AlertDialog = ({
         cancelText={cancelText}
         onConfirm={handleConfirm}
         onCancel={handleCancel}
+        isConfirmDisabled={isConfirmDisabled}
       />
     </div>
   );

@@ -89,12 +89,26 @@ export const title = style({
   margin: 0,
 });
 
-export const description = style({
-  ...typography.body.b3,
-  color: vars.color.text.secondary,
-  margin: 0,
-  whiteSpace: 'pre-line',
-  textAlign: 'center',
+export const description = recipe({
+  base: {
+    ...typography.body.b3,
+    color: vars.color.text.secondary,
+    margin: 0,
+    whiteSpace: 'pre-line',
+  },
+  variants: {
+    variant: {
+      left: {
+        textAlign: 'left',
+      },
+      center: {
+        textAlign: 'center',
+      },
+    },
+  },
+  defaultVariants: {
+    variant: 'left',
+  },
 });
 
 export const buttonGroup = styleVariants({
