@@ -109,7 +109,7 @@ export const ExpenseEditBottomSheet = ({
   // CategoryListDTO를 ExpenseFormBottomSheet의 Category 타입으로 변환
   const formattedCategories = categories.map((cat: CategoryListResponseDTO) => ({
     id: String(cat.id),
-    icon: (cat.icon ?? 'shopping') as CategoryIconType, // API 아이콘 타입과 UI 아이콘 타입 매핑 필요
+    icon: (cat.icon ?? 'shopping') as CategoryIconType, 
     label: cat.name ?? '',
   }));
 

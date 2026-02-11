@@ -110,11 +110,11 @@ export const ExpenseFormBottomSheet = ({
       {/* 훌린듯이 소비 */}
       <div className={styles.badgeContainer}>
         <Text variant='b2' color={vars.color.text.secondary}>
-          소비 상황/만족도
+          소비 상황
         </Text>
         <div className={styles.badgeList}>
           <Badge label={'홀린듯이'} />
-          <Badge label='정말 만족했어요' size='lg' evaluationType='VERY_SATISFIED' />
+          {/* <Badge label='정말 만족했어요' size='lg' evaluationType='VERY_SATISFIED' /> */}
         </div>
       </div>
 
