@@ -88,7 +88,8 @@ export const MyPage = () => {
         description={
           <>
             <span style={{ color: vars.color.text.primary }}>지금까지 작성한 소비 기록</span>이 모두
-            삭제되며,{'\n'}한 번 삭제된 데이터는 다시 복구할 수 없어요.
+            삭제되며,
+            <br />한 번 삭제된 데이터는 다시 복구할 수 없어요.
           </>
         }
         cancelText='취소'
