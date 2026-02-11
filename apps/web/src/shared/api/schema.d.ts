@@ -13,7 +13,10 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** 1:1 문의 메일 발송 */
+        /**
+         * 1:1 문의 메일 발송
+         * @description 사용자가 작성한 문의 내용을 관리자 이메일로 전송합니다.
+         */
         post: operations["sendInquiry"];
         delete?: never;
         options?: never;
@@ -389,6 +392,12 @@ export interface components {
             content?: string;
             userEmail?: string;
         };
+        ApiResponseString: {
+            isSuccess?: boolean;
+            code?: string;
+            message?: string;
+            result?: string;
+        };
         ExpenseDetailsDTO: {
             /** Format: int32 */
             amount: number;
@@ -436,12 +445,6 @@ export interface components {
         };
         TokenReissueResultDTO: {
             accessToken?: string;
-        };
-        ApiResponseString: {
-            isSuccess?: boolean;
-            code?: string;
-            message?: string;
-            result?: string;
         };
         ApiResponseMapStringObject: {
             isSuccess?: boolean;
@@ -641,7 +644,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": string;
+                    "*/*": components["schemas"]["ApiResponseString"];
                 };
             };
         };
