@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useMutation } from '@tanstack/react-query';
 import { useAuthStore } from '@/shared/stores/authStore';
@@ -22,9 +21,5 @@ export const useLogout = () => {
     },
   });
 
-  const handleLogout = useCallback(() => {
-    logout();
-  }, [logout]);
-
-  return { handleLogout, isPending };
+  return { handleLogout: logout, isPending };
 };
