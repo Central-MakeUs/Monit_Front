@@ -1,11 +1,10 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { WeeklyCalendar, MonthlyCalendar } from '@/widgets/calendar';
+import { useCalendarExpenseData } from '@/features/calendarExpenseData';
 import { ViewMode } from '../../model/types';
 import * as styles from './CalendarSection.css';
-import { getExpenseCalendar, type DailyAmount } from '@/features/expense/api/getExpenseCalendar';
-import { format } from 'date-fns';
 
 export interface CalendarSectionProps {
   viewMode: ViewMode;
@@ -22,35 +21,8 @@ export const CalendarSection = ({
   onDateSelect,
   onMonthChange,
 }: CalendarSectionProps) => {
-  const [dailyAmounts, setDailyAmounts] = useState<DailyAmount[]>([]);
-
-  useEffect(() => {
-    const fetchMonthlyExpenses = async () => {
-      try {
-        const year = currentDate.getFullYear();
-        const month = currentDate.getMonth() + 1;
-        const response = await getExpenseCalendar({ year, month });
-        if (response && response.result && response.result.dailyAmount) {
-          setDailyAmounts(response.result.dailyAmount);
-        } else {
-          setDailyAmounts([]);
-        }
-      } catch (error) {
-        console.error('Failed to fetch monthly expenses:', error);
-        setDailyAmounts([]);
-      }
-    };
-
-    if (viewMode === 'calendar') {
-      fetchMonthlyExpenses();
-    }
-  }, [currentDate, viewMode]);
-
-  const renderDateText = (date: Date) => {
-    const dateString = format(date, 'yyyy-MM-dd');
-    const amountData = dailyAmounts.find((item) => item.date === dateString);
-    return amountData ? amountData.dayAmount.toLocaleString() : undefined;
-  };
+  // 캘린더 모드일 때만 데이터 페칭
+  const { getFormattedAmount } = useCalendarExpenseData(currentDate, viewMode === 'calendar');
 
   return (
     <div className={styles.container}>
@@ -67,7 +39,7 @@ export const CalendarSection = ({
           selectedDate={selectedDate}
           variant='home'
           showText={true}
-          renderDateText={renderDateText}
+          renderDateText={getFormattedAmount}
           onDateSelect={onDateSelect}
           onMonthChange={onMonthChange}
         />
