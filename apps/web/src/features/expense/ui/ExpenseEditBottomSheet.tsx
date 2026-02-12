@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { BottomSheet } from '@/shared/ui/bottomSheet';
-import { CategoryIconType } from '@/shared/ui';
+import { CategoryIconType, useToast } from '@/shared/ui';
 import { AlertDialog } from '@/shared/ui/alertDialog';
 import { CategoryBottomSheetTemplate } from '@/features/expense/ui/expenseBottomSheet/CategoryBottomSheet';
 import { CalendarBottomSheetTemplate } from '@/features/expense/ui/steps/AmountDateStep/CalendarBottomSheet';
@@ -38,6 +38,7 @@ export const ExpenseEditBottomSheet = ({
 }: ExpenseEditBottomSheetProps) => {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const toast = useToast();
   const [amount, setAmount] = useState<number>(0);
   const [usage, setUsage] = useState<string>('');
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>('1');
@@ -67,6 +68,7 @@ export const ExpenseEditBottomSheet = ({
       queryClient.invalidateQueries({ queryKey: ['expense', 'daily'] });
       // 월별 지출 데이터 캐시 무효화하여 리페칭 (Summary Record)
       queryClient.invalidateQueries({ queryKey: ['expenseReport', 'summary'] });
+      toast.success('소비 기록이 수정되었어요.');
       onConfirm?.({
         ...expense!,
         amount,
@@ -76,7 +78,7 @@ export const ExpenseEditBottomSheet = ({
     },
     onError: (error) => {
       console.error('지출 수정 실패:', error);
-      // TODO: 에러 토스트 메시지 표시
+      toast.attention('수정에 실패했어요. 다시 시도해 주세요.');
     },
   });
   // 지출 삭제 mutation
@@ -87,6 +89,7 @@ export const ExpenseEditBottomSheet = ({
       queryClient.invalidateQueries({ queryKey: ['expense', 'daily'] });
       // 월별 지출 데이터 캐시 무효화하여 리페칭 (Summary Record)
       queryClient.invalidateQueries({ queryKey: ['expenseReport', 'summary'] });
+      toast.success('소비 기록이 삭제되었어요.');
       if (expense?.expenseId) {
         onDelete?.(expense.expenseId);
       }
@@ -94,7 +97,7 @@ export const ExpenseEditBottomSheet = ({
     },
     onError: (error) => {
       console.error('지출 삭제 실패:', error);
-      // TODO: 에러 토스트 메시지 표시
+      toast.attention('삭제에 실패했어요. 다시 시도해 주세요.');
     },
   });
 
