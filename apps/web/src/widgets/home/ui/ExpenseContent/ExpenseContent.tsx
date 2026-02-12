@@ -1,8 +1,9 @@
 import React from 'react';
 import { spinner } from '@/shared/ui/spinner/Spinner.css';
+import { type ExpenseListDTO } from '@/entities/expense';
 import { EmptyState } from '../EmptyState';
 import { EmptyStateType } from '../../model/types';
-import { ExpenseList, Expense } from '../ExpenseList';
+import { ExpenseList } from '../ExpenseList';
 import { ExpenseSummary } from '../ExpenseSummary';
 import * as styles from './ExpenseContent.css';
 
@@ -12,8 +13,8 @@ export interface ExpenseContentProps {
   expenseCount: number;
   totalExpenseAmount: number;
   selectedDate: Date | null;
-  expenses?: Expense[];
-  onExpenseClick?: (expense: Expense) => void;
+  expenses?: ExpenseListDTO[];
+  onExpenseClick?: (expense: ExpenseListDTO) => void;
   isLoading?: boolean;
   isFetching?: boolean;
 }

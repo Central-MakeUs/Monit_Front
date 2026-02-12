@@ -16,14 +16,13 @@ import {
   deleteExpense,
   type UpdateExpenseRequest,
 } from '@/features/expense/model';
-import { EXPENSE_CONSTANTS, EXPENSE_ERROR_MESSAGES } from '@/entities/expense';
-import { Expense } from '@/widgets/home/ui/ExpenseList';
+import { EXPENSE_CONSTANTS, EXPENSE_ERROR_MESSAGES, type ExpenseListDTO } from '@/entities/expense';
 
 export interface ExpenseEditBottomSheetProps {
   isOpen: boolean;
-  expense: Expense | null;
+  expense: ExpenseListDTO | null;
   onClose: () => void;
-  onConfirm?: (updatedExpense: Expense) => void;
+  onConfirm?: (updatedExpense: ExpenseListDTO) => void;
   onDelete?: (expenseId: number) => void;
   selectedDate?: Date;
 }

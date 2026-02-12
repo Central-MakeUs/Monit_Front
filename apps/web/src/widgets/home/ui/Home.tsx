@@ -6,12 +6,12 @@ import { DatePickerFeature } from '@/features/datePickerModal';
 import { useClientOnly, useModal } from '@/shared/hooks';
 import { ExpenseEditBottomSheet } from '@/features/expense';
 import { useHomeExpenseData } from '@/features/homeExpenseData';
+import { type ExpenseListDTO } from '@/entities/expense';
 import { useHomeStore } from '../model/useHomeStore';
 import { HomeHeader } from './HomeHeader';
 import { MonthlyExpenseInfo } from './MonthlyExpenseInfo';
 import { CalendarSection } from './CalendarSection';
 import { ExpenseContent } from './ExpenseContent';
-import { Expense } from './ExpenseList';
 import * as styles from './Home.css';
 
 export interface HomeProps {
@@ -21,7 +21,7 @@ export interface HomeProps {
 export const Home = ({ onSettingsClick }: HomeProps) => {
   const isMounted = useClientOnly();
   const { isOpen, openModal, closeModal } = useModal();
-  const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
+  const [selectedExpense, setSelectedExpense] = useState<ExpenseListDTO | null>(null);
 
   const {
     currentDate,
@@ -54,7 +54,7 @@ export const Home = ({ onSettingsClick }: HomeProps) => {
     isFetching,
   } = useHomeExpenseData(selectedDate);
 
-  const handleExpenseClick = (expense: Expense) => {
+  const handleExpenseClick = (expense: ExpenseListDTO) => {
     setSelectedExpense(expense);
     openModal();
   };
@@ -109,8 +109,6 @@ export const Home = ({ onSettingsClick }: HomeProps) => {
         isOpen={isOpen}
         expense={selectedExpense}
         onClose={closeModal}
-        onConfirm={(updated) => console.log('Confirm edit:', updated)}
-        onDelete={(id) => console.log('Delete expense:', id)}
         selectedDate={selectedDate || new Date()}
       />
     </div>
