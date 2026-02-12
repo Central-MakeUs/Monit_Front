@@ -28,4 +28,5 @@ export const ENDPOINT = {
     CATEGORY_CREATE: 'api/expense/category_create',
     CATEGORY_UPDATE: 'api/expense/category_update/{categoryId}',
   },
+  INQUIRY: { INQUIRY_SEND: 'api/inquiry/send' },
 } as const;

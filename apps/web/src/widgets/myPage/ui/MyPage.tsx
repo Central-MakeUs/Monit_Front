@@ -1,8 +1,9 @@
 'use client';
 
 import { MenuItem, MenuLabel } from '@/features/my';
+import { useLogout, useWithdraw } from '@/features/auth';
 import { EXTERNAL_URLS } from '@/shared/constants/urls';
-import { TopBar, vars, Text, Divider, AlertDialog, useToast } from '@/shared/ui';
+import { TopBar, vars, Text, Divider, AlertDialog } from '@/shared/ui';
 import { IcLeftChevron } from 'public/icons';
 import React from 'react';
 import * as styles from './myPage.css';
@@ -11,7 +12,8 @@ import { useModal } from '@/shared/hooks';
 
 export const MyPage = () => {
   const router = useRouter();
-  const toast = useToast();
+  const { handleLogout, isPending: isLogoutPending } = useLogout();
+  const { handleWithdraw, isPending: isWithdrawPending } = useWithdraw();
   const {
     isOpen: isLogoutOpen,
     openModal: openLogoutModal,
@@ -22,20 +24,6 @@ export const MyPage = () => {
     openModal: openWithdrawModal,
     closeModal: closeWithdrawModal,
   } = useModal();
-
-  // TODO: 페이지 만들면 router 아래 모두 수정
-  // TODO: 알림 설정
-  const handleLogout = () => {
-    // TODO: 로그아웃 API 연동
-    toast.success('로그아웃이 완료되었어요');
-    router.push('/');
-  };
-
-  const handleWithdraw = () => {
-    // TODO: 회원탈퇴 API 연동
-    toast.success('회원탈퇴가 완료되었어요');
-    router.push('/');
-  };
 
   return (
     <div>
@@ -90,17 +78,25 @@ export const MyPage = () => {
         confirmText='로그아웃'
         onCancel={closeLogoutModal}
         onConfirm={handleLogout}
+        isConfirmDisabled={isLogoutPending}
       />
       <AlertDialog
         isOpen={isWithdrawOpen}
         onClose={closeWithdrawModal}
         variant='left'
         title='정말 탈퇴하시겠어요?'
-        description={`작성한 소비 기록이 모두 삭제되며,\n한 번 삭제된 데이터는 다시 복구할 수 없어요.`}
+        description={
+          <>
+            <span style={{ color: vars.color.text.primary }}>지금까지 작성한 소비 기록</span>이 모두
+            삭제되며,
+            <br />한 번 삭제된 데이터는 다시 복구할 수 없어요.
+          </>
+        }
         cancelText='취소'
         confirmText='탈퇴'
         onCancel={closeWithdrawModal}
         onConfirm={handleWithdraw}
+        isConfirmDisabled={isWithdrawPending}
       />
     </div>
   );
