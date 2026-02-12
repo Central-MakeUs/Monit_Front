@@ -47,7 +47,7 @@ export const UsageCategoryStep = ({
       .slice(0, 7)
       .map((c) => c.id);
     setPinnedCategoryIds(ids);
-  }, [categories, pinnedCategoryIds, setPinnedCategoryIds]);
+  }, [categories, setPinnedCategoryIds]);
 
   // store 데이터를 Category 타입으로 변환
   const categoryOptions = useMemo<Category[]>(
