@@ -7,6 +7,7 @@ import { useClientOnly, useModal } from '@/shared/hooks';
 import { ExpenseEditBottomSheet } from '@/features/expense';
 import { useHomeExpenseData } from '@/features/homeExpenseData';
 import { type ExpenseListDTO } from '@/entities/expense';
+import type { WeeklyCalendarSlotProps, MonthlyCalendarSlotProps } from '../model/types';
 import { useHomeStore } from '../model/useHomeStore';
 import { HomeHeader } from './HomeHeader';
 import { MonthlyExpenseInfo } from './MonthlyExpenseInfo';
@@ -16,9 +17,17 @@ import * as styles from './Home.css';
 
 export interface HomeProps {
   onSettingsClick: () => void;
+  /** 주간 캘린더 렌더 슬롯 (page에서 widgets/calendar를 주입) */
+  renderWeeklyCalendar: (props: WeeklyCalendarSlotProps) => React.ReactNode;
+  /** 월간 캘린더 렌더 슬롯 (page에서 widgets/calendar를 주입) */
+  renderMonthlyCalendar: (props: MonthlyCalendarSlotProps) => React.ReactNode;
 }
 
-export const Home = ({ onSettingsClick }: HomeProps) => {
+export const Home = ({
+  onSettingsClick,
+  renderWeeklyCalendar,
+  renderMonthlyCalendar,
+}: HomeProps) => {
   const isMounted = useClientOnly();
   const { isOpen, openModal, closeModal } = useModal();
   const [selectedExpense, setSelectedExpense] = useState<ExpenseListDTO | null>(null);
@@ -90,6 +99,8 @@ export const Home = ({ onSettingsClick }: HomeProps) => {
           selectedDate={selectedDate}
           onDateSelect={setSelectedDate}
           onMonthChange={setCurrentDate}
+          renderWeeklyCalendar={renderWeeklyCalendar}
+          renderMonthlyCalendar={renderMonthlyCalendar}
         />
 
         <ExpenseContent
@@ -97,7 +108,6 @@ export const Home = ({ onSettingsClick }: HomeProps) => {
           emptyStateType={emptyStateType}
           expenseCount={expenseCount}
           totalExpenseAmount={dailyTotalAmount}
-          selectedDate={selectedDate}
           expenses={expenses}
           onExpenseClick={handleExpenseClick}
           isLoading={isLoading}
