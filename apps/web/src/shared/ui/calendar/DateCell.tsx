@@ -45,8 +45,10 @@ export const DateCell = ({
         })}>
         {date.getDate()}
       </span>
-      {showText && text && (
-        <span className={dateText({ size, isOutsideMonth, selected: isSelected })}>{text}</span>
+      {showText && (
+        <span className={dateText({ size, isOutsideMonth, selected: isSelected })}>
+          {text || '\u00A0'}
+        </span>
       )}
     </div>
   );

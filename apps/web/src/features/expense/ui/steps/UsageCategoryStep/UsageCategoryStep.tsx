@@ -40,14 +40,14 @@ export const UsageCategoryStep = ({
   const categories = useMemo(() => categoryResponse?.result ?? [], [categoryResponse?.result]);
 
   useEffect(() => {
-    if (pinnedCategoryIds === null && categories.length > 0) {
-      const ids = categories
-        .filter((c) => c.id != null)
-        .slice(0, 7)
-        .map((c) => c.id);
-      setPinnedCategoryIds(ids);
-    }
-  }, [categories, pinnedCategoryIds, setPinnedCategoryIds]);
+    if (categories.length === 0) return;
+
+    const ids = categories
+      .filter((c) => c.id != null)
+      .slice(0, 7)
+      .map((c) => c.id);
+    setPinnedCategoryIds(ids);
+  }, [categories, setPinnedCategoryIds]);
 
   // store 데이터를 Category 타입으로 변환
   const categoryOptions = useMemo<Category[]>(

@@ -14,7 +14,7 @@ import {
   Badge,
   Divider,
 } from '@/shared/ui';
-
+import { EXPENSE_CONSTANTS, EXPENSE_ERROR_MESSAGES } from '@/entities/expense';
 import { IcTrash } from 'public/icons';
 import { formatDate } from '@/shared/utils';
 export interface Category {
@@ -54,19 +54,16 @@ export interface ExpenseFormBottomSheetProps {
   onConfirm?: () => void;
   /** X 버튼 클릭 시 콜백 */
   onClose?: () => void;
-}
+  /** 확인 버튼 비활성화 여부 */
+  confirmDisabled?: boolean;
+  /** 소비 금액 에러 메세지 */
+  amountErrorMessage?: string;
+  /** 소비 금액 에러 여부 */
+  isAmountError?: boolean;
 
-//TODO: 나중엔 API 호출 or 전역에서 불러오는 방식으로 ㄱ
-//TODO: 나머지도 여기서 불러오는 방식이 나을 듯
-const expenseCategories: Category[] = [
-  { id: '1', icon: 'shopping', label: '간식' },
-  { id: '2', icon: 'coin', label: '자기계발비' },
-  { id: '3', icon: 'percent', label: '감식' },
-  { id: '4', icon: 'shopping', label: '카테고리명' },
-  { id: '5', icon: 'shopping', label: '간식' },
-  { id: '6', icon: 'coin', label: '자기계발비' },
-  { id: '7', icon: 'percent', label: '감식' },
-];
+  /** 사용처 에러 여부 (빨간색 표시 여부) */
+  isUsageError?: boolean;
+}
 
 export const ExpenseFormBottomSheet = ({
   amount,
@@ -74,12 +71,18 @@ export const ExpenseFormBottomSheet = ({
   usage,
   onUsageChange,
   selectedDate = new Date(),
+  onDateClick,
+  categories,
   selectedCategoryId,
   onCategorySelect,
   onMoreCategoryClick,
   onDelete,
   onConfirm,
   onClose,
+  confirmDisabled,
+  amountErrorMessage,
+  isAmountError,
+  isUsageError,
 }: ExpenseFormBottomSheetProps) => {
   return (
     <BaseBottomSheetTemplate>
@@ -91,6 +94,9 @@ export const ExpenseFormBottomSheet = ({
           value={amount?.toString()}
           onValueChange={onAmountChange}
           fieldType='number'
+          errorMessage={amountErrorMessage}
+          error={isAmountError}
+          allowZero={false}
         />
       </InputField>
 
@@ -101,18 +107,21 @@ export const ExpenseFormBottomSheet = ({
             placeholder='사용처를 입력해주세요'
             value={usage}
             onValueChange={onUsageChange}
+            errorMessage={EXPENSE_ERROR_MESSAGES.INVALID_USAGE}
+            error={isUsageError}
+            maxLength={EXPENSE_CONSTANTS.MAX_USAGE_LENGTH}
           />
         </InputField>
       </div>
 
       {/* 소비일 */}
-      <DateInfoField label='소비일' value={formatDate(selectedDate)} onClick={() => {}} />
+      <DateInfoField label='소비일' value={formatDate(selectedDate)} onClick={onDateClick} />
 
       <Divider color='#E8E8E8' />
 
       {/* 카테고리 */}
       <CategoryGrid
-        categories={expenseCategories}
+        categories={categories ?? []}
         selectedId={selectedCategoryId}
         onSelect={onCategorySelect}
         onMoreClick={onMoreCategoryClick}
@@ -121,11 +130,11 @@ export const ExpenseFormBottomSheet = ({
       {/* 훌린듯이 소비 */}
       <div className={styles.badgeContainer}>
         <Text variant='b2' color={vars.color.text.secondary}>
-          소비 상황/만족도
+          소비 상황
         </Text>
         <div className={styles.badgeList}>
           <Badge label={'홀린듯이'} />
-          <Badge label='정말 만족했어요' size='lg' evaluationType='VERY_SATISFIED' />
+          {/* <Badge label='정말 만족했어요' size='lg' evaluationType='VERY_SATISFIED' /> */}
         </div>
       </div>
 
@@ -134,7 +143,7 @@ export const ExpenseFormBottomSheet = ({
         <button className={styles.deleteButton} onClick={onDelete}>
           <IcTrash />
         </button>
-        <Button variant='brand' onClick={onConfirm}>
+        <Button variant='brand' onClick={onConfirm} disabled={confirmDisabled}>
           완료
         </Button>
       </div>

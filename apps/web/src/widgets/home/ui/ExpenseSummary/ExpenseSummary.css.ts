@@ -20,8 +20,10 @@ export const summaryRow = style({
 
 export const countText = style({
   flexShrink: 0,
+  color: vars.color.text.secondary,
 });
 
 export const amountText = style({
   flexShrink: 0,
+  color: vars.color.text.primary,
 });

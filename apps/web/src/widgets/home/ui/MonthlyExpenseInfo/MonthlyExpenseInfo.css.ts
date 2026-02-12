@@ -7,7 +7,6 @@ export const container = style({
   alignItems: 'flex-end',
   padding: `0 ${vars.spacing.xl}`,
   margin: '2.95rem 0 1.3rem 0',
-  gap: '202px',
 });
 
 export const info = style({

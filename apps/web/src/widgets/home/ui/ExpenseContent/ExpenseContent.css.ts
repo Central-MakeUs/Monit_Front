@@ -19,3 +19,11 @@ export const emptySection = style({
   justifyContent: 'center',
   paddingTop: vars.spacing['2xl'],
 });
+
+export const loadingWrapper = style({
+  width: '100%',
+  height: '100%',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+});

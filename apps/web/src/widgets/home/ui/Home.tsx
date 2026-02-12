@@ -5,23 +5,32 @@ import { useShallow } from 'zustand/react/shallow';
 import { DatePickerFeature } from '@/features/datePickerModal';
 import { useClientOnly, useModal } from '@/shared/hooks';
 import { ExpenseEditBottomSheet } from '@/features/expense';
+import { useHomeExpenseData } from '@/features/homeExpenseData';
+import { type ExpenseListDTO } from '@/entities/expense';
+import type { WeeklyCalendarSlotProps, MonthlyCalendarSlotProps } from '../model/types';
 import { useHomeStore } from '../model/useHomeStore';
-import { HOME_MOCK_DATA } from '../model/mock';
 import { HomeHeader } from './HomeHeader';
 import { MonthlyExpenseInfo } from './MonthlyExpenseInfo';
 import { CalendarSection } from './CalendarSection';
 import { ExpenseContent } from './ExpenseContent';
-import { Expense } from './ExpenseList';
 import * as styles from './Home.css';
 
 export interface HomeProps {
   onSettingsClick: () => void;
+  /** 주간 캘린더 렌더 슬롯 (page에서 widgets/calendar를 주입) */
+  renderWeeklyCalendar: (props: WeeklyCalendarSlotProps) => React.ReactNode;
+  /** 월간 캘린더 렌더 슬롯 (page에서 widgets/calendar를 주입) */
+  renderMonthlyCalendar: (props: MonthlyCalendarSlotProps) => React.ReactNode;
 }
 
-export const Home = ({ onSettingsClick }: HomeProps) => {
+export const Home = ({
+  onSettingsClick,
+  renderWeeklyCalendar,
+  renderMonthlyCalendar,
+}: HomeProps) => {
   const isMounted = useClientOnly();
   const { isOpen, openModal, closeModal } = useModal();
-  const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
+  const [selectedExpense, setSelectedExpense] = useState<ExpenseListDTO | null>(null);
 
   const {
     currentDate,
@@ -43,10 +52,18 @@ export const Home = ({ onSettingsClick }: HomeProps) => {
     }))
   );
 
-  const { hasExpenses, emptyStateType, expenseCount, totalExpenseAmount, expenses } =
-    HOME_MOCK_DATA;
+  // Features 레이어의 훅을 통해 데이터 페칭 및 로직 처리
+  const {
+    monthlyTotalAmount,
+    expenses,
+    expenseCount,
+    dailyTotalAmount,
+    emptyStateType,
+    isLoading,
+    isFetching,
+  } = useHomeExpenseData(selectedDate);
 
-  const handleExpenseClick = (expense: Expense) => {
+  const handleExpenseClick = (expense: ExpenseListDTO) => {
     setSelectedExpense(expense);
     openModal();
   };
@@ -68,7 +85,13 @@ export const Home = ({ onSettingsClick }: HomeProps) => {
       </DatePickerFeature>
 
       <div className={styles.content}>
-        <MonthlyExpenseInfo viewMode={viewMode} onViewModeChange={setViewMode} />
+        <MonthlyExpenseInfo
+          viewMode={viewMode}
+          onViewModeChange={setViewMode}
+          monthlyTotalAmount={monthlyTotalAmount}
+          isLoading={isLoading}
+          isFetching={isFetching}
+        />
 
         <CalendarSection
           viewMode={viewMode}
@@ -76,16 +99,19 @@ export const Home = ({ onSettingsClick }: HomeProps) => {
           selectedDate={selectedDate}
           onDateSelect={setSelectedDate}
           onMonthChange={setCurrentDate}
+          renderWeeklyCalendar={renderWeeklyCalendar}
+          renderMonthlyCalendar={renderMonthlyCalendar}
         />
 
         <ExpenseContent
-          hasExpenses={hasExpenses}
+          hasExpenses={expenses.length > 0}
           emptyStateType={emptyStateType}
           expenseCount={expenseCount}
-          totalExpenseAmount={totalExpenseAmount}
-          selectedDate={selectedDate}
+          totalExpenseAmount={dailyTotalAmount}
           expenses={expenses}
           onExpenseClick={handleExpenseClick}
+          isLoading={isLoading}
+          isFetching={isFetching}
         />
       </div>
 
@@ -93,8 +119,7 @@ export const Home = ({ onSettingsClick }: HomeProps) => {
         isOpen={isOpen}
         expense={selectedExpense}
         onClose={closeModal}
-        onConfirm={(updated) => console.log('Confirm edit:', updated)}
-        onDelete={(id) => console.log('Delete expense:', id)}
+        selectedDate={selectedDate || new Date()}
       />
     </div>
   );

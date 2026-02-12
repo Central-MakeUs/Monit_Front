@@ -12,9 +12,11 @@ export const ENDPOINT = {
   EXPENSE: {
     RECORD: 'api/expense/record',
     UPDATE_RECORD: 'api/expense/update_record/{expenseId}',
+    DELETE_RECORD: 'api/expense/delete/{expenseId}',
     REMIND: 'api/expense/remind',
     DAILY: 'api/expense/daily',
     RETROSPECT_LIST: 'api/expense/retrospect-list',
+    CALENDAR: 'api/expense/calendar',
   },
   EXPENSE_REPORT: {
     WEEKLY_DETAIL: 'api/expense/weekly_detail',

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
+import { type ExpenseListDTO } from '@/entities/expense';
 import { ExpenseContent } from './ExpenseContent';
-import { Expense } from '../ExpenseList';
 
 const meta = {
   title: 'Widgets/Home/ExpenseContent',
@@ -25,17 +25,15 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const defaultSelectedDate = new Date(2024, 0, 15);
-
-const mockExpenses: Expense[] = [
+const mockExpenses: ExpenseListDTO[] = [
   {
     expenseId: 1,
     usageHistory: '스타벅스 아메리카노',
-    categoryIconType: 'shopping',
+    categoryIconType: 'coffee',
     categoryName: '카페',
     amount: 5000,
-    emotionType: '만족',
-    evaluationType: 'GREAT',
+    emotionType: '기분전환',
+    evaluationType: 'SATISFIED',
   },
   {
     expenseId: 2,
@@ -49,11 +47,11 @@ const mockExpenses: Expense[] = [
   {
     expenseId: 3,
     usageHistory: '카카오택시',
-    categoryIconType: 'coin',
+    categoryIconType: 'shopping',
     categoryName: '교통',
     amount: 8500,
     emotionType: '기분전환',
-    evaluationType: 'GOOD',
+    evaluationType: 'SATISFIED',
   },
 ];
 
@@ -68,7 +66,6 @@ export const WithExpenses: Story = {
     emptyStateType: 'never',
     expenseCount: 3,
     totalExpenseAmount: 25500,
-    selectedDate: defaultSelectedDate,
     expenses: mockExpenses,
   },
 };
@@ -84,7 +81,6 @@ export const EmptyNever: Story = {
     emptyStateType: 'never',
     expenseCount: 0,
     totalExpenseAmount: 0,
-    selectedDate: defaultSelectedDate,
   },
 };
 
@@ -99,7 +95,6 @@ export const EmptyToday: Story = {
     emptyStateType: 'today',
     expenseCount: 0,
     totalExpenseAmount: 0,
-    selectedDate: new Date(),
   },
 };
 
@@ -114,7 +109,6 @@ export const EmptyDate: Story = {
     emptyStateType: 'date',
     expenseCount: 0,
     totalExpenseAmount: 0,
-    selectedDate: defaultSelectedDate,
   },
 };
 
@@ -127,26 +121,25 @@ export const ManyExpenses: Story = {
     emptyStateType: 'never',
     expenseCount: 15,
     totalExpenseAmount: 125000,
-    selectedDate: defaultSelectedDate,
     expenses: [
       ...mockExpenses,
       {
         expenseId: 4,
         usageHistory: '올리브영',
-        categoryIconType: 'shopping',
+        categoryIconType: 'beauty',
         categoryName: '쇼핑',
         amount: 15000,
-        emotionType: '힐링',
-        evaluationType: 'GREAT',
+        emotionType: '홀린듯이',
+        evaluationType: 'VERY_SATISFIED',
       },
       {
         expenseId: 5,
         usageHistory: '점심식사',
-        categoryIconType: 'coin',
+        categoryIconType: 'cook',
         categoryName: '식비',
         amount: 9000,
-        emotionType: '맛집',
-        evaluationType: 'GOOD',
+        emotionType: '필수템',
+        evaluationType: 'SATISFIED',
       },
     ],
   },

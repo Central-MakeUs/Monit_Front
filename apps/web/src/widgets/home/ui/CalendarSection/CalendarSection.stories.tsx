@@ -1,4 +1,6 @@
+import React from 'react';
 import type { Meta, StoryObj } from '@storybook/nextjs';
+import { WeeklyCalendar, MonthlyCalendar } from '@/widgets/calendar';
 import { CalendarSection } from './CalendarSection';
 
 const meta = {
@@ -20,6 +22,10 @@ const meta = {
   args: {
     onDateSelect: () => {},
     onMonthChange: () => {},
+    renderWeeklyCalendar: (props) => <WeeklyCalendar {...props} />,
+    renderMonthlyCalendar: ({ renderDateText, ...props }) => (
+      <MonthlyCalendar {...props} variant='home' showText={true} renderDateText={renderDateText} />
+    ),
   },
 } satisfies Meta<typeof CalendarSection>;
 

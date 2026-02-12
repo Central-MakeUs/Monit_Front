@@ -10,6 +10,8 @@ export interface EditableTextInputProps extends Omit<TextInputProps, 'state'> {
   /** 비편집 모드에서 값 뒤에 표시할 suffix (기본값: number 타입일 때 '원') */
   displaySuffix?: string;
   onEditStart?: () => void;
+  /** 0 허용 여부 (허용하지 않으면 0 입력 시 편집 모드 유지) */
+  allowZero?: boolean;
 }
 
 export const EditableTextInput = React.forwardRef<HTMLInputElement, EditableTextInputProps>(
@@ -23,6 +25,7 @@ export const EditableTextInput = React.forwardRef<HTMLInputElement, EditableText
       displaySuffix,
       errorMessage,
       maxNumber,
+      allowZero = true,
       ...props
     },
     forwardedRef
@@ -41,12 +44,28 @@ export const EditableTextInput = React.forwardRef<HTMLInputElement, EditableText
     const resolvedSuffix = displaySuffix ?? (currentFieldType === 'number' ? '원' : '');
 
     // 에러 상태 계산
-    const hasValidationError =
-      currentFieldType === 'number' &&
-      maxNumber !== undefined &&
-      currentValue !== '' &&
-      !isNaN(+currentValue) &&
-      +currentValue > maxNumber;
+    const hasValidationError = (() => {
+      // 0 허용 안 함 체크
+      if (
+        currentFieldType === 'number' &&
+        !allowZero &&
+        (currentValue === '' || Number(currentValue.replace(/,/g, '')) === 0)
+      ) {
+        return true;
+      }
+
+      if (
+        currentFieldType === 'number' &&
+        maxNumber !== undefined &&
+        currentValue !== '' &&
+        !isNaN(+currentValue) &&
+        +currentValue > maxNumber
+      ) {
+        return true;
+      }
+
+      return false;
+    })();
 
     // 편집 모드 전환 시 autoFocus
     useEffect(() => {
@@ -61,16 +80,22 @@ export const EditableTextInput = React.forwardRef<HTMLInputElement, EditableText
     };
 
     const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-      // maxNumber 초과 시 편집 모드 유지
       const blurValue = e.target.value;
+      const numericValue = Number(blurValue.replace(/,/g, ''));
+
+      // maxNumber 초과 시 편집 모드 유지
       const isOverMax =
         currentFieldType === 'number' &&
         maxNumber !== undefined &&
         blurValue !== '' &&
-        !isNaN(+blurValue) &&
-        +blurValue > maxNumber;
+        !isNaN(numericValue) &&
+        numericValue > maxNumber;
 
-      if (isOverMax) {
+      // 0 또는 빈 값이고 allowZero가 false일 때 편집 모드 유지
+      const isZeroOrEmpty =
+        currentFieldType === 'number' && !allowZero && (blurValue === '' || numericValue === 0);
+
+      if (isOverMax || isZeroOrEmpty) {
         inputRef.current?.focus();
         return;
       }
@@ -87,7 +112,7 @@ export const EditableTextInput = React.forwardRef<HTMLInputElement, EditableText
           value={currentValue}
           fieldType={currentFieldType}
           suffix={resolvedSuffix}
-          hasError={hasValidationError}
+          hasError={hasValidationError || props.error}
           errorMessage={errorMessage}
           onEditClick={handleEditClick}
         />
