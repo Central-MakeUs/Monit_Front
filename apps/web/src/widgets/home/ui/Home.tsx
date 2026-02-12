@@ -44,8 +44,15 @@ export const Home = ({ onSettingsClick }: HomeProps) => {
   );
 
   // Features 레이어의 훅을 통해 데이터 페칭 및 로직 처리
-  const { monthlyTotalAmount, expenses, expenseCount, dailyTotalAmount, emptyStateType } =
-    useHomeExpenseData(selectedDate);
+  const {
+    monthlyTotalAmount,
+    expenses,
+    expenseCount,
+    dailyTotalAmount,
+    emptyStateType,
+    isLoading,
+    isFetching,
+  } = useHomeExpenseData(selectedDate);
 
   const handleExpenseClick = (expense: Expense) => {
     setSelectedExpense(expense);
@@ -73,6 +80,8 @@ export const Home = ({ onSettingsClick }: HomeProps) => {
           viewMode={viewMode}
           onViewModeChange={setViewMode}
           monthlyTotalAmount={monthlyTotalAmount}
+          isLoading={isLoading}
+          isFetching={isFetching}
         />
 
         <CalendarSection
@@ -91,6 +100,8 @@ export const Home = ({ onSettingsClick }: HomeProps) => {
           selectedDate={selectedDate}
           expenses={expenses}
           onExpenseClick={handleExpenseClick}
+          isLoading={isLoading}
+          isFetching={isFetching}
         />
       </div>
 

@@ -74,7 +74,10 @@ export const useHomeExpenseData = (selectedDate: Date | null) => {
     expenseCount,
     dailyTotalAmount,
     emptyStateType,
-    isLoading: isSummaryLoading || isDailyLoading,
+    // 데이터가 없으면서 로딩 중일 때 (초기 진입)
+    isLoading: (!summaryData && isSummaryLoading) || (!dailyData && isDailyLoading),
+    // 데이터가 있는데 로딩 중일 때 (날짜 변경 등)
+    isFetching: (!!summaryData && isSummaryLoading) || (!!dailyData && isDailyLoading),
     error: summaryError || dailyError,
   };
 };

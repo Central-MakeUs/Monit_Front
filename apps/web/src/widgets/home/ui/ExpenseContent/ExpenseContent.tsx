@@ -1,6 +1,5 @@
-'use client';
-
 import React from 'react';
+import { spinner } from '@/shared/ui/spinner/Spinner.css';
 import { EmptyState } from '../EmptyState';
 import { EmptyStateType } from '../../model/types';
 import { ExpenseList, Expense } from '../ExpenseList';
@@ -15,6 +14,8 @@ export interface ExpenseContentProps {
   selectedDate: Date | null;
   expenses?: Expense[];
   onExpenseClick?: (expense: Expense) => void;
+  isLoading?: boolean;
+  isFetching?: boolean;
 }
 
 export const ExpenseContent = ({
@@ -25,6 +26,8 @@ export const ExpenseContent = ({
   selectedDate,
   expenses = [],
   onExpenseClick,
+  isLoading,
+  isFetching,
 }: ExpenseContentProps) => {
   return (
     <div className={styles.container}>
@@ -35,7 +38,12 @@ export const ExpenseContent = ({
         subText='5단계로 만족도를 남겨볼 수 있어요'
       /> */}
 
-      <ExpenseSummary count={expenseCount} totalAmount={totalExpenseAmount} />
+      <ExpenseSummary
+        count={expenseCount}
+        totalAmount={totalExpenseAmount}
+        isLoading={isLoading}
+        isFetching={isFetching}
+      />
 
       {hasExpenses ? (
         <div className={styles.expenseSection}>
@@ -47,7 +55,13 @@ export const ExpenseContent = ({
         </div>
       ) : (
         <div className={styles.emptySection}>
-          <EmptyState type={emptyStateType} />
+          {isLoading ? (
+            <div className={styles.loadingWrapper}>
+              <div className={spinner} />
+            </div>
+          ) : (
+            <EmptyState type={emptyStateType} />
+          )}
         </div>
       )}
     </div>
