@@ -1,8 +1,8 @@
 import React from 'react';
 import { Text } from '@/shared/ui/text';
 import { ViewToggle } from '@/shared/ui/viewToggle';
-import { blinkingText } from '@/shared/ui/animations';
-import { ViewMode } from '../../model/types';
+import type { ViewMode } from '../../model/types';
+import { getLoadingClass } from '../../lib/getLoadingClass';
 import * as styles from './MonthlyExpenseInfo.css';
 
 export interface MonthlyExpenseInfoProps {
@@ -28,7 +28,7 @@ export const MonthlyExpenseInfo = ({
         </Text>
         <Text
           variant='t5'
-          className={`${styles.amountText} ${isLoading || isFetching ? blinkingText : ''}`}>
+          className={`${styles.amountText} ${getLoadingClass(isLoading, isFetching)}`}>
           {monthlyTotalAmount.toLocaleString()}원
         </Text>
       </div>

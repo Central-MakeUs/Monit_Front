@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text } from '@/shared/ui/text';
-import { blinkingText } from '@/shared/ui/animations';
+import { getLoadingClass } from '../../lib/getLoadingClass';
 import * as styles from './ExpenseSummary.css';
 
 export interface ExpenseSummaryProps {
@@ -24,7 +24,7 @@ export const ExpenseSummary = ({
         </Text>
         <Text
           variant='h1'
-          className={`${styles.amountText} ${isLoading || isFetching ? blinkingText : ''}`}>
+          className={`${styles.amountText} ${getLoadingClass(isLoading, isFetching)}`}>
           {totalAmount.toLocaleString()}원
         </Text>
       </div>
