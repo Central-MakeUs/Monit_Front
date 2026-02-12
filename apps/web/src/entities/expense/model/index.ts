@@ -1,2 +1,7 @@
 export { expenseQueries } from './queries';
-export type { DailyExpenseResponse, DailyExpenseResponseDTO, ExpenseListDTO } from './types';
+export type {
+  DailyExpenseResponse,
+  DailyExpenseResponseDTO,
+  ExpenseListDTO,
+  EmptyStateType,
+} from './types';

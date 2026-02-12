@@ -4,9 +4,8 @@ import {
   expenseQueries,
   type ExpenseListDTO,
   type DailyExpenseResponseDTO,
+  type EmptyStateType,
 } from '@/entities/expense';
-
-type EmptyStateType = 'never' | 'today' | 'date';
 
 /**
  * 홈 화면에 필요한 소비 데이터를 페칭하고 가공하는 훅
