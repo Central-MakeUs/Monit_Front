@@ -25,8 +25,6 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const defaultSelectedDate = new Date(2024, 0, 15);
-
 const mockExpenses: ExpenseListDTO[] = [
   {
     expenseId: 1,
@@ -68,7 +66,6 @@ export const WithExpenses: Story = {
     emptyStateType: 'never',
     expenseCount: 3,
     totalExpenseAmount: 25500,
-    selectedDate: defaultSelectedDate,
     expenses: mockExpenses,
   },
 };
@@ -84,7 +81,6 @@ export const EmptyNever: Story = {
     emptyStateType: 'never',
     expenseCount: 0,
     totalExpenseAmount: 0,
-    selectedDate: defaultSelectedDate,
   },
 };
 
@@ -99,7 +95,6 @@ export const EmptyToday: Story = {
     emptyStateType: 'today',
     expenseCount: 0,
     totalExpenseAmount: 0,
-    selectedDate: new Date(),
   },
 };
 
@@ -114,7 +109,6 @@ export const EmptyDate: Story = {
     emptyStateType: 'date',
     expenseCount: 0,
     totalExpenseAmount: 0,
-    selectedDate: defaultSelectedDate,
   },
 };
 
@@ -127,7 +121,6 @@ export const ManyExpenses: Story = {
     emptyStateType: 'never',
     expenseCount: 15,
     totalExpenseAmount: 125000,
-    selectedDate: defaultSelectedDate,
     expenses: [
       ...mockExpenses,
       {

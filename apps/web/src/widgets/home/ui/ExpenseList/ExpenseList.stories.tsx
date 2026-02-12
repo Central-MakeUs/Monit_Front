@@ -52,7 +52,6 @@ const mockExpenses: ExpenseListDTO[] = [
  */
 export const WithExpenses: Story = {
   args: {
-    selectedDate: new Date(2024, 0, 15),
     expenses: mockExpenses,
   },
 };
@@ -62,7 +61,6 @@ export const WithExpenses: Story = {
  */
 export const ManyExpenses: Story = {
   args: {
-    selectedDate: new Date(2024, 0, 15),
     expenses: [
       ...mockExpenses,
       {

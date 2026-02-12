@@ -6,7 +6,6 @@ import { type ExpenseListDTO } from '@/entities/expense';
 import * as styles from './ExpenseList.css';
 
 export interface ExpenseListProps {
-  selectedDate: Date | null;
   expenses?: ExpenseListDTO[];
   onExpenseClick?: (expense: ExpenseListDTO) => void;
 }
