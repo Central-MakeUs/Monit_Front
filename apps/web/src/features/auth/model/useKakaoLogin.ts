@@ -38,22 +38,11 @@ export const useKakaoLogin = (options: KakaoLoginOptions = {}): KakaoLoginReturn
         return;
       }
 
-      // 웹 환경에서는 기존 Kakao SDK 사용
-      if (!window.Kakao || !window.Kakao.isInitialized()) {
-        const error = new Error('Kakao SDK가 초기화되지 않았습니다.');
-        onError?.(error);
-        return;
-      }
-
       if (!redirectUri) {
         const error = new Error('Redirect URI가 설정되지 않았습니다.');
         onError?.(error);
         return;
       }
-
-      window.Kakao.Auth.authorize({
-        redirectUri: redirectUri as string,
-      });
     } catch (error) {
       const errorMessage = '카카오 로그인 중 에러가 발생했습니다.';
       onError?.(error instanceof Error ? error : new Error(errorMessage));

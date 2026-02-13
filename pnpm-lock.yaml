@@ -132,6 +132,9 @@ importers:
         specifier: 0.5.1
         version: 0.5.1(@babel/core@7.29.0)(react-native@0.81.5(@babel/core@7.29.0)(@types/react@19.1.17)(react@19.1.0))(react@19.1.0)
     devDependencies:
+      '@types/node':
+        specifier: ^22.15.3
+        version: 22.19.7
       '@types/react':
         specifier: ~19.1.0
         version: 19.1.17

@@ -1,10 +1,8 @@
-import { bridge, createWebView, postMessageSchema } from '@webview-bridge/react-native';
+import { bridge, createWebView } from '@webview-bridge/react-native';
 import { Platform } from 'react-native';
-import * as Haptics from 'expo-haptics';
-import * as WebBrowser from 'expo-web-browser';
-import { POST_MESSAGE_EVENT } from '@repo/bridge';
 import { login, logout, me } from '@react-native-kakao/user';
 import { authStorage } from './authStorage';
+import { useAppleLogin } from '@/social/useAppleLogin';
 
 /**
  * Web → Native 브릿지 설정
@@ -84,8 +82,23 @@ export const appBridge = bridge({
           },
         };
       } else if (type === 'apple') {
-        // TODO: 애플 로그인 구현
-        throw new Error('애플 로그인이 아직 구현되지 않았습니다.');
+        const result = await useAppleLogin();
+        const accessToken = result.data?.accessToken;
+        const refreshToken = result.data?.refreshToken || null;
+
+        if (!accessToken) {
+          throw new Error('애플 로그인 응답에 accessToken이 없습니다.');
+        }
+
+        await authStorage.setTokens(accessToken, refreshToken || '');
+
+        return {
+          success: true,
+          data: {
+            accessToken,
+            refreshToken: refreshToken || '',
+          },
+        };
       }
 
       return {
@@ -121,29 +134,6 @@ export const appBridge = bridge({
       await authStorage.clearTokens();
     } catch (error) {
       throw new Error('로그아웃에 실패했습니다.');
-    }
-  },
-
-  async openInAppBrowser(url: string): Promise<void> {
-    await WebBrowser.openBrowserAsync(url);
-  },
-
-  async hapticFeedback(
-    type: 'light' | 'medium' | 'heavy' | 'success' | 'warning' | 'error'
-  ): Promise<void> {
-    const hapticMap = {
-      light: Haptics.ImpactFeedbackStyle.Light,
-      medium: Haptics.ImpactFeedbackStyle.Medium,
-      heavy: Haptics.ImpactFeedbackStyle.Heavy,
-      success: Haptics.NotificationFeedbackType.Success,
-      warning: Haptics.NotificationFeedbackType.Warning,
-      error: Haptics.NotificationFeedbackType.Error,
-    };
-
-    if (type === 'success' || type === 'warning' || type === 'error') {
-      await Haptics.notificationAsync(hapticMap[type] as Haptics.NotificationFeedbackType);
-    } else {
-      await Haptics.impactAsync(hapticMap[type] as Haptics.ImpactFeedbackStyle);
     }
   },
 });

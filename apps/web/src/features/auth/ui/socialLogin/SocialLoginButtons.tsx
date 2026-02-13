@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import * as styles from './SocialLoginButtons.css';
 import { Text, useToast } from '@/shared/ui';
 import { IcApple, IcKakao } from 'public/icons';
-import { useKakaoLogin, useKakaoSDK } from '@/features/auth/model';
+import { useKakaoLogin } from '@/features/auth/model';
 import { usePlatform, useBridge } from '@/shared/lib/bridge';
 import { useAuthStore } from '@/shared/stores/authStore';
 
@@ -15,7 +15,6 @@ import { useAuthStore } from '@/shared/stores/authStore';
  * - 웹: 기존 Kakao SDK 사용
  */
 export const SocialLoginButtons = () => {
-  const { isLoaded, isLoading: isKakaoLoading } = useKakaoSDK();
   const [isNativeLoginLoading, setIsNativeLoginLoading] = useState(false);
   const platform = usePlatform();
   const router = useRouter();
@@ -54,14 +53,32 @@ export const SocialLoginButtons = () => {
   });
 
   const handleKakaoLoginClick = () => {
-    if (!isLoaded) {
-      return;
-    }
     setIsNativeLoginLoading(true);
     handleKakaoLogin();
   };
 
-  const isLoading = isKakaoLoading || isNativeLoginLoading;
+  const handleAppleLogin = async () => {
+    console.log('SocialLoginButtons');
+    try {
+      if (!bridge?.socialLogin('apple')) {
+        alert('브릿지 함수가 사용 불가능합니다.');
+        throw new Error('브릿지 함수가 사용 불가능합니다');
+      }
+
+      const result = await bridge.socialLogin('apple');
+
+      console.log(result);
+      if (result.success && result.data?.accessToken) {
+        useAuthStore.getState().setAccessToken(result.data?.accessToken);
+      } else {
+        alert(`Apple 로그인에 실패하였습니다: ${result.message || '알 수 없는 오류'}`);
+      }
+    } catch {
+      alert(`Apple 로그인에 실패하였습니다.`);
+    }
+  };
+
+  const isLoading = isNativeLoginLoading;
 
   return (
     <div className={styles.container}>
@@ -75,7 +92,7 @@ export const SocialLoginButtons = () => {
         <Text variant='h3'>{isLoading ? '로딩 중...' : '카카오로 계속하기'}</Text>
       </button>
       {platform === 'ios' && (
-        <button className={styles.loginBtn({ social: 'apple' })} onClick={() => {}}>
+        <button className={styles.loginBtn({ social: 'apple' })} onClick={handleAppleLogin}>
           <span className={styles.iconWrapper({ social: 'apple' })}>
             <IcApple />
           </span>

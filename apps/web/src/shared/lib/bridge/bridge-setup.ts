@@ -14,7 +14,7 @@ export const initializeBridge = () => {
     // 브릿지 연결
     const bridge = linkBridge({
       throwOnError: true,
-      timeout: 120000, // 2분 타임아웃 (카카오 로그인 대기 시간 고려)
+      timeout: 1000 * 60 * 10, // 10분
     }) as unknown as AppBridge;
 
     // window 객체에 브릿지 저장
