@@ -2,6 +2,7 @@ export const ENDPOINT = {
   // Auth
   AUTH: {
     KAKAO_CALLBACK: 'api/auth/kakao/callback',
+    KAKAO_LOGIN: 'api/auth/kakao/login',
     APPLE_LOGIN: 'api/auth/apple/login',
     APPLE_CALLBACK: 'api/auth/apple/callback',
     REISSUE: 'api/auth/reissue',

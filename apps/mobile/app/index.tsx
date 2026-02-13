@@ -6,6 +6,8 @@ import * as SystemUI from 'expo-system-ui';
 import type WebViewType from 'react-native-webview';
 import * as SplashScreen from 'expo-splash-screen';
 import { WEBVIEW_URL } from '@/shared/constants/url';
+import { initializeKakaoSDK } from '@react-native-kakao/core';
+import Constants from 'expo-constants';
 
 const BACKGROUND_COLOR = '#F6F7F9';
 
@@ -13,6 +15,19 @@ SplashScreen.preventAutoHideAsync();
 
 // 루트 배경색 설정 (iOS 노치 영역)
 SystemUI.setBackgroundColorAsync(BACKGROUND_COLOR);
+
+// 카카오 SDK 초기화
+const KAKAO_NATIVE_APP_KEY = Constants.expoConfig?.extra?.kakaoNativeAppKey;
+
+if (KAKAO_NATIVE_APP_KEY) {
+  try {
+    initializeKakaoSDK(KAKAO_NATIVE_APP_KEY);
+  } catch (error) {
+    console.error('[Kakao SDK] Initialization failed:', error);
+  }
+} else {
+  console.warn('[Kakao SDK] KAKAO_NATIVE_APP_KEY is not set');
+}
 
 export default function HomeScreen() {
   const webViewRef = useRef<WebViewType>(null);
