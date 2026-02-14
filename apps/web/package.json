@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --port 3000 --webpack",
+    "dev:https": "next dev --experimental-https --webpack",
     "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint --max-warnings 0",

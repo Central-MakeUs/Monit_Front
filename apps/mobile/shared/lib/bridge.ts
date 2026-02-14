@@ -1,9 +1,8 @@
-import { bridge, createWebView, postMessageSchema } from '@webview-bridge/react-native';
+import { bridge, createWebView } from '@webview-bridge/react-native';
 import { Platform } from 'react-native';
-import * as Haptics from 'expo-haptics';
-import * as WebBrowser from 'expo-web-browser';
-import type { AppleLoginResult } from '@repo/bridge';
-import { POST_MESSAGE_EVENT } from '@repo/bridge';
+import { login, logout, me } from '@react-native-kakao/user';
+import { authStorage } from './authStorage';
+import { useAppleLogin } from '@/social/useAppleLogin';
 
 /**
  * Web → Native 브릿지 설정
@@ -18,70 +17,138 @@ export const appBridge = bridge({
     return Platform.OS as 'ios' | 'android';
   },
 
-  async requestAppleLogin(): Promise<AppleLoginResult> {
-    if (Platform.OS !== 'ios') {
-      throw new Error('애플 로그인은 iOS에서만 사용 가능합니다.');
-    }
-    // TODO: expo-apple-authentication 연동 후 구현
-    throw new Error('애플 로그인이 아직 구현되지 않았습니다.');
-  },
-
-  async openInAppBrowser(url: string): Promise<void> {
-    await WebBrowser.openBrowserAsync(url);
-  },
-
-  async hapticFeedback(
-    type: 'light' | 'medium' | 'heavy' | 'success' | 'warning' | 'error'
-  ): Promise<void> {
-    const hapticMap = {
-      light: Haptics.ImpactFeedbackStyle.Light,
-      medium: Haptics.ImpactFeedbackStyle.Medium,
-      heavy: Haptics.ImpactFeedbackStyle.Heavy,
-      success: Haptics.NotificationFeedbackType.Success,
-      warning: Haptics.NotificationFeedbackType.Warning,
-      error: Haptics.NotificationFeedbackType.Error,
+  /**
+   * 소셜 로그인
+   * 네이티브에서 카카오 로그인 → 백엔드 API 호출 → 토큰 저장까지 모두 처리
+   */
+  async socialLogin(type: 'kakao' | 'apple'): Promise<{
+    success: boolean;
+    message?: string;
+    data?: {
+      accessToken: string;
+      refreshToken: string;
     };
+  }> {
+    try {
+      if (type === 'kakao') {
+        // 1. 카카오 SDK 로그인
+        const kakaoResult = await login();
 
-    if (type === 'success' || type === 'warning' || type === 'error') {
-      await Haptics.notificationAsync(hapticMap[type] as Haptics.NotificationFeedbackType);
-    } else {
-      await Haptics.impactAsync(hapticMap[type] as Haptics.ImpactFeedbackStyle);
+        // 2. 카카오 사용자 정보 가져오기
+        const kakaoUser = await me();
+
+        // 3. 백엔드가 기대하는 형식으로 데이터 변환
+        const kakaoUserInfo = {
+          id: kakaoUser.id,
+          properties: {
+            nickname: kakaoUser.nickname || kakaoUser.name || '사용자',
+          },
+          // TODO: 백엔드 API 스펙 확인 후 필요하면 주석 해제
+          // kakao_account: {
+          //   email: kakaoUser.email,
+          // },
+        };
+
+        // 4. 백엔드로 사용자 정보 전송하여 서비스 토큰 받기
+        const backendResponse = await fetch('https://api.nitrogen18.store/api/auth/kakao/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(kakaoUserInfo),
+        });
+
+        if (!backendResponse.ok) {
+          const errorText = await backendResponse.text();
+          throw new Error(`백엔드 API 오류: ${backendResponse.status} - ${errorText}`);
+        }
+
+        const backendData = await backendResponse.json();
+
+        // 5. 백엔드 응답에서 토큰 추출 (result.accessToken)
+        const accessToken = backendData.result?.accessToken;
+        const refreshToken = backendData.result?.refreshToken || null;
+
+        if (!accessToken) {
+          throw new Error('백엔드 응답에 accessToken이 없습니다.');
+        }
+
+        // 6. 백엔드 토큰을 SecureStore에 저장
+        await authStorage.setTokens(accessToken, refreshToken || '');
+
+        return {
+          success: true,
+          data: {
+            accessToken,
+            refreshToken: refreshToken || '',
+          },
+        };
+      } else if (type === 'apple') {
+        const result = await useAppleLogin();
+        const accessToken = result.data?.accessToken;
+        const refreshToken = result.data?.refreshToken || null;
+
+        if (!accessToken) {
+          throw new Error('애플 로그인 응답에 accessToken이 없습니다.');
+        }
+
+        await authStorage.setTokens(accessToken, refreshToken || '');
+
+        return {
+          success: true,
+          data: {
+            accessToken,
+            refreshToken: refreshToken || '',
+          },
+        };
+      }
+
+      return {
+        success: false,
+        message: '지원하지 않는 로그인 방식입니다.',
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: error instanceof Error ? error.message : '로그인에 실패했습니다.',
+      };
     }
   },
-});
 
-/**
- * Native → Web 브릿지 설정 (PostMessage)
- * Native에서 Web으로 이벤트를 전송할 때 사용하는 스키마 정의
- */
-export const appPostMessageSchema = postMessageSchema({
-  [POST_MESSAGE_EVENT.APPLE_LOGIN_SUCCESS]: {
-    validate: (data: unknown) => data as AppleLoginResult,
+  /**
+   * 저장된 액세스 토큰 조회
+   */
+  async getAccessToken(): Promise<{ accessToken: string | null }> {
+    try {
+      const accessToken = await authStorage.getAccessToken();
+      return { accessToken };
+    } catch (error) {
+      return { accessToken: null };
+    }
   },
-  [POST_MESSAGE_EVENT.APPLE_LOGIN_FAILURE]: {
-    validate: (data: unknown) => data as { error: string },
-  },
-  [POST_MESSAGE_EVENT.APP_STATE_CHANGE]: {
-    validate: (data: unknown) => data as { state: 'active' | 'background' | 'inactive' },
-  },
-  [POST_MESSAGE_EVENT.NATIVE_MESSAGE]: {
-    validate: (data: unknown) => data as { message: string },
+
+  /**
+   * 로그아웃
+   */
+  async requestLogout(): Promise<void> {
+    try {
+      await logout();
+      await authStorage.clearTokens();
+    } catch (error) {
+      throw new Error('로그아웃에 실패했습니다.');
+    }
   },
 });
 
 /** Bridge 타입 export (Web에서 사용) */
 export type AppBridgeType = typeof appBridge;
-export type AppPostMessageSchemaType = typeof appPostMessageSchema;
 
 /**
- * WebView 및 postMessage export
+ * WebView export
  * - WebView: Web 콘텐츠를 표시하는 컴포넌트
- * - postMessage: Native → Web 이벤트 전송 함수
  */
-export const { WebView, postMessage } = createWebView({
+export const { WebView } = createWebView({
   bridge: appBridge,
-  postMessageSchema: appPostMessageSchema,
   debug: __DEV__,
+  timeout: 120000, // 2분 타임아웃 (카카오 로그인 대기 시간 고려)
   fallback: (method) => {
     console.warn(`[Bridge] Method '${method}' not found in native`);
   },
