@@ -1,18 +1,12 @@
 import { isAxiosError } from 'axios';
 import { baseAPI } from './instance';
+import type { ApiResponse, LoginData } from '@/shared/types/api.types';
 
 export const postAppleLogin = async ({
   code,
 }: {
   code: string;
-}): Promise<{
-  success: boolean;
-  message?: string;
-  data?: {
-    accessToken: string;
-    refreshToken: string;
-  };
-}> => {
+}): Promise<ApiResponse<LoginData>> => {
   try {
     const response = await baseAPI.post(`/api/auth/apple/login?code=${code}`);
 
@@ -23,6 +17,9 @@ export const postAppleLogin = async ({
       data: {
         accessToken: result.accessToken,
         refreshToken: result.refreshToken,
+        isNewUser: result.isNewUser,
+        hasExpense: result.hasExpense,
+        termsAgreed: result.termsAgreed,
       },
     };
   } catch (error) {

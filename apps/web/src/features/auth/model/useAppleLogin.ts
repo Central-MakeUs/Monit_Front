@@ -1,8 +1,16 @@
 import { useBridge } from '@/shared/lib/bridge';
 import { getPlatform } from '@/shared/utils';
 
+interface AppleLoginData {
+  accessToken: string;
+  refreshToken: string;
+  isNewUser?: string;
+  hasExpense?: boolean;
+  termsAgreed?: boolean;
+}
+
 interface AppleLoginOptions {
-  onSuccess?: () => void;
+  onSuccess?: (data?: AppleLoginData) => void;
   onError?: (error: Error) => void;
 }
 
@@ -25,7 +33,7 @@ export const useAppleLogin = (options: AppleLoginOptions = {}): AppleLoginReturn
       const result = await bridge.socialLogin('apple');
 
       if (result.success) {
-        onSuccess?.();
+        onSuccess?.(result.data);
       } else {
         onError?.(new Error(result.message || 'Apple 로그인에 실패했습니다.'));
       }

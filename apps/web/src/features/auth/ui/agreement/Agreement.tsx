@@ -6,6 +6,8 @@ import { Button, Text, vars } from '@/shared/ui';
 import { SelectionTile } from '@/shared/ui/selectionTile/SelectionTile';
 import { EXTERNAL_URLS } from '@/shared/constants/urls';
 import { useRouter } from 'next/navigation';
+import { useMutation } from '@tanstack/react-query';
+import { authQueries } from '../../model/authQueries';
 
 export const Agreement = () => {
   const route = useRouter();
@@ -13,6 +15,11 @@ export const Agreement = () => {
   const [privacyPolicy, setPrivacyPolicy] = useState(false);
 
   const allAgreed = termsOfService && privacyPolicy;
+
+  const { mutate: agreeTerms, isPending } = useMutation({
+    ...authQueries.termsMutation(),
+    onSuccess: () => route.push('/'),
+  });
 
   const toggleTermsOfService = () => setTermsOfService((prev) => !prev);
   const togglePrivacyPolicy = () => setPrivacyPolicy((prev) => !prev);
@@ -24,7 +31,7 @@ export const Agreement = () => {
   };
 
   const handleNext = () => {
-    route.push('/');
+    agreeTerms();
   };
 
   return (
@@ -70,7 +77,7 @@ export const Agreement = () => {
           </div>
         </div>
         {/* 버튼 */}
-        <Button variant='primary' onClick={handleNext} disabled={!allAgreed} size='lg'>
+        <Button variant='primary' onClick={handleNext} disabled={!allAgreed || isPending} size='lg'>
           다음
         </Button>
       </div>
