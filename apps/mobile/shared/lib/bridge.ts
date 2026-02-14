@@ -27,6 +27,9 @@ export const appBridge = bridge({
     data?: {
       accessToken: string;
       refreshToken: string;
+      isNewUser?: string;
+      hasExpense?: boolean;
+      termsAgreed?: boolean;
     };
   }> {
     try {
@@ -85,6 +88,9 @@ export const appBridge = bridge({
         const result = await useAppleLogin();
         const accessToken = result.data?.accessToken;
         const refreshToken = result.data?.refreshToken || null;
+        const isNewUser = result.data?.isNewUser;
+        const hasExpense = result.data?.hasExpense;
+        const termsAgreed = result.data?.termsAgreed;
 
         if (!accessToken) {
           throw new Error('애플 로그인 응답에 accessToken이 없습니다.');
@@ -97,6 +103,9 @@ export const appBridge = bridge({
           data: {
             accessToken,
             refreshToken: refreshToken || '',
+            isNewUser,
+            hasExpense,
+            termsAgreed,
           },
         };
       }

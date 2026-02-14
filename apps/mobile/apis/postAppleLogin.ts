@@ -11,6 +11,9 @@ export const postAppleLogin = async ({
   data?: {
     accessToken: string;
     refreshToken: string;
+    isNewUser: string;
+    hasExpense: boolean;
+    termsAgreed: boolean;
   };
 }> => {
   try {
@@ -23,6 +26,9 @@ export const postAppleLogin = async ({
       data: {
         accessToken: result.accessToken,
         refreshToken: result.refreshToken,
+        isNewUser: result.isNewUser,
+        hasExpense: result.hasExpense,
+        termsAgreed: result.termsAgreed,
       },
     };
   } catch (error) {

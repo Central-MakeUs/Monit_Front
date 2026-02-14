@@ -7,6 +7,9 @@ export const useAppleLogin = async (): Promise<{
   data?: {
     accessToken: string;
     refreshToken: string;
+    isNewUser: string;
+    hasExpense: boolean;
+    termsAgreed: boolean;
   };
 }> => {
   try {
