@@ -24,26 +24,13 @@ export const appBridge = bridge({
         // 1. 카카오 SDK 로그인
         const kakaoResult = await login();
 
-        // 2. 카카오 사용자 정보 가져오기
-        const kakaoUser = await me();
-
-        // 3. 백엔드가 기대하는 형식으로 데이터 변환
-        const kakaoUserInfo = {
-          id: kakaoUser.id,
-          properties: {
-            nickname: kakaoUser.nickname || kakaoUser.name || '사용자',
-          },
-          // TODO: 백엔드 API 스펙 확인 후 필요하면 주석 해제
-          // kakao_account: {
-          //   email: kakaoUser.email,
-          // },
-        };
-
-        // 4. 백엔드로 사용자 정보 전송하여 서비스 토큰 받기
+        // 2. 백엔드로 사용자 정보 전송하여 서비스 토큰 받기
         const backendResponse = await fetch('https://api.nitrogen18.store/api/auth/kakao/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(kakaoUserInfo),
+          body: JSON.stringify({
+            accessToken: kakaoResult.accessToken,
+          }),
         });
 
         if (!backendResponse.ok) {
@@ -53,7 +40,7 @@ export const appBridge = bridge({
 
         const backendData = await backendResponse.json();
 
-        // 5. 백엔드 응답에서 토큰 추출 (result.accessToken)
+        // 3. 백엔드 응답에서 토큰 추출 (result.accessToken)
         const accessToken = backendData.result?.accessToken;
         const refreshToken = backendData.result?.refreshToken || null;
 
@@ -61,7 +48,7 @@ export const appBridge = bridge({
           throw new Error('백엔드 응답에 accessToken이 없습니다.');
         }
 
-        // 6. 백엔드 토큰을 SecureStore에 저장
+        // 4. 백엔드 토큰을 SecureStore에 저장
         await authStorage.setTokens(accessToken, refreshToken || '');
 
         return {
