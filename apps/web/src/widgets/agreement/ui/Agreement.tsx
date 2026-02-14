@@ -5,8 +5,10 @@ import * as styles from './Agreement.css';
 import { Button, Text, vars } from '@/shared/ui';
 import { SelectionTile } from '@/shared/ui/selectionTile/SelectionTile';
 import { EXTERNAL_URLS } from '@/shared/constants/urls';
+import { useRouter } from 'next/navigation';
 
 export const Agreement = () => {
+  const route = useRouter();
   const [termsOfService, setTermsOfService] = useState(false);
   const [privacyPolicy, setPrivacyPolicy] = useState(false);
 
@@ -22,7 +24,7 @@ export const Agreement = () => {
   };
 
   const handleNext = () => {
-    // 다음 단계로 진행하는 로직
+    route.push('/');
   };
 
   return (

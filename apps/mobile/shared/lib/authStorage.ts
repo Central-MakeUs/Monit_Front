@@ -14,10 +14,9 @@ export const authStorage = {
     return await SecureStore.getItemAsync(ACCESS_TOKEN_KEY);
   },
 
-  // TODO: RefreshToken 사용 시 주석 해제
-  // async getRefreshToken() {
-  //   return await SecureStore.getItemAsync(REFRESH_TOKEN_KEY);
-  // },
+  async getRefreshToken() {
+    return await SecureStore.getItemAsync(REFRESH_TOKEN_KEY);
+  },
 
   async clearTokens() {
     await SecureStore.deleteItemAsync(ACCESS_TOKEN_KEY);

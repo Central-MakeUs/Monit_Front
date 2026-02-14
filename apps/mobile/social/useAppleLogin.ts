@@ -15,8 +15,6 @@ export const useAppleLogin = async (): Promise<{
       throw new Error('애플로부터 토큰을 받지 못했습니다.');
     }
     const response = await postAppleLogin({ code: appleResult.authorizationCode });
-    console.log('response', response);
-    //TODO: 토큰 처리
     return response;
   } catch (error) {
     throw error;

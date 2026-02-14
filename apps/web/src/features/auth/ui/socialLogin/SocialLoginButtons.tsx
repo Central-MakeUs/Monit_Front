@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import * as styles from './SocialLoginButtons.css';
 import { Text, useToast } from '@/shared/ui';
 import { IcApple, IcKakao } from 'public/icons';
-import { useKakaoLogin } from '@/features/auth/model';
+import { useKakaoLogin, useAppleLogin } from '@/features/auth/model';
 import { usePlatform, useBridge } from '@/shared/lib/bridge';
 import { useAuthStore } from '@/shared/stores/authStore';
 
@@ -22,26 +22,22 @@ export const SocialLoginButtons = () => {
   const bridge = useBridge();
   const setAuth = useAuthStore((state) => state.setAuth);
 
+  const syncNativeToken = async () => {
+    if ((platform === 'ios' || platform === 'android') && bridge) {
+      try {
+        const { accessToken } = await bridge.getAccessToken();
+        if (accessToken) {
+          setAuth({ accessToken });
+        }
+      } catch {
+        // 토큰 로드 실패
+      }
+    }
+  };
+
   const { handleKakaoLogin } = useKakaoLogin({
     onSuccess: async () => {
-      // 네이티브에서 모든 처리 완료 → 토큰 로드 후 홈으로 이동
-
-      // 네이티브에 저장된 토큰을 웹 스토어에 동기화
-      if ((platform === 'ios' || platform === 'android') && bridge) {
-        try {
-          const { accessToken } = await bridge.getAccessToken();
-          if (accessToken) {
-            setAuth({
-              accessToken,
-              // TODO: RefreshToken 사용 시 주석 해제
-              // refreshToken: refreshToken || '',
-            });
-          }
-        } catch {
-          // 토큰 로드 실패
-        }
-      }
-
+      await syncNativeToken();
       setIsNativeLoginLoading(false);
       toast.success('로그인에 성공했어요');
       router.replace('/');
@@ -52,30 +48,28 @@ export const SocialLoginButtons = () => {
     },
   });
 
+  const { handleAppleLogin } = useAppleLogin({
+    onSuccess: async () => {
+      await syncNativeToken();
+      setIsNativeLoginLoading(false);
+      toast.success('로그인에 성공했어요');
+      //TODO: 신규회원일 경우와 아닐 경우 나누기
+      router.replace('/auth/agreement');
+    },
+    onError: () => {
+      setIsNativeLoginLoading(false);
+      toast.attention('Apple 로그인에 실패했어요.');
+    },
+  });
+
   const handleKakaoLoginClick = () => {
     setIsNativeLoginLoading(true);
     handleKakaoLogin();
   };
 
-  const handleAppleLogin = async () => {
-    console.log('SocialLoginButtons');
-    try {
-      if (!bridge?.socialLogin('apple')) {
-        alert('브릿지 함수가 사용 불가능합니다.');
-        throw new Error('브릿지 함수가 사용 불가능합니다');
-      }
-
-      const result = await bridge.socialLogin('apple');
-
-      console.log(result);
-      if (result.success && result.data?.accessToken) {
-        useAuthStore.getState().setAccessToken(result.data?.accessToken);
-      } else {
-        alert(`Apple 로그인에 실패하였습니다: ${result.message || '알 수 없는 오류'}`);
-      }
-    } catch {
-      alert(`Apple 로그인에 실패하였습니다.`);
-    }
+  const handleAppleLoginClick = () => {
+    setIsNativeLoginLoading(true);
+    handleAppleLogin();
   };
 
   const isLoading = isNativeLoginLoading;
@@ -92,7 +86,10 @@ export const SocialLoginButtons = () => {
         <Text variant='h3'>{isLoading ? '로딩 중...' : '카카오로 계속하기'}</Text>
       </button>
       {platform === 'ios' && (
-        <button className={styles.loginBtn({ social: 'apple' })} onClick={handleAppleLogin}>
+        <button
+          className={styles.loginBtn({ social: 'apple' })}
+          onClick={handleAppleLoginClick}
+          disabled={isLoading}>
           <span className={styles.iconWrapper({ social: 'apple' })}>
             <IcApple />
           </span>
