@@ -1,14 +1,8 @@
 import * as AppleAuthentication from 'expo-apple-authentication';
 import { postAppleLogin } from '@/apis/postAppleLogin';
+import type { ApiResponse, LoginData } from '@/shared/types/api.types';
 
-export const useAppleLogin = async (): Promise<{
-  success: boolean;
-  message?: string;
-  data?: {
-    accessToken: string;
-    refreshToken: string;
-  };
-}> => {
+export const useAppleLogin = async (): Promise<ApiResponse<LoginData>> => {
   try {
     const appleResult = await AppleAuthentication.signInAsync({});
     if (!appleResult.identityToken || !appleResult.authorizationCode) {

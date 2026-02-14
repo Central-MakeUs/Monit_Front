@@ -5,6 +5,7 @@ export const ENDPOINT = {
     REISSUE: 'api/auth/reissue',
     LOGOUT: 'api/auth/logout',
     WITHDRAW: 'api/auth/withdraw',
+    TERMS: 'api/auth/terms',
   },
   // Expense
   EXPENSE: {

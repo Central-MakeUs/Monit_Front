@@ -8,6 +8,7 @@ import { IcApple, IcKakao } from 'public/icons';
 import { useKakaoLogin, useAppleLogin } from '@/features/auth/model';
 import { usePlatform, useBridge } from '@/shared/lib/bridge';
 import { useAuthStore } from '@/shared/stores/authStore';
+import { ROUTES } from '@/shared/constants';
 
 /**
  * 소셜 로그인 버튼 컴포넌트
@@ -49,12 +50,15 @@ export const SocialLoginButtons = () => {
   });
 
   const { handleAppleLogin } = useAppleLogin({
-    onSuccess: async () => {
+    onSuccess: async (data) => {
       await syncNativeToken();
       setIsNativeLoginLoading(false);
       toast.success('로그인에 성공했어요');
-      //TODO: 신규회원일 경우와 아닐 경우 나누기
-      router.replace('/auth/agreement');
+      if (data?.termsAgreed) {
+        router.replace(ROUTES.HOME);
+      } else {
+        router.replace(ROUTES.AGREEMENT);
+      }
     },
     onError: () => {
       setIsNativeLoginLoading(false);
