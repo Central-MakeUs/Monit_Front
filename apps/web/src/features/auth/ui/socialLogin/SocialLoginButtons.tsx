@@ -6,8 +6,9 @@ import * as styles from './SocialLoginButtons.css';
 import { Text, useToast } from '@/shared/ui';
 import { IcApple, IcKakao } from 'public/icons';
 import { useKakaoLogin, useAppleLogin } from '@/features/auth/model';
-import { usePlatform, useBridge } from '@/shared/lib/bridge';
+import { useBridge } from '@/shared/lib/bridge';
 import { useAuthStore } from '@/shared/stores/authStore';
+import { getPlatform } from '@/shared/utils';
 
 /**
  * 소셜 로그인 버튼 컴포넌트
@@ -16,7 +17,7 @@ import { useAuthStore } from '@/shared/stores/authStore';
  */
 export const SocialLoginButtons = () => {
   const [isNativeLoginLoading, setIsNativeLoginLoading] = useState(false);
-  const platform = usePlatform();
+  const platform = getPlatform();
   const router = useRouter();
   const toast = useToast();
   const bridge = useBridge();

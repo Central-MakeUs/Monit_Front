@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 
-import { getOs } from '@/shared/utils';
+import { getPlatform } from '../utils/getPlatform';
 
 declare const window: Window & {
   visualViewport?: {
@@ -13,8 +13,8 @@ declare const window: Window & {
   };
 };
 
-const detectIOS = getOs() === 'iOS';
-const detectAOS = getOs() === 'Android';
+const detectIOS = getPlatform() === 'ios';
+const detectAOS = getPlatform() === 'android';
 const isMobileDevice = detectIOS || detectAOS;
 
 function determineViewportHeight() {

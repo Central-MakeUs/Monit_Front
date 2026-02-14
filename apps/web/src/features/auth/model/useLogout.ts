@@ -2,15 +2,16 @@ import { useRouter } from 'next/navigation';
 import { useMutation } from '@tanstack/react-query';
 import { useAuthStore } from '@/shared/stores/authStore';
 import { useToast } from '@/shared/ui';
-import { useBridge, usePlatform } from '@/shared/lib/bridge';
+import { useBridge } from '@/shared/lib/bridge';
 import { authQueries } from './authQueries';
+import { getPlatform } from '@/shared/utils';
 
 export const useLogout = () => {
   const router = useRouter();
   const toast = useToast();
   const clearAuth = useAuthStore((state) => state.clearAuth);
   const bridge = useBridge();
-  const platform = usePlatform();
+  const platform = getPlatform();
 
   const { mutate: logout, isPending } = useMutation({
     ...authQueries.logoutMutation(),

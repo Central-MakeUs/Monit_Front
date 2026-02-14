@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
-import { useBridge, usePlatform } from '@/shared/lib/bridge';
+import { useBridge } from '@/shared/lib/bridge';
+import { getPlatform } from '@/shared/utils';
 
 interface KakaoLoginOptions {
   redirectUri?: string;
@@ -21,7 +22,7 @@ const KAKAO_REDIRECT_URI = process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI;
 export const useKakaoLogin = (options: KakaoLoginOptions = {}): KakaoLoginReturn => {
   const { redirectUri = KAKAO_REDIRECT_URI, onSuccess, onError } = options;
   const bridge = useBridge();
-  const platform = usePlatform();
+  const platform = getPlatform();
 
   const loginWithKakao = useCallback(async () => {
     try {

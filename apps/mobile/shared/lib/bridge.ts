@@ -1,5 +1,4 @@
 import { bridge, createWebView } from '@webview-bridge/react-native';
-import { Platform } from 'react-native';
 import { login, logout, me } from '@react-native-kakao/user';
 import { canOpenURL, openURL } from 'expo-linking';
 import { authStorage } from './authStorage';
@@ -12,10 +11,6 @@ import { useAppleLogin } from '@/social/useAppleLogin';
 export const appBridge = bridge({
   async getMessage(): Promise<string> {
     return 'Hello from Native!';
-  },
-
-  async getPlatform(): Promise<'ios' | 'android'> {
-    return Platform.OS as 'ios' | 'android';
   },
 
   /**

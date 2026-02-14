@@ -33,9 +33,6 @@ export type AppBridge = {
   // 기본 메서드
   getMessage: () => Promise<string>;
 
-  // 플랫폼 정보
-  getPlatform: () => Promise<'ios' | 'android'>;
-
   // 소셜 로그인
   socialLogin: (type: 'kakao' | 'apple') => Promise<SocialLoginResult>;
 
