@@ -1,4 +1,6 @@
 export const getPlatform = (): 'ios' | 'android' | 'web' => {
+  if (typeof window === 'undefined') return 'web';
+
   const ua = navigator.userAgent || '';
   const maxTouchPoints = navigator.maxTouchPoints || 0;
 
