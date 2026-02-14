@@ -1,21 +1,12 @@
 import { isAxiosError } from 'axios';
 import { baseAPI } from './instance';
+import type { ApiResponse, LoginData } from '@/shared/types/api.types';
 
 export const postAppleLogin = async ({
   code,
 }: {
   code: string;
-}): Promise<{
-  success: boolean;
-  message?: string;
-  data?: {
-    accessToken: string;
-    refreshToken: string;
-    isNewUser: string;
-    hasExpense: boolean;
-    termsAgreed: boolean;
-  };
-}> => {
+}): Promise<ApiResponse<LoginData>> => {
   try {
     const response = await baseAPI.post(`/api/auth/apple/login?code=${code}`);
 

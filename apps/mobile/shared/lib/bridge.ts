@@ -3,6 +3,7 @@ import { Platform } from 'react-native';
 import { login, logout, me } from '@react-native-kakao/user';
 import { authStorage } from './authStorage';
 import { useAppleLogin } from '@/social/useAppleLogin';
+import type { ApiResponse, SocialLoginData } from '@/shared/types/api.types';
 
 /**
  * Web → Native 브릿지 설정
@@ -21,17 +22,7 @@ export const appBridge = bridge({
    * 소셜 로그인
    * 네이티브에서 카카오 로그인 → 백엔드 API 호출 → 토큰 저장까지 모두 처리
    */
-  async socialLogin(type: 'kakao' | 'apple'): Promise<{
-    success: boolean;
-    message?: string;
-    data?: {
-      accessToken: string;
-      refreshToken: string;
-      isNewUser?: string;
-      hasExpense?: boolean;
-      termsAgreed?: boolean;
-    };
-  }> {
+  async socialLogin(type: 'kakao' | 'apple'): Promise<ApiResponse<SocialLoginData>> {
     try {
       if (type === 'kakao') {
         // 1. 카카오 SDK 로그인
