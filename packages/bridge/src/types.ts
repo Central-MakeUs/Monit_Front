@@ -44,4 +44,7 @@ export type AppBridge = {
 
   // 로그아웃
   requestLogout: () => Promise<void>;
+
+  // 외부 링크 열기 (인앱 브라우저)
+  openExternalUrl: (url: string) => Promise<void>;
 };
