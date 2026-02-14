@@ -1,10 +1,10 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
 import { IcCheck, IcRightChevron } from 'public/icons';
 import * as styles from './SelectionTile.css';
 import { Text } from '../text';
+import { useBridge } from '@/shared/lib/bridge';
 
 export interface SelectionTileProps {
   size?: 'lg' | 'sm';
@@ -23,6 +23,7 @@ export const SelectionTile = ({
   disabled = false,
   href,
 }: SelectionTileProps) => {
+  const bridge = useBridge();
   const handleClick = () => {
     if (!disabled && onClick) {
       onClick();
@@ -34,6 +35,10 @@ export const SelectionTile = ({
       e.preventDefault();
       handleClick();
     }
+  };
+
+  const handleExternalUrl = (href: string) => {
+    bridge?.openExternalUrl(href);
   };
 
   if (size === 'sm') {
@@ -53,9 +58,13 @@ export const SelectionTile = ({
           <Text variant='b4'>{label}</Text>
         </div>
         {href && !disabled ? (
-          <Link href={href} className={styles.chevronIcon()} onClick={(e) => e.stopPropagation()}>
+          <button
+            className={styles.chevronIcon()}
+            onClick={() => {
+              handleExternalUrl(href);
+            }}>
             <IcRightChevron />
-          </Link>
+          </button>
         ) : (
           <div className={styles.chevronIcon()}>
             <IcRightChevron />

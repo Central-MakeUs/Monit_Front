@@ -1,6 +1,6 @@
 import { bridge, createWebView } from '@webview-bridge/react-native';
-import { Platform } from 'react-native';
 import { login, logout, me } from '@react-native-kakao/user';
+import { canOpenURL, openURL } from 'expo-linking';
 import { authStorage } from './authStorage';
 import { useAppleLogin } from '@/social/useAppleLogin';
 import type { ApiResponse, SocialLoginData } from '@/shared/types/api.types';
@@ -12,10 +12,6 @@ import type { ApiResponse, SocialLoginData } from '@/shared/types/api.types';
 export const appBridge = bridge({
   async getMessage(): Promise<string> {
     return 'Hello from Native!';
-  },
-
-  async getPlatform(): Promise<'ios' | 'android'> {
-    return Platform.OS as 'ios' | 'android';
   },
 
   /**
@@ -134,6 +130,21 @@ export const appBridge = bridge({
       await authStorage.clearTokens();
     } catch (error) {
       throw new Error('로그아웃에 실패했습니다.');
+    }
+  },
+
+  /**
+   * 외부 링크 열기
+   */
+  async openExternalUrl(url: string): Promise<void> {
+    try {
+      const canOpen = await canOpenURL(url);
+      if (!canOpen) {
+        throw new Error('유효하지 않은 URL입니다.');
+      }
+      await openURL(url);
+    } catch (error) {
+      throw new Error(error instanceof Error ? error.message : '외부 링크를 열 수 없습니다.');
     }
   },
 });

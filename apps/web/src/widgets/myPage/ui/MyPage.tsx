@@ -9,9 +9,15 @@ import React from 'react';
 import * as styles from './myPage.css';
 import { useRouter } from 'next/navigation';
 import { useModal } from '@/shared/hooks';
+import { useBridge } from '@/shared/lib/bridge';
 
 export const MyPage = () => {
   const router = useRouter();
+  const bridge = useBridge();
+
+  const handleExternalUrl = (url: string) => {
+    bridge?.openExternalUrl(url);
+  };
   const { handleLogout, isPending: isLogoutPending } = useLogout();
   const { handleWithdraw, isPending: isWithdrawPending } = useWithdraw();
   const {
@@ -49,12 +55,12 @@ export const MyPage = () => {
         <MenuItem
           type='arrow'
           label='서비스 이용약관'
-          onClick={() => window.open(EXTERNAL_URLS.TERMS_OF_SERVICE, '_blank')}
+          onClick={() => handleExternalUrl(EXTERNAL_URLS.TERMS_OF_SERVICE)}
         />
         <MenuItem
           type='arrow'
           label='개인정보 수집 및 이용 동의'
-          onClick={() => window.open(EXTERNAL_URLS.PRIVACY_POLICY, '_blank')}
+          onClick={() => handleExternalUrl(EXTERNAL_URLS.PRIVACY_POLICY)}
         />
         {/*  */}
         {/* <MenuItem type='toggle' label='알림 설정 허용' /> */}

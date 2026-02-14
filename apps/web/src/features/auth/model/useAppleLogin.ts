@@ -1,4 +1,5 @@
-import { useBridge, usePlatform } from '@/shared/lib/bridge';
+import { useBridge } from '@/shared/lib/bridge';
+import { getPlatform } from '@/shared/utils';
 
 interface AppleLoginData {
   accessToken: string;
@@ -20,7 +21,7 @@ interface AppleLoginReturn {
 export const useAppleLogin = (options: AppleLoginOptions = {}): AppleLoginReturn => {
   const { onSuccess, onError } = options;
   const bridge = useBridge();
-  const platform = usePlatform();
+  const platform = getPlatform();
 
   const handleAppleLogin = async () => {
     try {

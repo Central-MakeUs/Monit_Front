@@ -2,19 +2,19 @@
 
 import React, { useMemo } from 'react';
 
-import { getOs } from '@/shared/utils';
 import { useIsOnScreenKeyboardOpen } from '@/shared/hooks';
 
 import useViewport from '@/shared/hooks/useViewport';
 import * as styles from './BottomFixedArea.css';
 import { assignInlineVars } from '@vanilla-extract/dynamic';
+import { getPlatform } from '@/shared/utils';
 
 interface BottomFixedAreaProps extends React.HTMLAttributes<HTMLDivElement> {
   containerStyle?: React.CSSProperties;
   zIndex?: number;
 }
 
-const detectIOS = getOs() === 'iOS';
+const detectIOS = getPlatform() === 'ios';
 
 export const BottomFixedArea = ({
   children,
