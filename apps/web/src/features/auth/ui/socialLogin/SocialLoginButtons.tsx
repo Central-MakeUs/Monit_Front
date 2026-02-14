@@ -83,7 +83,7 @@ export const SocialLoginButtons = () => {
         <span className={styles.iconWrapper({ social: 'kakao' })}>
           <IcKakao />
         </span>
-        <Text variant='h3'>{isLoading ? '로딩 중...' : '카카오로 계속하기'}</Text>
+        <Text variant='h3'>{'카카오로 계속하기'}</Text>
       </button>
       {platform === 'ios' && (
         <button
