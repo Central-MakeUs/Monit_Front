@@ -24,14 +24,14 @@ export const container = recipe({
           backgroundColor: vars.color.primitive.static.white,
           color: vars.color.text.primary,
         },
-        ':hover': {
-          backgroundColor: vars.color.bg.surface.secondary.hover,
-          color: vars.color.text.primary,
-        },
-        ':active': {
-          backgroundColor: vars.color.bg.surface.secondary.hover,
-          color: vars.color.text.secondary,
-        },
+        // ':hover': {
+        //   backgroundColor: vars.color.bg.surface.secondary.hover,
+        //   color: vars.color.text.primary,
+        // },
+        // ':active': {
+        //   backgroundColor: vars.color.bg.surface.secondary.hover,
+        //   color: vars.color.text.secondary,
+        // },
       },
       sm: {
         gap: spacing.sm,
@@ -43,12 +43,12 @@ export const container = recipe({
         ':disabled': {
           color: vars.color.text.secondary,
         },
-        ':hover': {
-          color: vars.color.text.tertiary,
-        },
-        ':active': {
-          color: vars.color.text.tertiary,
-        },
+        // ':hover': {
+        //   color: vars.color.text.tertiary,
+        // },
+        // ':active': {
+        //   color: vars.color.text.tertiary,
+        // },
       },
     },
   },
@@ -96,6 +96,7 @@ export const chevronIcon = recipe({
     height: '1.6rem',
     flexShrink: 0,
     color: vars.color.icon.subtle,
+    backgroundColor: 'transparent',
   },
   variants: {
     selected: {
