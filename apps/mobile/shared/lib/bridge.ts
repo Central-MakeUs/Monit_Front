@@ -66,7 +66,7 @@ export const appBridge = bridge({
           throw new Error('애플 로그인 응답에 accessToken이 없습니다.');
         }
 
-        await authStorage.setTokens(accessToken, refreshToken);
+        await authStorage.setTokens(accessToken, refreshToken || '');
 
         return {
           success: true,
