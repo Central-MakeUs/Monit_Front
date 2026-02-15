@@ -1,6 +1,7 @@
 import { useOnboardingStore } from '../model/onboardingStore';
 import { STEPS } from '../config/steps';
 import { useOnboardingElement } from './useOnboardingElement';
+import { useBridge } from '@/shared/lib/bridge';
 
 /**
  * OnboardingTour의 비즈니스 로직을 담당하는 훅
@@ -9,6 +10,7 @@ import { useOnboardingElement } from './useOnboardingElement';
  */
 export function useOnboardingTour() {
   const { flow, step, nextStep, endTour } = useOnboardingStore();
+  const bridge = useBridge();
   const currentStep = STEPS[step];
 
   const rect = useOnboardingElement(flow === 'tour', currentStep?.key);
@@ -19,6 +21,7 @@ export function useOnboardingTour() {
   const handleNext = () => {
     if (step === STEPS.length - 1) {
       endTour();
+      bridge?.completeOnboarding();
     } else {
       nextStep();
     }

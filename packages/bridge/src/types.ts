@@ -50,4 +50,10 @@ export type AppBridge = {
 
   // 외부 링크 열기 (인앱 브라우저)
   openExternalUrl: (url: string) => Promise<void>;
+
+  // 온보딩 완료
+  completeOnboarding: () => Promise<void>;
+
+  // 온보딩 상태 확인
+  onboardingStatus: () => Promise<boolean>;
 };
