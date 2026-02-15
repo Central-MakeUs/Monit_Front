@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
-import { useBridge } from '@/shared/lib/bridge';
+import type { AppBridge } from '@repo/bridge';
+import { useBridge, initializeBridge } from '@/shared/lib/bridge';
 import { getPlatform } from '@/shared/utils';
 
 interface KakaoLoginOptions {
@@ -26,16 +27,23 @@ export const useKakaoLogin = (options: KakaoLoginOptions = {}): KakaoLoginReturn
 
   const loginWithKakao = useCallback(async () => {
     try {
-      // 웹뷰 환경 (iOS/Android)에서는 브릿지를 통해 네이티브 로그인 사용
-      if ((platform === 'ios' || platform === 'android') && bridge) {
-        // 네이티브에서 모든 처리 완료 (카카오 로그인 + 백엔드 API + 토큰 저장)
-        const result = await bridge.socialLogin('kakao');
-
-        if (result.success) {
-          onSuccess?.();
-        } else {
-          onError?.(new Error(result.message || '카카오 로그인에 실패했습니다.'));
+      if (platform === 'ios' || platform === 'android') {
+        // 브릿지가 아직 없으면 한 번 더 연결 시도 (실기기에서 준비 지연 시 대응)
+        let currentBridge = bridge;
+        if (!currentBridge && typeof window !== 'undefined') {
+          await initializeBridge();
+          currentBridge = (window as unknown as { bridge?: AppBridge }).bridge ?? null;
         }
+        if (currentBridge) {
+          const result = await currentBridge.socialLogin('kakao');
+          if (result.success) {
+            onSuccess?.();
+          } else {
+            onError?.(new Error(result.message || '카카오 로그인에 실패했습니다.'));
+          }
+          return;
+        }
+        onError?.(new Error('앱 연결에 실패했습니다. 잠시 후 다시 시도해 주세요.'));
         return;
       }
 

@@ -22,6 +22,7 @@ export const initializeBridge = async (): Promise<void> => {
 
       (window as unknown as { bridge: AppBridge }).bridge = bridge;
       console.log('[WEB] bridge ready');
+      window.dispatchEvent(new CustomEvent('bridge-ready'));
       return;
     } catch (e) {
       console.warn('[WEB] linkBridge failed', i + 1, e);
