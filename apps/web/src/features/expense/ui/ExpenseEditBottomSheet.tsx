@@ -16,7 +16,13 @@ import {
   deleteExpense,
   type UpdateExpenseRequest,
 } from '@/features/expense/model';
-import { EXPENSE_CONSTANTS, EXPENSE_ERROR_MESSAGES, type ExpenseListDTO } from '@/entities/expense';
+import {
+  EXPENSE_CONSTANTS,
+  EXPENSE_ERROR_MESSAGES,
+  expenseQueries as entityExpenseQueries,
+  type ExpenseListDTO,
+} from '@/entities/expense';
+import { expenseReportQueries } from '@/entities/expenseReport';
 
 export interface ExpenseEditBottomSheetProps {
   isOpen: boolean;
@@ -64,10 +70,8 @@ export const ExpenseEditBottomSheet = ({
     mutationFn: ({ expenseId, data }: { expenseId: number; data: UpdateExpenseRequest }) =>
       updateExpense(expenseId, data),
     onSuccess: () => {
-      // 일일 지출 데이터 캐시 무효화하여 리페칭
-      queryClient.invalidateQueries({ queryKey: ['expense', 'daily'] });
-      // 월별 지출 데이터 캐시 무효화하여 리페칭 (Summary Record)
-      queryClient.invalidateQueries({ queryKey: ['expenseReport', 'summary'] });
+      queryClient.invalidateQueries({ queryKey: entityExpenseQueries.all });
+      queryClient.invalidateQueries({ queryKey: expenseReportQueries.all });
       toast.success('소비 기록이 수정되었어요.');
       onConfirm?.({
         ...expense!,
@@ -85,10 +89,8 @@ export const ExpenseEditBottomSheet = ({
   const deleteMutation = useMutation({
     mutationFn: (expenseId: number) => deleteExpense(expenseId),
     onSuccess: () => {
-      // 일일 지출 데이터 캐시 무효화하여 리페칭
-      queryClient.invalidateQueries({ queryKey: ['expense', 'daily'] });
-      // 월별 지출 데이터 캐시 무효화하여 리페칭 (Summary Record)
-      queryClient.invalidateQueries({ queryKey: ['expenseReport', 'summary'] });
+      queryClient.invalidateQueries({ queryKey: entityExpenseQueries.all });
+      queryClient.invalidateQueries({ queryKey: expenseReportQueries.all });
       toast.success('소비 기록이 삭제되었어요.');
       if (expense?.expenseId) {
         onDelete?.(expense.expenseId);
