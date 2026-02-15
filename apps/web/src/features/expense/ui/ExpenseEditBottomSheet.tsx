@@ -44,6 +44,7 @@ export const ExpenseEditBottomSheet = ({
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [isCategorySheetOpen, setIsCategorySheetOpen] = useState(false);
+  const [frontCategoryId, setFrontCategoryId] = useState<string | null>(null);
   const [date, setDate] = useState<Date>(initialDate);
 
   const [amountError, setAmountError] = useState<string | undefined>(undefined);
@@ -113,6 +114,7 @@ export const ExpenseEditBottomSheet = ({
         const matchedCategory = categories.find((c) => c.name === expense.categoryName);
         if (matchedCategory) {
           setSelectedCategoryId(String(matchedCategory.id));
+          setFrontCategoryId(String(matchedCategory.id));
         }
       }
     }
@@ -179,8 +181,8 @@ export const ExpenseEditBottomSheet = ({
       label: cat.name ?? '',
     }));
 
-    if (selectedCategoryId) {
-      const selectedIndex = list.findIndex((c) => c.id === selectedCategoryId);
+    if (frontCategoryId) {
+      const selectedIndex = list.findIndex((c) => c.id === frontCategoryId);
       if (selectedIndex > 0) {
         const selected = list[selectedIndex];
         if (selected) {
@@ -190,7 +192,7 @@ export const ExpenseEditBottomSheet = ({
     }
 
     return list;
-  }, [categories, selectedCategoryId]);
+  }, [categories, frontCategoryId]);
 
   return (
     <BottomSheet isOpen={isOpen} onClose={onClose}>
@@ -241,6 +243,7 @@ export const ExpenseEditBottomSheet = ({
           selectedId={selectedCategoryId}
           onSelect={(category) => {
             setSelectedCategoryId(category.id);
+            setFrontCategoryId(category.id);
             setIsCategorySheetOpen(false);
           }}
           onConfirm={() => setIsCategorySheetOpen(false)}
