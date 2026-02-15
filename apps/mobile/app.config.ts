@@ -64,6 +64,7 @@ module.exports = {
         {
           android: {
             newArchEnabled: true,
+            extraMavenRepos: ['https://devrepo.kakao.com/nexus/content/groups/public/'],
           },
           ios: {
             newArchEnabled: true,
