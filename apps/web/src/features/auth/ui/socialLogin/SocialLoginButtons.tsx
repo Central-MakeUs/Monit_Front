@@ -22,14 +22,14 @@ export const SocialLoginButtons = () => {
   const router = useRouter();
   const toast = useToast();
   const bridge = useBridge();
-  const setAuth = useAuthStore((state) => state.setAuth);
+  const setAccessToken = useAuthStore((state) => state.setAccessToken);
 
   const syncNativeToken = async () => {
     if ((platform === 'ios' || platform === 'android') && bridge) {
       try {
-        const { accessToken } = await bridge.getAccessToken();
+        const accessToken = await bridge.getAccessToken();
         if (accessToken) {
-          setAuth({ accessToken });
+          setAccessToken(accessToken);
         }
       } catch {
         // 토큰 로드 실패

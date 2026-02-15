@@ -3,23 +3,31 @@
 import { linkBridge } from '@webview-bridge/web';
 import type { AppBridge } from '@repo/bridge';
 
+const BRIDGE_RETRY_COUNT = 5;
+const BRIDGE_RETRY_DELAY_MS = 500;
+
 /**
- * 웹뷰 브릿지 초기화
+ * 웹뷰 브릿지 초기화 (재시도 포함)
  * 네이티브 앱의 브릿지와 웹을 연결
  */
-export const initializeBridge = () => {
+export const initializeBridge = async (): Promise<void> => {
   if (typeof window === 'undefined') return;
 
-  try {
-    // 브릿지 연결
-    const bridge = linkBridge({
-      throwOnError: true,
-      timeout: 1000 * 60 * 10, // 10분
-    }) as unknown as AppBridge;
+  for (let i = 0; i < BRIDGE_RETRY_COUNT; i++) {
+    try {
+      const bridge = linkBridge({
+        throwOnError: true,
+        timeout: 10_000,
+      }) as unknown as AppBridge;
 
-    // window 객체에 브릿지 저장
-    (window as unknown as { bridge: AppBridge }).bridge = bridge;
-  } catch {
-    // 브릿지 초기화 실패 (웹 환경)
+      (window as unknown as { bridge: AppBridge }).bridge = bridge;
+      console.log('[WEB] bridge ready');
+      return;
+    } catch (e) {
+      console.warn('[WEB] linkBridge failed', i + 1, e);
+      if (i < BRIDGE_RETRY_COUNT - 1) {
+        await new Promise((r) => setTimeout(r, BRIDGE_RETRY_DELAY_MS));
+      }
+    }
   }
 };

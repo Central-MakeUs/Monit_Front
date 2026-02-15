@@ -10,7 +10,8 @@ export const postAppleLogin = async ({
   try {
     const response = await baseAPI.post(`/api/auth/apple/login?code=${code}`);
 
-    const { result } = response.data;
+    // 백엔드가 result 래핑 여부에 상관없이 동작하도록 (bridge 카카오와 동일한 방식)
+    const result = response.data?.result ?? response.data;
 
     return {
       success: true,

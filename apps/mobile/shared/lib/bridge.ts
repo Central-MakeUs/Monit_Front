@@ -1,6 +1,8 @@
 import { bridge, createWebView } from '@webview-bridge/react-native';
-import { login, logout, me } from '@react-native-kakao/user';
+import { login, logout } from '@react-native-kakao/user';
 import { canOpenURL, openURL } from 'expo-linking';
+import { postKakaoLogin } from '@/apis/postKakaoLogin';
+import { postReissue } from '@/apis/postReissue';
 import { authStorage } from './authStorage';
 import { useAppleLogin } from '@/social/useAppleLogin';
 import type { ApiResponse, SocialLoginData } from '@/shared/types/api.types';
@@ -18,55 +20,19 @@ export const appBridge = bridge({
   async socialLogin(type: 'kakao' | 'apple'): Promise<ApiResponse<SocialLoginData>> {
     try {
       if (type === 'kakao') {
-        // 1. 카카오 SDK 로그인
         const kakaoResult = await login();
+        const result = await postKakaoLogin({ accessToken: kakaoResult.accessToken });
 
-        // 2. 카카오 사용자 정보 가져오기
-        const kakaoUser = await me();
-
-        // 3. 백엔드가 기대하는 형식으로 데이터 변환
-        const kakaoUserInfo = {
-          id: kakaoUser.id,
-          properties: {
-            nickname: kakaoUser.nickname || kakaoUser.name || '사용자',
-          },
-          // TODO: 백엔드 API 스펙 확인 후 필요하면 주석 해제
-          // kakao_account: {
-          //   email: kakaoUser.email,
-          // },
-        };
-
-        // 4. 백엔드로 사용자 정보 전송하여 서비스 토큰 받기
-        const backendResponse = await fetch('https://api.nitrogen18.store/api/auth/kakao/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(kakaoUserInfo),
-        });
-
-        if (!backendResponse.ok) {
-          const errorText = await backendResponse.text();
-          throw new Error(`백엔드 API 오류: ${backendResponse.status} - ${errorText}`);
-        }
-
-        const backendData = await backendResponse.json();
-
-        // 5. 백엔드 응답에서 토큰 추출 (result.accessToken)
-        const accessToken = backendData.result?.accessToken;
-        const refreshToken = backendData.result?.refreshToken || null;
-
-        if (!accessToken) {
+        if (!result.data?.accessToken) {
           throw new Error('백엔드 응답에 accessToken이 없습니다.');
         }
 
-        // 6. 백엔드 토큰을 SecureStore에 저장
-        await authStorage.setTokens(accessToken, refreshToken || '');
+        const { accessToken, refreshToken } = result.data;
+        await authStorage.setTokens(accessToken, refreshToken ?? '');
 
         return {
           success: true,
-          data: {
-            accessToken,
-            refreshToken: refreshToken || '',
-          },
+          data: { accessToken, refreshToken: refreshToken ?? '' },
         };
       } else if (type === 'apple') {
         const result = await useAppleLogin();
@@ -112,27 +78,49 @@ export const appBridge = bridge({
   },
 
   /**
-   * 저장된 액세스 토큰 조회
+   * 저장된 accessToken만 조회. reissue는 네이티브 reissueAccessToken()만 사용 (웹에 refreshToken 노출 안 함)
    */
-  async getAccessToken(): Promise<{ accessToken: string | null }> {
+  async getAccessToken(): Promise<string | null> {
     try {
-      const accessToken = await authStorage.getAccessToken();
-      return { accessToken };
+      return await authStorage.getAccessToken();
     } catch (error) {
-      return { accessToken: null };
+      console.error(error);
+      return null;
+    }
+  },
+
+  /**
+   * 네이티브에서 리프레시 토큰으로 액세스 토큰 재발급
+   * 웹이 401 받으면 이 메서드 호출 → 네이티브가 reissue API 호출 후 새 accessToken 반환
+   */
+  async reissueAccessToken(): Promise<{ accessToken: string } | null> {
+    try {
+      const refreshToken = await authStorage.getRefreshToken();
+      if (!refreshToken) return null;
+
+      const tokens = await postReissue(refreshToken);
+      if (!tokens) return null;
+
+      await authStorage.setTokens(tokens.accessToken, tokens.refreshToken);
+      return { accessToken: tokens.accessToken };
+    } catch (error) {
+      console.error('[Bridge] reissueAccessToken failed:', error);
+      return null;
     }
   },
 
   /**
    * 로그아웃
+   * - 카카오 로그인 시에만 Kakao SDK logout 호출 (애플 로그인 시에는 세션 없음 → 실패해도 무시)
+   * - 항상 우리 앱 토큰(access/refresh)은 삭제
    */
   async requestLogout(): Promise<void> {
     try {
       await logout();
-      await authStorage.clearTokens();
-    } catch (error) {
-      throw new Error('로그아웃에 실패했습니다.');
+    } catch {
+      // 애플 로그인 사용자는 카카오 세션이 없어 실패할 수 있음 → 무시하고 토큰만 삭제
     }
+    await authStorage.clearTokens();
   },
 
   /**

@@ -11,22 +11,17 @@ import { getPlatform } from '@/shared/utils';
 export const useNativeAuth = () => {
   const bridge = useBridge();
   const platform = getPlatform();
-  const setAuth = useAuthStore((state) => state.setAuth);
+  const setAccessToken = useAuthStore((state) => state.setAccessToken);
 
   useEffect(() => {
     const loadNativeTokens = async () => {
-      // 웹뷰 환경에서만 실행
+      // 웹뷰 환경에서만 실행 (accessToken만 동기화, refreshToken은 덮어쓰지 않음)
       if ((platform === 'ios' || platform === 'android') && bridge) {
         try {
-          const { accessToken } = await bridge.getAccessToken();
+          const accessToken = await bridge.getAccessToken();
 
           if (accessToken) {
-            // 네이티브에 저장된 토큰을 웹 스토어에 동기화
-            setAuth({
-              accessToken,
-              // TODO: RefreshToken 사용 시 주석 해제
-              // refreshToken: refreshToken || '',
-            });
+            setAccessToken(accessToken);
           }
         } catch {
           // 토큰 로드 실패
@@ -35,5 +30,5 @@ export const useNativeAuth = () => {
     };
 
     loadNativeTokens();
-  }, [bridge, platform, setAuth]);
+  }, [bridge, platform, setAccessToken]);
 };
