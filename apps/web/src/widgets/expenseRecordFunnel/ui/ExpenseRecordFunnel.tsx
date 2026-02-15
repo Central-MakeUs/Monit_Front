@@ -18,7 +18,9 @@ import { IcLeftChevron } from 'public/icons';
 import { AmountDateStep, SatisfactionStep, UsageCategoryStep } from '@/features/expense/ui/steps';
 import { expenseQueries } from '@/features/expense/model/expenseQueries';
 import type { EmotionType } from '@/features/expense/model/types';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { expenseReportQueries } from '@/entities/expenseReport';
+import { expenseQueries as entityExpenseQueries } from '@/entities/expense';
 import { ROUTES } from '@/shared/constants';
 
 const STEP_NUMBER = {
@@ -31,6 +33,7 @@ const STEP_NUMBER = {
 export const ExpenseRecordFunnel = () => {
   const router = useRouter();
   const toast = useToast();
+  const queryClient = useQueryClient();
   const { isOpen, openModal, closeModal } = useModal();
   const formStore = useExpenseFormStore();
   const funnel = useFunnel<{
@@ -88,6 +91,9 @@ export const ExpenseRecordFunnel = () => {
       },
       {
         onSuccess: () => {
+          // 월별/일일 지출·요약 캐시 무효화 → 이번 달 지출 금액 등 즉시 반영
+          queryClient.invalidateQueries({ queryKey: entityExpenseQueries.all });
+          queryClient.invalidateQueries({ queryKey: expenseReportQueries.all });
           formStore.reset();
           toast.success('소비 기록이 저장되었어요.');
           router.push(ROUTES.HOME);

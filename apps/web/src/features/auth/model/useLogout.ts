@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useCallback, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/shared/ui';
 import { useBridge } from '@/shared/lib/bridge';
 import { clearAllUserStorage, getPlatform } from '@/shared/utils';
@@ -10,6 +11,7 @@ import { clearAllUserStorage, getPlatform } from '@/shared/utils';
 export const useLogout = () => {
   const router = useRouter();
   const toast = useToast();
+  const queryClient = useQueryClient();
   const bridge = useBridge();
   const platform = getPlatform();
   const [isPending, setIsPending] = useState(false);
@@ -25,6 +27,8 @@ export const useLogout = () => {
         }
       }
       clearAllUserStorage();
+      // 이전 사용자 월별/요약 등 모든 쿼리 캐시 제거 (로그인 후 다른 사용자 데이터 노출 방지)
+      queryClient.clear();
       toast.success('로그아웃이 완료되었어요');
       router.replace('/login');
     } catch {
@@ -32,7 +36,7 @@ export const useLogout = () => {
     } finally {
       setIsPending(false);
     }
-  }, [bridge, platform, toast, router]);
+  }, [bridge, platform, toast, router, queryClient]);
 
   return { handleLogout, isPending };
 };
