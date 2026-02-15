@@ -1,5 +1,5 @@
 import { bridge, createWebView } from '@webview-bridge/react-native';
-import { login, logout, me } from '@react-native-kakao/user';
+import { login, logout } from '@react-native-kakao/user';
 import { canOpenURL, openURL } from 'expo-linking';
 import { authStorage } from './authStorage';
 import { useAppleLogin } from '@/social/useAppleLogin';
@@ -143,14 +143,16 @@ export const appBridge = bridge({
 
   /**
    * 로그아웃
+   * - 카카오 로그인 시에만 Kakao SDK logout 호출 (애플 로그인 시에는 세션 없음 → 실패해도 무시)
+   * - 항상 우리 앱 토큰(access/refresh)은 삭제
    */
   async requestLogout(): Promise<void> {
     try {
       await logout();
-      await authStorage.clearTokens();
-    } catch (error) {
-      throw new Error(error instanceof Error ? error.message : '로그아웃에 실패했습니다.');
+    } catch {
+      // 애플 로그인 사용자는 카카오 세션이 없어 실패할 수 있음 → 무시하고 토큰만 삭제
     }
+    await authStorage.clearTokens();
   },
 
   /**

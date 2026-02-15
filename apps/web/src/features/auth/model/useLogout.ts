@@ -1,41 +1,43 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useMutation } from '@tanstack/react-query';
+import { useCallback, useState } from 'react';
 import { useAuthStore } from '@/shared/stores/authStore';
 import { useToast } from '@/shared/ui';
 import { useBridge } from '@/shared/lib/bridge';
-import { authQueries } from './authQueries';
 import { getPlatform } from '@/shared/utils';
 
+/** 백엔드 API 없이 클라이언트만 정리 (토큰/스토리지 비우고 로그인 화면으로) */
 export const useLogout = () => {
   const router = useRouter();
   const toast = useToast();
   const clearAuth = useAuthStore((state) => state.clearAuth);
   const bridge = useBridge();
   const platform = getPlatform();
+  const [isPending, setIsPending] = useState(false);
 
-  const { mutate: logout, isPending } = useMutation({
-    ...authQueries.logoutMutation(),
-    onSuccess: async () => {
-      // 웹뷰 환경에서는 네이티브 로그아웃도 호출
+  const handleLogout = useCallback(async () => {
+    setIsPending(true);
+    try {
       if ((platform === 'ios' || platform === 'android') && bridge) {
         try {
-          // 카카오 로그아웃 + 모든 토큰 삭제
           await bridge.requestLogout();
         } catch {
-          // 네이티브 로그아웃 실패
+          // 네이티브 로그아웃 실패해도 로컬 정리 진행
         }
       }
-
       clearAuth();
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('auth-storage');
+      }
       toast.success('로그아웃이 완료되었어요');
       router.replace('/login');
-    },
-    onError: () => {
+    } catch {
       toast.attention('로그아웃에 실패했어요. 다시 시도해주세요.');
-    },
-  });
+    } finally {
+      setIsPending(false);
+    }
+  }, [bridge, platform, clearAuth, toast, router]);
 
-  return { handleLogout: logout, isPending };
+  return { handleLogout, isPending };
 };

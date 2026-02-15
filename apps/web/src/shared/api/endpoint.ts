@@ -3,7 +3,6 @@ export const ENDPOINT = {
   AUTH: {
     KAKAO_LOGIN: 'api/auth/kakao/login',
     REISSUE: 'api/auth/reissue',
-    LOGOUT: 'api/auth/logout',
     WITHDRAW: 'api/auth/withdraw',
     TERMS: 'api/auth/terms',
   },
