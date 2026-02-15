@@ -82,6 +82,11 @@ export const appBridge = bridge({
 
         await authStorage.setTokens(accessToken, refreshToken || '');
 
+        // 지출이 있을 경우 온보딩 완료 저장
+        if (hasExpense) {
+          await onboardingStorage.completeOnboarding();
+        }
+
         return {
           success: true,
           data: {
@@ -156,7 +161,7 @@ export const appBridge = bridge({
    * 온보딩 완료
    */
   onboardingStatus: async () => {
-    await onboardingStorage.onboardingStatus();
+    return await onboardingStorage.onboardingStatus();
   },
 });
 

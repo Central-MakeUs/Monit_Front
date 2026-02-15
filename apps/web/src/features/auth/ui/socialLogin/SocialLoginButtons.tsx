@@ -10,7 +10,6 @@ import { useBridge } from '@/shared/lib/bridge';
 import { useAuthStore } from '@/shared/stores/authStore';
 import { getPlatform } from '@/shared/utils';
 import { ROUTES } from '@/shared/constants';
-import { useOnboardingStore } from '@/features/onboarding';
 
 /**
  * 소셜 로그인 버튼 컴포넌트
@@ -19,7 +18,6 @@ import { useOnboardingStore } from '@/features/onboarding';
  */
 export const SocialLoginButtons = () => {
   const [isNativeLoginLoading, setIsNativeLoginLoading] = useState(false);
-  const { hydrateFromServer } = useOnboardingStore();
   const platform = getPlatform();
   const router = useRouter();
   const toast = useToast();
@@ -57,10 +55,6 @@ export const SocialLoginButtons = () => {
       await syncNativeToken();
       setIsNativeLoginLoading(false);
       toast.success('로그인에 성공했어요');
-      // 지출이 있으면 온보딩 X
-      if (data?.hasExpense) {
-        hydrateFromServer(true);
-      }
       if (data?.termsAgreed) {
         router.replace(ROUTES.HOME);
       } else {
