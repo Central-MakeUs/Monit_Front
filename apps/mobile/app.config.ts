@@ -47,6 +47,20 @@ module.exports = {
     },
     plugins: [
       'expo-router',
+      'expo-apple-authentication',
+      'expo-secure-store',
+      [
+        '@react-native-kakao/core',
+        {
+          nativeAppKey: process.env.EXPO_PUBLIC_KAKAO_NATIVE_APP_KEY,
+          android: {
+            authCodeHandlerActivity: true,
+          },
+          ios: {
+            handleKakaoOpenUrl: true,
+          },
+        },
+      ],
       [
         'expo-splash-screen',
         {
@@ -77,7 +91,6 @@ module.exports = {
       eas: {
         projectId: '483d13c9-5344-4468-ba1f-f7098764a2ff',
       },
-      // 환경 변수를 앱에서 사용할 수 있도록 전달
       kakaoNativeAppKey: process.env.EXPO_PUBLIC_KAKAO_NATIVE_APP_KEY,
     },
   },
