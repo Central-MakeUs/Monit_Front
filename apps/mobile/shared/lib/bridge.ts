@@ -4,16 +4,13 @@ import { canOpenURL, openURL } from 'expo-linking';
 import { authStorage } from './authStorage';
 import { useAppleLogin } from '@/social/useAppleLogin';
 import type { ApiResponse, SocialLoginData } from '@/shared/types/api.types';
+import { onboardingStorage } from './onboardingStorage';
 
 /**
  * Web → Native 브릿지 설정
  * Web 앱에서 호출할 수 있는 Native 메서드들을 정의
  */
 export const appBridge = bridge({
-  async getMessage(): Promise<string> {
-    return 'Hello from Native!';
-  },
-
   /**
    * 소셜 로그인
    * 네이티브에서 카카오 로그인 → 백엔드 API 호출 → 토큰 저장까지 모두 처리
@@ -146,6 +143,20 @@ export const appBridge = bridge({
     } catch (error) {
       throw new Error(error instanceof Error ? error.message : '외부 링크를 열 수 없습니다.');
     }
+  },
+
+  /**
+   * 온보딩 완료
+   */
+  completeOnboarding: async () => {
+    await onboardingStorage.completeOnboarding();
+  },
+
+  /**
+   * 온보딩 완료
+   */
+  onboardingStatus: async () => {
+    await onboardingStorage.onboardingStatus();
   },
 });
 
