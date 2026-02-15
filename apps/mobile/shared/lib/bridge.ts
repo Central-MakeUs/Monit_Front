@@ -163,7 +163,6 @@ export type AppBridgeType = typeof appBridge;
 export const { WebView } = createWebView({
   bridge: appBridge,
   debug: __DEV__,
-  timeout: 120000, // 2분 타임아웃 (카카오 로그인 대기 시간 고려)
   fallback: (method) => {
     console.warn(`[Bridge] Method '${method}' not found in native`);
   },

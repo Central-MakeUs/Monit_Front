@@ -23,13 +23,23 @@ export const useBridge = () => {
   });
 
   useEffect(() => {
-    // WebView 환경인지 확인
-    const isWebView = !!(window as unknown as { ReactNativeWebView?: unknown }).ReactNativeWebView;
-    const bridgeObj = (window as unknown as { bridge?: AppBridge }).bridge;
+    const win = typeof window === 'undefined' ? null : window;
+    if (!win) return;
+
+    const isWebView = !!(win as unknown as { ReactNativeWebView?: unknown }).ReactNativeWebView;
+    const bridgeObj = (win as unknown as { bridge?: AppBridge }).bridge;
 
     if (isWebView && bridgeObj) {
       setBridge(bridgeObj);
     }
+
+    // 브릿지가 나중에 준비되면(initializeBridge 완료) 갱신
+    const onBridgeReady = () => {
+      const b = (win as unknown as { bridge?: AppBridge }).bridge;
+      if (b) setBridge(b);
+    };
+    win.addEventListener('bridge-ready', onBridgeReady);
+    return () => win.removeEventListener('bridge-ready', onBridgeReady);
   }, []);
 
   return bridge;
