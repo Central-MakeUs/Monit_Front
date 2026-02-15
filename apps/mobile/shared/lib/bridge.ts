@@ -1,6 +1,8 @@
 import { bridge, createWebView } from '@webview-bridge/react-native';
 import { login, logout } from '@react-native-kakao/user';
 import { canOpenURL, openURL } from 'expo-linking';
+import { postKakaoLogin } from '@/apis/postKakaoLogin';
+import { postReissue } from '@/apis/postReissue';
 import { authStorage } from './authStorage';
 import { useAppleLogin } from '@/social/useAppleLogin';
 import type { ApiResponse, SocialLoginData } from '@/shared/types/api.types';
@@ -18,38 +20,19 @@ export const appBridge = bridge({
   async socialLogin(type: 'kakao' | 'apple'): Promise<ApiResponse<SocialLoginData>> {
     try {
       if (type === 'kakao') {
-        // 1. 카카오 SDK 로그인
         const kakaoResult = await login();
+        const result = await postKakaoLogin({ accessToken: kakaoResult.accessToken });
 
-        // 2. 백엔드로 사용자 정보 전송하여 서비스 토큰 받기
-        const backendResponse = await fetch('https://api.nitrogen18.store/api/auth/kakao/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            accessToken: kakaoResult.accessToken,
-          }),
-        });
-
-        if (!backendResponse.ok) {
-          const errorText = await backendResponse.text();
-          throw new Error(`백엔드 API 오류: ${backendResponse.status} - ${errorText}`);
-        }
-
-        const backendData = await backendResponse.json();
-
-        const result = backendData.result ?? backendData;
-        const accessToken = result.accessToken ?? result.access_token;
-        const refreshToken = result.refreshToken ?? result.refresh_token ?? '';
-
-        if (!accessToken) {
+        if (!result.data?.accessToken) {
           throw new Error('백엔드 응답에 accessToken이 없습니다.');
         }
 
-        await authStorage.setTokens(accessToken, refreshToken);
+        const { accessToken, refreshToken } = result.data;
+        await authStorage.setTokens(accessToken, refreshToken ?? '');
 
         return {
           success: true,
-          data: { accessToken, refreshToken },
+          data: { accessToken, refreshToken: refreshToken ?? '' },
         };
       } else if (type === 'apple') {
         const result = await useAppleLogin();
@@ -111,32 +94,15 @@ export const appBridge = bridge({
    * 웹이 401 받으면 이 메서드 호출 → 네이티브가 reissue API 호출 후 새 accessToken 반환
    */
   async reissueAccessToken(): Promise<{ accessToken: string } | null> {
-    console.log('[NATIVE] reissueAccessToken called');
     try {
       const refreshToken = await authStorage.getRefreshToken();
-      console.log('[NATIVE] has refreshToken?', !!refreshToken);
       if (!refreshToken) return null;
 
-      const res = await fetch('https://api.nitrogen18.store/api/auth/reissue', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          RefreshToken: refreshToken,
-        },
-        body: JSON.stringify({}),
-      });
-      console.log('[NATIVE] reissue status', res.status);
+      const tokens = await postReissue(refreshToken);
+      if (!tokens) return null;
 
-      if (!res.ok) return null;
-
-      const data = await res.json();
-      const newAccessToken = data?.result?.accessToken ?? data?.accessToken;
-      const newRefreshToken = data?.result?.refreshToken ?? data?.refreshToken ?? refreshToken;
-      console.log('[NATIVE] reissue success, new access?', !!newAccessToken);
-      if (!newAccessToken) return null;
-
-      await authStorage.setTokens(newAccessToken, newRefreshToken);
-      return { accessToken: newAccessToken };
+      await authStorage.setTokens(tokens.accessToken, tokens.refreshToken);
+      return { accessToken: tokens.accessToken };
     } catch (error) {
       console.error('[Bridge] reissueAccessToken failed:', error);
       return null;
