@@ -4,11 +4,12 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import { Home } from '@/widgets/home';
 import { WeeklyCalendar, MonthlyCalendar } from '@/widgets/calendar';
-import { WelcomeModal, OnboardingTour } from '@/features/onboarding';
+import { WelcomeModal, OnboardingTour, useOnboardingInit } from '@/features/onboarding';
 import { ROUTES } from '@/shared/constants';
 
 export default function HomePage(): React.JSX.Element {
   const router = useRouter();
+  useOnboardingInit();
 
   return (
     <>
