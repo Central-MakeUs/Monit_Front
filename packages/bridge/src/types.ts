@@ -36,8 +36,14 @@ export type AppBridge = {
   // 소셜 로그인
   socialLogin: (type: 'kakao' | 'apple') => Promise<SocialLoginResult>;
 
-  // 토큰 관리
-  getAccessToken: () => Promise<{ accessToken: string | null }>;
+  // 토큰 관리 (accessToken만 노출, reissue는 reissueAccessToken()만 사용)
+  getAccessToken: () => Promise<string | null>;
+
+  /**
+   * reissue: 리프레시토큰으로 새 액세스·리프레시 둘 다 발급받아 네이티브에 저장.
+   * 웹에는 새 accessToken만 반환 (리프레시는 웹에 노출 안 함).
+   */
+  reissueAccessToken: () => Promise<{ accessToken: string } | null>;
 
   // 로그아웃
   requestLogout: () => Promise<void>;

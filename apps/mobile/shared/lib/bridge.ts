@@ -40,23 +40,19 @@ export const appBridge = bridge({
 
         const backendData = await backendResponse.json();
 
-        // 3. 백엔드 응답에서 토큰 추출 (result.accessToken)
-        const accessToken = backendData.result?.accessToken;
-        const refreshToken = backendData.result?.refreshToken || null;
+        const result = backendData.result ?? backendData;
+        const accessToken = result.accessToken ?? result.access_token;
+        const refreshToken = result.refreshToken ?? result.refresh_token ?? '';
 
         if (!accessToken) {
           throw new Error('백엔드 응답에 accessToken이 없습니다.');
         }
 
-        // 4. 백엔드 토큰을 SecureStore에 저장
-        await authStorage.setTokens(accessToken, refreshToken || '');
+        await authStorage.setTokens(accessToken, refreshToken);
 
         return {
           success: true,
-          data: {
-            accessToken,
-            refreshToken: refreshToken || '',
-          },
+          data: { accessToken, refreshToken },
         };
       } else if (type === 'apple') {
         const result = await useAppleLogin();
@@ -70,7 +66,7 @@ export const appBridge = bridge({
           throw new Error('애플 로그인 응답에 accessToken이 없습니다.');
         }
 
-        await authStorage.setTokens(accessToken, refreshToken || '');
+        await authStorage.setTokens(accessToken, refreshToken);
 
         return {
           success: true,
@@ -97,14 +93,51 @@ export const appBridge = bridge({
   },
 
   /**
-   * 저장된 액세스 토큰 조회
+   * 저장된 accessToken만 조회. reissue는 네이티브 reissueAccessToken()만 사용 (웹에 refreshToken 노출 안 함)
    */
-  async getAccessToken(): Promise<{ accessToken: string | null }> {
+  async getAccessToken(): Promise<string | null> {
     try {
-      const accessToken = await authStorage.getAccessToken();
-      return { accessToken };
+      return await authStorage.getAccessToken();
     } catch (error) {
-      return { accessToken: null };
+      console.error(error);
+      return null;
+    }
+  },
+
+  /**
+   * 네이티브에서 리프레시 토큰으로 액세스 토큰 재발급
+   * 웹이 401 받으면 이 메서드 호출 → 네이티브가 reissue API 호출 후 새 accessToken 반환
+   */
+  async reissueAccessToken(): Promise<{ accessToken: string } | null> {
+    console.log('[NATIVE] reissueAccessToken called');
+    try {
+      const refreshToken = await authStorage.getRefreshToken();
+      console.log('[NATIVE] has refreshToken?', !!refreshToken);
+      if (!refreshToken) return null;
+
+      const res = await fetch('https://api.nitrogen18.store/api/auth/reissue', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          RefreshToken: refreshToken,
+        },
+        body: JSON.stringify({}),
+      });
+      console.log('[NATIVE] reissue status', res.status);
+
+      if (!res.ok) return null;
+
+      const data = await res.json();
+      const newAccessToken = data?.result?.accessToken ?? data?.accessToken;
+      const newRefreshToken = data?.result?.refreshToken ?? data?.refreshToken ?? refreshToken;
+      console.log('[NATIVE] reissue success, new access?', !!newAccessToken);
+      if (!newAccessToken) return null;
+
+      await authStorage.setTokens(newAccessToken, newRefreshToken);
+      return { accessToken: newAccessToken };
+    } catch (error) {
+      console.error('[Bridge] reissueAccessToken failed:', error);
+      return null;
     }
   },
 
@@ -116,7 +149,7 @@ export const appBridge = bridge({
       await logout();
       await authStorage.clearTokens();
     } catch (error) {
-      throw new Error('로그아웃에 실패했습니다.');
+      throw new Error(error instanceof Error ? error.message : '로그아웃에 실패했습니다.');
     }
   },
 

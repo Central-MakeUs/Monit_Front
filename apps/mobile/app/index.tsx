@@ -31,7 +31,7 @@ if (KAKAO_NATIVE_APP_KEY) {
 
 export default function HomeScreen() {
   const webViewRef = useRef<WebViewType>(null);
-  const [initialUrl, setInitialUrl] = useState<string>(WEBVIEW_URL || '');
+  const [initialUrl] = useState<string>(WEBVIEW_URL || '');
 
   // WebView 로드 완료 시 스플래시 화면 숨기기
   const handleWebViewLoad = useCallback(() => {
@@ -55,9 +55,6 @@ export default function HomeScreen() {
           style={styles.webview}
           webviewDebuggingEnabled
           domStorageEnabled={true}
-          // 쿠키 설정
-          sharedCookiesEnabled={true}
-          thirdPartyCookiesEnabled={true}
           // 모든 URL 허용
           originWhitelist={['*']}
           // JavaScript 활성화
