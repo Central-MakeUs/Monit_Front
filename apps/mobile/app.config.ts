@@ -1,7 +1,9 @@
+import 'dotenv/config';
+
 module.exports = {
   expo: {
-    name: '질소가계부',
-    slug: 'mobile',
+    name: '모닛',
+    slug: 'monit',
     version: '1.0.0',
     orientation: 'portrait',
     icon: './assets/images/icon.png',
@@ -89,7 +91,7 @@ module.exports = {
     extra: {
       router: {},
       eas: {
-        projectId: '483d13c9-5344-4468-ba1f-f7098764a2ff',
+        projectId: '37bf5280-606f-41d2-b9dd-1ef4be3b1507',
       },
       kakaoNativeAppKey: process.env.EXPO_PUBLIC_KAKAO_NATIVE_APP_KEY,
     },

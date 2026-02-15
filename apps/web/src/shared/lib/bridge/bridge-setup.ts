@@ -17,7 +17,7 @@ export const initializeBridge = async (): Promise<void> => {
     try {
       const bridge = linkBridge({
         throwOnError: true,
-        timeout: 10_000,
+        timeout: 1000 * 60 * 10,
       }) as unknown as AppBridge;
 
       (window as unknown as { bridge: AppBridge }).bridge = bridge;
