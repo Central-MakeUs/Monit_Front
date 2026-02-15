@@ -1,4 +1,5 @@
 import { useBridge } from '@/shared/lib/bridge';
+import { useToast } from '@/shared/ui';
 import { getPlatform } from '@/shared/utils';
 
 interface AppleLoginData {
@@ -22,9 +23,13 @@ export const useAppleLogin = (options: AppleLoginOptions = {}): AppleLoginReturn
   const { onSuccess, onError } = options;
   const bridge = useBridge();
   const platform = getPlatform();
+  const toast = useToast();
 
   const handleAppleLogin = async () => {
     try {
+      if (!bridge?.socialLogin) {
+        toast.attention('브릿지 함수X');
+      }
       if (platform !== 'ios' || !bridge) {
         onError?.(new Error('Apple 로그인은 iOS에서만 사용할 수 있습니다.'));
         return;

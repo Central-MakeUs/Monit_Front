@@ -21,6 +21,7 @@
     "@repo/bridge": "workspace:*",
     "@webview-bridge/react-native": "^1.7.8",
     "axios": "^1.13.5",
+    "dotenv": "^17.3.1",
     "expo": "~54.0.30",
     "expo-apple-authentication": "^8.0.8",
     "expo-build-properties": "~1.0.10",
