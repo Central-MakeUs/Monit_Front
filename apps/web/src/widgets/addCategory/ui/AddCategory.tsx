@@ -13,31 +13,20 @@ import {
   AlertDialog,
 } from '@/shared/ui';
 import { IcLeftChevron } from 'public/icons';
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import * as styles from './AddCategory.css';
-import { IconPickerBottomSheetTemplate } from '@/features/expense';
-import type { Category } from '@/features/expense';
+import {
+  IconPickerBottomSheetTemplate,
+  useAddCategoryForm,
+  ICON_OPTIONS,
+} from '@/features/expense';
 import { useModal } from '@/shared/hooks';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCategoryStore } from '@/entities/category/model/store';
 import { useExpenseFormStore } from '@/widgets/expenseRecordFunnel/model/store';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { categoryQueries } from '@/features/expense/model/categoryQueries';
 import { CategoryDetailsDTO } from '@/features/expense/model/types';
-
-const VALID_NAME_REGEX = /^[가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z0-9]*$/;
-
-const ICON_OPTIONS: Category[] = [
-  { id: 'shopping', icon: 'shopping', label: '쇼핑' },
-  { id: 'cook', icon: 'cook', label: '요리' },
-  { id: 'coffee', icon: 'coffee', label: '커피' },
-  { id: 'credit', icon: 'credit', label: '카드' },
-  { id: 'book', icon: 'book', label: '도서' },
-  { id: 'beauty', icon: 'beauty', label: '뷰티' },
-  { id: 'beer', icon: 'beer', label: '맥주' },
-  { id: 'camera', icon: 'camera', label: '카메라' },
-  { id: 'cup', icon: 'cup', label: '컵' },
-];
 
 export const AddCategory = () => {
   const {
@@ -57,8 +46,44 @@ export const AddCategory = () => {
   const queryClient = useQueryClient();
   const { selectCategory } = useCategoryStore();
   const { setCategoryId } = useExpenseFormStore();
-  const { data: categoryData } = useQuery(categoryQueries.listQuery());
-  const categories = useMemo(() => categoryData?.result ?? [], [categoryData?.result]);
+
+  // 수정 모드일 때 기존 카테고리 찾기
+  const editingCategory = isEditMode
+    ? queryClient
+        .getQueryData<{
+          result?: Array<{ id: number; name?: string; icon?: string }>;
+        }>(categoryQueries.listQuery().queryKey)
+        ?.result?.find((c) => c.id === editId)
+    : null;
+
+  const {
+    categoryName,
+    setCategoryName,
+    selectedIcon,
+    setSelectedIcon,
+    tempIcon,
+    setTempIcon,
+    errorMessage,
+    hasError,
+    isValid,
+    handleOpenIconPicker,
+    handleConfirmIcon,
+  } = useAddCategoryForm({
+    excludeId: isEditMode ? editId : null,
+    initialName: editingCategory?.name ?? '',
+    initialIcon: editingCategory?.icon ?? '',
+  });
+
+  // 수정 모드일 때 초기값 설정
+  useEffect(() => {
+    if (editingCategory) {
+      setCategoryName(editingCategory.name ?? '');
+      const iconOption = ICON_OPTIONS.find((opt) => opt.icon === editingCategory.icon);
+      if (iconOption) {
+        setSelectedIcon(iconOption);
+      }
+    }
+  }, [editingCategory, setCategoryName, setSelectedIcon]);
 
   const { mutate: createCategory, isPending } = useMutation({
     ...categoryQueries.createMutation(queryClient),
@@ -73,67 +98,6 @@ export const AddCategory = () => {
       router.back();
     },
   });
-
-  // 수정 모드일 때 기존 카테고리 찾기
-  const editingCategory = isEditMode ? categories.find((c) => c.id === editId) : null;
-
-  const [categoryName, setCategoryName] = useState('');
-  const [selectedIcon, setSelectedIcon] = useState<Category | null>(null);
-  const [tempIcon, setTempIcon] = useState<Category | null>(null);
-
-  // 수정 모드일 때 초기값 설정
-  useEffect(() => {
-    if (editingCategory) {
-      setCategoryName(editingCategory.name ?? '');
-      const iconOption = ICON_OPTIONS.find((opt) => opt.icon === editingCategory.icon);
-      if (iconOption) {
-        setSelectedIcon(iconOption);
-      }
-    }
-  }, [editingCategory]);
-
-  // 에러 검사
-  const validationError = useMemo(() => {
-    if (!categoryName) return null;
-    // 한글, 영문, 숫자만 허용
-    if (!VALID_NAME_REGEX.test(categoryName)) {
-      return 'invalid';
-    }
-    // 이미 존재하는 이름인지 확인 (수정 모드일 때 자기 자신은 제외)
-    const isDuplicate = categories.some(
-      (c) =>
-        c.name?.toLowerCase() === categoryName.toLowerCase() && (!isEditMode || c.id !== editId)
-    );
-    if (isDuplicate) {
-      return 'duplicate';
-    }
-    return null;
-  }, [categoryName, categories, isEditMode, editId]);
-
-  // 에러 메시지 (항상 표시, 에러 시 다른 메시지)
-  const errorMessage =
-    validationError === 'duplicate'
-      ? '이미 존재하는 이름이에요.'
-      : '한글, 영문, 숫자만 5자 이내로 입력가능해요.';
-
-  const hasError = validationError !== null;
-
-  // 수정 모드에서 변경 사항이 있는지 확인
-  const hasChanges = isEditMode
-    ? categoryName !== (editingCategory?.name ?? '') || selectedIcon?.icon !== editingCategory?.icon
-    : true;
-
-  const isValid = categoryName && selectedIcon && !hasError && hasChanges;
-
-  const handleOpenIconPicker = () => {
-    setTempIcon(selectedIcon);
-    openBottomSheet();
-  };
-
-  const handleConfirm = () => {
-    setSelectedIcon(tempIcon);
-    closeBottomSheet();
-  };
 
   const handleSubmit = () => {
     if (!selectedIcon) return;
@@ -177,7 +141,7 @@ export const AddCategory = () => {
             icon={selectedIcon?.icon ?? 'plus'}
             size='lg'
             type='neutral'
-            onClick={handleOpenIconPicker}
+            onClick={() => handleOpenIconPicker(openBottomSheet)}
           />
         </InputField>
       </div>
@@ -186,7 +150,7 @@ export const AddCategory = () => {
           categories={ICON_OPTIONS}
           selectedId={tempIcon?.id}
           onSelect={setTempIcon}
-          onConfirm={handleConfirm}
+          onConfirm={() => handleConfirmIcon(closeBottomSheet)}
           onClose={closeBottomSheet}
         />
       </BottomSheet>

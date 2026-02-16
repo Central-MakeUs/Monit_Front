@@ -14,30 +14,19 @@ import {
   AlertDialog,
 } from '@/shared/ui';
 import { IcLeftChevron } from 'public/icons';
-import React, { useState, useMemo } from 'react';
+import React from 'react';
 import * as styles from './AddCategoryStep.css';
-import { IconPickerBottomSheetTemplate } from '@/features/expense';
-import type { Category } from '@/features/expense';
+import {
+  IconPickerBottomSheetTemplate,
+  useAddCategoryForm,
+  ICON_OPTIONS,
+} from '@/features/expense';
 import { useModal } from '@/shared/hooks';
 import { useCategoryStore } from '@/entities/category/model/store';
 import { useExpenseFormStore } from '@/widgets/expenseRecordFunnel/model/store';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { categoryQueries } from '@/features/expense/model/categoryQueries';
 import { CategoryDetailsDTO } from '@/features/expense/model/types';
-
-const VALID_NAME_REGEX = /^[가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z0-9]*$/;
-
-const ICON_OPTIONS: Category[] = [
-  { id: 'shopping', icon: 'shopping', label: '쇼핑' },
-  { id: 'cook', icon: 'cook', label: '요리' },
-  { id: 'coffee', icon: 'coffee', label: '커피' },
-  { id: 'credit', icon: 'credit', label: '카드' },
-  { id: 'book', icon: 'book', label: '도서' },
-  { id: 'beauty', icon: 'beauty', label: '뷰티' },
-  { id: 'beer', icon: 'beer', label: '맥주' },
-  { id: 'camera', icon: 'camera', label: '카메라' },
-  { id: 'cup', icon: 'cup', label: '컵' },
-];
 
 export interface AddCategoryStepProps {
   onBack: () => void;
@@ -55,8 +44,19 @@ export const AddCategoryStep = ({ onBack }: AddCategoryStepProps) => {
   const queryClient = useQueryClient();
   const { selectCategory } = useCategoryStore();
   const { setCategoryId } = useExpenseFormStore();
-  const { data: categoryData } = useQuery(categoryQueries.listQuery());
-  const categories = useMemo(() => categoryData?.result ?? [], [categoryData?.result]);
+
+  const {
+    categoryName,
+    setCategoryName,
+    selectedIcon,
+    tempIcon,
+    setTempIcon,
+    errorMessage,
+    hasError,
+    isValid,
+    handleOpenIconPicker,
+    handleConfirmIcon,
+  } = useAddCategoryForm();
 
   const { mutate: createCategory, isPending } = useMutation({
     ...categoryQueries.createMutation(queryClient),
@@ -72,43 +72,6 @@ export const AddCategoryStep = ({ onBack }: AddCategoryStepProps) => {
       onBack();
     },
   });
-
-  const [categoryName, setCategoryName] = useState('');
-  const [selectedIcon, setSelectedIcon] = useState<Category | null>(null);
-  const [tempIcon, setTempIcon] = useState<Category | null>(null);
-
-  // 에러 검사
-  const validationError = useMemo(() => {
-    if (!categoryName) return null;
-    if (!VALID_NAME_REGEX.test(categoryName)) {
-      return 'invalid';
-    }
-    const isDuplicate = categories.some(
-      (c) => c.name?.toLowerCase() === categoryName.toLowerCase()
-    );
-    if (isDuplicate) {
-      return 'duplicate';
-    }
-    return null;
-  }, [categoryName, categories]);
-
-  const errorMessage =
-    validationError === 'duplicate'
-      ? '이미 존재하는 이름이에요.'
-      : '한글, 영문, 숫자만 5자 이내로 입력가능해요.';
-
-  const hasError = validationError !== null;
-  const isValid = categoryName && selectedIcon && !hasError;
-
-  const handleOpenIconPicker = () => {
-    setTempIcon(selectedIcon);
-    openBottomSheet();
-  };
-
-  const handleConfirm = () => {
-    setSelectedIcon(tempIcon);
-    closeBottomSheet();
-  };
 
   const handleSubmit = () => {
     if (!selectedIcon) return;
@@ -155,7 +118,7 @@ export const AddCategoryStep = ({ onBack }: AddCategoryStepProps) => {
             icon={selectedIcon?.icon ?? 'plus'}
             size='lg'
             type='neutral'
-            onClick={handleOpenIconPicker}
+            onClick={() => handleOpenIconPicker(openBottomSheet)}
           />
         </InputField>
       </div>
@@ -164,7 +127,7 @@ export const AddCategoryStep = ({ onBack }: AddCategoryStepProps) => {
           categories={ICON_OPTIONS}
           selectedId={tempIcon?.id}
           onSelect={setTempIcon}
-          onConfirm={handleConfirm}
+          onConfirm={() => handleConfirmIcon(closeBottomSheet)}
           onClose={closeBottomSheet}
         />
       </BottomSheet>
