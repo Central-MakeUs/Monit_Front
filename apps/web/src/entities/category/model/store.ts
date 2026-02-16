@@ -14,8 +14,16 @@ export const useCategoryStore = create<CategoryPinnedStore>()(
   persist(
     (set, get) => ({
       pinnedCategoryIds: null,
-      setPinnedCategoryIds: (ids) =>
-        set({ pinnedCategoryIds: ids.slice(0, PINNED_CATEGORY_LIMIT) }),
+      setPinnedCategoryIds: (ids) => {
+        const current = get().pinnedCategoryIds;
+        if (current === null) {
+          set({ pinnedCategoryIds: ids.slice(0, PINNED_CATEGORY_LIMIT) });
+          return;
+        }
+        // 기존 순서 유지, 새 ID만 뒤에 추가 (기존 ID 제거하지 않음)
+        const newIds = ids.filter((id) => !current.includes(id));
+        set({ pinnedCategoryIds: [...current, ...newIds].slice(0, PINNED_CATEGORY_LIMIT) });
+      },
       selectCategory: (id) => {
         const { pinnedCategoryIds } = get();
         const current = pinnedCategoryIds ?? [];
