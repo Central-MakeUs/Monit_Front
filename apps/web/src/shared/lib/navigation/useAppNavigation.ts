@@ -2,6 +2,7 @@
 
 import { useRouter, usePathname } from 'next/navigation';
 import { NavToggleOption } from '@/shared/ui/navToggle';
+import { useExpenseFormStore } from '@/widgets/expenseRecordFunnel/model/store';
 
 export const useAppNavigation = () => {
   const router = useRouter();
@@ -16,6 +17,7 @@ export const useAppNavigation = () => {
   };
 
   const handleAddExpense = () => {
+    useExpenseFormStore.getState().reset();
     router.push('/expense');
   };
 
