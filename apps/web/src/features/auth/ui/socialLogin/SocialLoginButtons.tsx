@@ -38,15 +38,11 @@ export const SocialLoginButtons = () => {
   };
 
   const { handleKakaoLogin } = useKakaoLogin({
-    onSuccess: async (data) => {
+    onSuccess: async () => {
       await syncNativeToken();
       setIsNativeLoginLoading(false);
       toast.success('로그인에 성공했어요');
-      if (data?.termsAgreed) {
-        router.replace(ROUTES.HOME);
-      } else {
-        router.replace(ROUTES.AGREEMENT);
-      }
+      router.replace('/');
     },
     onError: () => {
       setIsNativeLoginLoading(false);

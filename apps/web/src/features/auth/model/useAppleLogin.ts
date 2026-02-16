@@ -6,7 +6,7 @@ import { getPlatform } from '@/shared/utils';
 interface AppleLoginData {
   accessToken: string;
   refreshToken: string;
-  isNewUser?: boolean;
+  isNewUser?: string;
   hasExpense?: boolean;
   termsAgreed?: boolean;
 }

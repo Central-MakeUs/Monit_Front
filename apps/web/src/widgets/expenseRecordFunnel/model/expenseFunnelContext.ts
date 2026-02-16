@@ -17,15 +17,6 @@ export type UsageCategoryStepType = {
   usageHistory?: string;
   emotionType?: EmotionType;
 };
-// Step 2.5: 카테고리 추가 (사용처카테고리에서 진입)
-export type AddCategoryStepType = {
-  amount: number;
-  expendedAt: string;
-  categoryId?: number;
-  usageHistory?: string;
-  emotionType?: EmotionType;
-};
-
 // Step 3: 사용처 + 카테고리
 export type SatisfactionStepType = {
   amount: number;

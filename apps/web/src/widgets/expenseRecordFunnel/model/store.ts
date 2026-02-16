@@ -7,7 +7,6 @@ interface ExpenseFormState {
   usageHistory?: string;
   categoryId?: number;
   emotionType?: string;
-  shouldOpenCategorySheet?: boolean;
 }
 
 interface ExpenseFormActions {
@@ -32,7 +31,6 @@ export const useExpenseFormStore = create<ExpenseFormState & ExpenseFormActions>
           usageHistory: undefined,
           categoryId: undefined,
           emotionType: undefined,
-          shouldOpenCategorySheet: undefined,
         }),
     }),
     {

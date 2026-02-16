@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   Button,
   InputField,
@@ -16,23 +17,24 @@ import { useExpenseFormStore } from '@/widgets/expenseRecordFunnel/model/store';
 import { useCategoryStore } from '@/entities/category/model/store';
 import { useQuery } from '@tanstack/react-query';
 import { categoryQueries } from '@/features/expense/model/categoryQueries';
+import { ROUTES } from '@/shared/constants';
+
 const MAX_LENGTH = 20;
 const VALID_NAME_REGEX = /^[가-힣a-zA-Z0-9\s]*$/;
 
 export interface UsageCategoryStepProps {
   onNext: (usageHistory: string, categoryId: number) => void;
-  onAddCategory: () => void;
   defaultUsageHistory?: string;
   defaultCategoryId?: number;
 }
 
 export const UsageCategoryStep = ({
   onNext,
-  onAddCategory,
   defaultUsageHistory,
   defaultCategoryId,
 }: UsageCategoryStepProps) => {
   const { isOpen, openModal, closeModal } = useModal();
+  const router = useRouter();
   const { pinnedCategoryIds, selectCategory, setPinnedCategoryIds } = useCategoryStore();
   const { data: categoryResponse } = useQuery(categoryQueries.listQuery());
   const categories = useMemo(() => categoryResponse?.result ?? [], [categoryResponse?.result]);
@@ -40,7 +42,10 @@ export const UsageCategoryStep = ({
   useEffect(() => {
     if (categories.length === 0) return;
 
-    const ids = categories.filter((c) => c.id != null).map((c) => c.id);
+    const ids = categories
+      .filter((c) => c.id != null)
+      .slice(0, 7)
+      .map((c) => c.id);
     setPinnedCategoryIds(ids);
   }, [categories, setPinnedCategoryIds]);
 
@@ -76,26 +81,8 @@ export const UsageCategoryStep = ({
   useEffect(() => {
     if (selectedCategory || defaultCategoryId == null) return;
     const found = categoryOptions.find((c) => c.id === String(defaultCategoryId));
-    if (found) {
-      setSelectedCategory(found);
-      if (isOpen) setTempCategory(found);
-    }
-  }, [categoryOptions, defaultCategoryId, selectedCategory, isOpen]);
-
-  useEffect(() => {
-    const { shouldOpenCategorySheet, categoryId } = useExpenseFormStore.getState();
-    if (shouldOpenCategorySheet) {
-      openModal();
-      useExpenseFormStore.setState({ shouldOpenCategorySheet: false });
-      if (categoryId) {
-        const found = categoryOptions.find((c) => c.id === String(categoryId));
-        if (found) {
-          setSelectedCategory(found);
-          setTempCategory(found);
-        }
-      }
-    }
-  }, [openModal, categoryOptions]);
+    if (found) setSelectedCategory(found);
+  }, [categoryOptions, defaultCategoryId, selectedCategory]);
 
   // 바텀시트용: 선택된 카테고리가 맨 앞에 오도록 정렬
   const sheetCategories = useMemo(() => {
@@ -127,9 +114,8 @@ export const UsageCategoryStep = ({
     useExpenseFormStore.setState({
       usageHistory,
       ...(selectedCategory && { categoryId: +selectedCategory.id }),
-      shouldOpenCategorySheet: true,
     });
-    onAddCategory();
+    router.push(ROUTES.EXPENSE_CATEGORY);
   };
 
   return (
