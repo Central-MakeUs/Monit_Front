@@ -18,14 +18,9 @@ export const Button = ({
   type = 'button',
   ...props
 }: PropsWithChildren<ButtonProps>): React.JSX.Element => {
-  const handleMouseDown = (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-  };
-
   return (
     <button
       className={button({ variant, size, disabled })}
-      onMouseDown={handleMouseDown}
       onClick={onClick}
       disabled={disabled}
       type={type}

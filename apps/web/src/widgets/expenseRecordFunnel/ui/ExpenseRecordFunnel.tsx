@@ -7,7 +7,6 @@ import * as styles from './ExpenseRecordFunnel.css';
 import type {
   AmountDateStepType,
   UsageCategoryStepType,
-  AddCategoryStepType,
   SatisfactionStepType,
   SubmitStepType,
 } from '../model/expenseFunnelContext';
@@ -16,12 +15,7 @@ import { StepIndicator, TopBar, Text, vars, AlertDialog, useToast } from '@/shar
 import { useModal } from '@/shared/hooks';
 import { formatDateToISO } from '@/shared/utils';
 import { IcLeftChevron } from 'public/icons';
-import {
-  AmountDateStep,
-  SatisfactionStep,
-  UsageCategoryStep,
-  AddCategoryStep,
-} from '@/features/expense/ui/steps';
+import { AmountDateStep, SatisfactionStep, UsageCategoryStep } from '@/features/expense/ui/steps';
 import { expenseQueries } from '@/features/expense/model/expenseQueries';
 import type { EmotionType } from '@/features/expense/model/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -32,7 +26,6 @@ import { ROUTES } from '@/shared/constants';
 const STEP_NUMBER = {
   금액날짜입력: 1,
   사용처카테고리: 2,
-  카테고리추가: 2,
   만족도입력: 3,
   제출: 3,
 } as const;
@@ -46,7 +39,6 @@ export const ExpenseRecordFunnel = () => {
   const funnel = useFunnel<{
     금액날짜입력: AmountDateStepType;
     사용처카테고리: UsageCategoryStepType;
-    카테고리추가: AddCategoryStepType;
     만족도입력: SatisfactionStepType;
     제출: SubmitStepType;
   }>({
@@ -115,24 +107,22 @@ export const ExpenseRecordFunnel = () => {
 
   return (
     <div className={styles.container}>
-      {funnel.step !== '카테고리추가' && (
-        <div className={styles.header}>
-          <TopBar
-            left={<IcLeftChevron onClick={handleBack} />}
-            center={
-              <Text variant='t1' color={vars.color.text.primary}>
-                소비 기록
-              </Text>
-            }
-            right={
-              <Text variant='h4' color={vars.color.text.secondary} onClick={openModal}>
-                나가기
-              </Text>
-            }
-          />
-          <StepIndicator currentStep={STEP_NUMBER[funnel.step]} totalSteps={3} />
-        </div>
-      )}
+      <div className={styles.header}>
+        <TopBar
+          left={<IcLeftChevron onClick={handleBack} />}
+          center={
+            <Text variant='t1' color={vars.color.text.primary}>
+              소비 기록
+            </Text>
+          }
+          right={
+            <Text variant='h4' color={vars.color.text.secondary} onClick={openModal}>
+              나가기
+            </Text>
+          }
+        />
+        <StepIndicator currentStep={STEP_NUMBER[funnel.step]} totalSteps={3} />
+      </div>
       <funnel.Render
         금액날짜입력={({ history }) => (
           <AmountDateStep
@@ -146,10 +136,8 @@ export const ExpenseRecordFunnel = () => {
             defaultUsageHistory={formStore.usageHistory}
             defaultCategoryId={formStore.categoryId}
             onNext={handleUsageCategoryNext(history)}
-            onAddCategory={() => history.push('카테고리추가', {})}
           />
         )}
-        카테고리추가={() => <AddCategoryStep onBack={() => window.history.back()} />}
         만족도입력={() => (
           <SatisfactionStep
             defaultEmotionType={formStore.emotionType}

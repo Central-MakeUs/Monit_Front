@@ -22,9 +22,6 @@ export interface SocialLoginResult {
   data?: {
     accessToken: string;
     refreshToken: string;
-    isNewUser: boolean;
-    hasExpense: boolean;
-    termsAgreed: boolean;
   };
 }
 
