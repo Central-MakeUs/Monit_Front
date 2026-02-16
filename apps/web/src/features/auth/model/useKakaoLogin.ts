@@ -3,9 +3,17 @@ import type { AppBridge } from '@repo/bridge';
 import { useBridge, initializeBridge } from '@/shared/lib/bridge';
 import { getPlatform } from '@/shared/utils';
 
+interface KakaoLoginData {
+  accessToken: string;
+  refreshToken: string;
+  isNewUser?: boolean;
+  hasExpense?: boolean;
+  termsAgreed?: boolean;
+}
+
 interface KakaoLoginOptions {
   redirectUri?: string;
-  onSuccess?: () => void;
+  onSuccess?: (data?: KakaoLoginData) => void;
   onError?: (error: Error) => void;
 }
 
@@ -37,7 +45,7 @@ export const useKakaoLogin = (options: KakaoLoginOptions = {}): KakaoLoginReturn
         if (currentBridge) {
           const result = await currentBridge.socialLogin('kakao');
           if (result.success) {
-            onSuccess?.();
+            onSuccess?.(result.data);
           } else {
             onError?.(new Error(result.message || '카카오 로그인에 실패했습니다.'));
           }
