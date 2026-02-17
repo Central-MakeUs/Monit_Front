@@ -6,6 +6,7 @@ import { EXTERNAL_URLS } from '@/shared/constants/urls';
 import { TopBar, vars, Text, Divider, AlertDialog } from '@/shared/ui';
 import { IcLeftChevron } from 'public/icons';
 import React from 'react';
+import { MyPageFooter } from './MyPageFooter';
 import * as styles from './myPage.css';
 import { useRouter } from 'next/navigation';
 import { useModal } from '@/shared/hooks';
@@ -74,6 +75,11 @@ export const MyPage = () => {
         <MenuItem label='로그아웃' onClick={openLogoutModal} />
         <MenuItem label='회원탈퇴' onClick={openWithdrawModal} />
       </div>
+
+      <div className={styles.dividerWrapper}>
+        <Divider />
+      </div>
+      <MyPageFooter />
       <AlertDialog
         isOpen={isLogoutOpen}
         onClose={closeLogoutModal}
