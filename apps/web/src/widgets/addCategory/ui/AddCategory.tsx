@@ -49,7 +49,9 @@ export const AddCategory = () => {
   const toast = useToast();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const isFromMypage = searchParams.get('from') === 'mypage';
+  const from = searchParams.get('from');
+  const isFromMypage = from === 'mypage';
+  const isFromEdit = from === 'edit';
   const mode = searchParams.get('mode') === 'edit' ? 'edit' : 'add';
   const editId = searchParams.get('id') ? Number(searchParams.get('id')) : null;
   const isEditMode = mode === 'edit' && editId !== null;
@@ -70,7 +72,11 @@ export const AddCategory = () => {
         setCategoryId(newId);
       }
       toast.success('카테고리가 추가되었어요!');
-      router.back();
+      if (isFromEdit) {
+        router.push('/');
+      } else {
+        router.back();
+      }
     },
   });
 

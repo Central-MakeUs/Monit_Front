@@ -248,7 +248,12 @@ export const ExpenseEditBottomSheet = ({
             setIsCategorySheetOpen(false);
           }}
           onConfirm={() => setIsCategorySheetOpen(false)}
-          onAddClick={() => router.push('/expense/category')}
+          onAddClick={() => {
+            if (expense?.expenseId) {
+              sessionStorage.setItem('expense-edit-target-id', String(expense.expenseId));
+            }
+            router.push('/expense/category?from=edit');
+          }}
         />
       </BottomSheet>
     </BottomSheet>
