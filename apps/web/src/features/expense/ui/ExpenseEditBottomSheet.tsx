@@ -54,7 +54,6 @@ export const ExpenseEditBottomSheet = ({
   const [date, setDate] = useState<Date>(initialDate);
 
   const [amountError, setAmountError] = useState<string | undefined>(undefined);
-  // Removed usageError state, derived from value
 
   const isValidNameRegex = /^[가-힣a-zA-Z0-9\s]*$/;
   const isUsageInvalid = usage !== '' && !isValidNameRegex.test(usage);
@@ -104,23 +103,22 @@ export const ExpenseEditBottomSheet = ({
   });
 
   useEffect(() => {
-    if (expense) {
-      setAmount(expense.amount ?? 0);
-      setUsage(expense.usageHistory ?? '');
-      setDate(initialDate);
+    if (!isOpen || !expense) return;
 
-      // Reset errors when opening
-      setAmountError(undefined);
+    setAmount(expense.amount ?? 0);
+    setUsage(expense.usageHistory ?? '');
+    setDate(initialDate);
 
-      if (categories.length > 0 && expense.categoryName) {
-        const matchedCategory = categories.find((c) => c.name === expense.categoryName);
-        if (matchedCategory) {
-          setSelectedCategoryId(String(matchedCategory.id));
-          setFrontCategoryId(String(matchedCategory.id));
-        }
+    setAmountError(undefined);
+
+    if (categories.length > 0 && expense.categoryName) {
+      const matchedCategory = categories.find((c) => c.name === expense.categoryName);
+      if (matchedCategory) {
+        setSelectedCategoryId(String(matchedCategory.id));
+        setFrontCategoryId(String(matchedCategory.id));
       }
     }
-  }, [expense, categories, initialDate]);
+  }, [isOpen, expense, categories, initialDate]);
 
   const handleAmountChange = (value: string) => {
     const numericValue = parseInt(value.replace(/[^0-9]/g, ''), 10);
