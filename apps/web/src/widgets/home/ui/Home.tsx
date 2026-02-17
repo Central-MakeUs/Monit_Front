@@ -52,7 +52,7 @@ export const Home = ({
     }))
   );
 
-  // Features 레이어의 훅을 통해 데이터 페칭 및 로직 처리
+  // Features 레이어: calendar API로 월별 금액(currentDate 기준), daily API로 일별 내역(selectedDate 기준)
   const {
     monthlyTotalAmount,
     expenses,
@@ -61,8 +61,9 @@ export const Home = ({
     emptyStateType,
     isLoading,
     isFetching,
-  } = useHomeExpenseData(selectedDate);
+  } = useHomeExpenseData(selectedDate, currentDate);
 
+  // 달력에서 달이 바뀌면 보이는 달 = 선택한 달로 맞춰서, useHomeExpenseData의 “선택한 날짜 달 변경” 리페치가 바로 동작하도록 함
   const handleExpenseClick = (expense: ExpenseListDTO) => {
     setSelectedExpense(expense);
     openModal();
