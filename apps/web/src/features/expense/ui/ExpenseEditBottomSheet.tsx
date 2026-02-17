@@ -23,6 +23,7 @@ import {
   type ExpenseListDTO,
 } from '@/entities/expense';
 import { expenseReportQueries } from '@/entities/expenseReport';
+import { expenseEditNavigation } from '@/features/expense/lib/expenseEditNavigation';
 
 export interface ExpenseEditBottomSheetProps {
   isOpen: boolean;
@@ -59,7 +60,13 @@ export const ExpenseEditBottomSheet = ({
   const isUsageInvalid = usage !== '' && !isValidNameRegex.test(usage);
 
   // 카테고리 목록 조회
-  const { data: categoryData } = useQuery(categoryQueries.listQuery());
+  const { data: categoryData, refetch: refetchCategories } = useQuery({
+    // 편집 바텀시트는 카테고리 추가 후 돌아오는 진입점이기 때문에
+    // 새로 추가된 카테고리가 바로 보이도록 항상 최신 데이터를 가져온다.
+    ...categoryQueries.listQuery(),
+    staleTime: 0,
+    refetchOnMount: 'always',
+  });
 
   const categories = React.useMemo(() => {
     return (categoryData?.result ?? []) as CategoryListResponseDTO[];
@@ -105,6 +112,15 @@ export const ExpenseEditBottomSheet = ({
   useEffect(() => {
     if (!isOpen || !expense) return;
 
+    // 편집 바텀시트가 다시 열릴 때는 항상 내부 상태를 초기화해서
+    // 카테고리 / 캘린더 / 삭제 다이얼로그 바텀시트가 열린 채로 남지 않도록 한다.
+    setIsDeleteDialogOpen(false);
+    setIsCalendarOpen(false);
+    setIsCategorySheetOpen(false);
+
+    // 카테고리 추가 후 돌아온 상황에서도 최신 목록을 보장하기 위해 강제 리패치
+    refetchCategories();
+
     setAmount(expense.amount ?? 0);
     setUsage(expense.usageHistory ?? '');
     setDate(initialDate);
@@ -118,7 +134,7 @@ export const ExpenseEditBottomSheet = ({
         setFrontCategoryId(String(matchedCategory.id));
       }
     }
-  }, [isOpen, expense, categories, initialDate]);
+  }, [isOpen, expense, categories, initialDate, refetchCategories]);
 
   const handleAmountChange = (value: string) => {
     const numericValue = parseInt(value.replace(/[^0-9]/g, ''), 10);
@@ -250,7 +266,7 @@ export const ExpenseEditBottomSheet = ({
           onConfirm={() => setIsCategorySheetOpen(false)}
           onAddClick={() => {
             if (expense?.expenseId) {
-              sessionStorage.setItem('expense-edit-target-id', String(expense.expenseId));
+              expenseEditNavigation.setTargetExpenseId(expense.expenseId);
             }
             router.push('/expense/category?from=edit');
           }}

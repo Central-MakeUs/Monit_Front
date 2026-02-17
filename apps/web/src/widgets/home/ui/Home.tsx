@@ -14,6 +14,7 @@ import { MonthlyExpenseInfo } from './MonthlyExpenseInfo';
 import { CalendarSection } from './CalendarSection';
 import { ExpenseContent } from './ExpenseContent';
 import * as styles from './Home.css';
+import { expenseEditNavigation } from '@/features/expense/lib/expenseEditNavigation';
 
 export interface HomeProps {
   onSettingsClick: () => void;
@@ -64,24 +65,14 @@ export const Home = ({
   } = useHomeExpenseData(selectedDate);
 
   useEffect(() => {
-    // 카테고리 추가 페이지에서 돌아온 뒤, 다시 열어야 할 지출 ID가 세션에 저장돼 있으면
-    // 최신 expenses에서 해당 지출을 찾아 바텀시트를 다시 연다.
-    if (typeof window === 'undefined') return;
-    const storedId = sessionStorage.getItem('expense-edit-target-id');
-    if (!storedId) return;
+    const targetId = expenseEditNavigation.consumeTargetExpenseId();
+    if (!targetId) return;
 
-    const id = Number(storedId);
-    if (Number.isNaN(id)) {
-      sessionStorage.removeItem('expense-edit-target-id');
-      return;
-    }
-
-    const found = expenses.find((exp) => exp.expenseId === id);
+    const found = expenses.find((exp) => exp.expenseId === targetId);
     if (!found) return;
 
     setSelectedExpense(found);
     openModal();
-    sessionStorage.removeItem('expense-edit-target-id');
   }, [expenses, openModal]);
 
   const handleExpenseClick = (expense: ExpenseListDTO) => {
