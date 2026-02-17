@@ -76,6 +76,7 @@ export const ExpenseFormBottomSheet = ({
   selectedCategoryId,
   onCategorySelect,
   onMoreCategoryClick,
+  satisfactionLabel,
   onDelete,
   onConfirm,
   onClose,
@@ -135,7 +136,7 @@ export const ExpenseFormBottomSheet = ({
           소비 상황
         </Text>
         <div className={styles.badgeList}>
-          <Badge label={'홀린듯이'} />
+          <Badge label={satisfactionLabel ?? '감정 누락'} />
           {/* <Badge label='정말 만족했어요' size='lg' evaluationType='VERY_SATISFIED' /> */}
         </div>
       </div>
