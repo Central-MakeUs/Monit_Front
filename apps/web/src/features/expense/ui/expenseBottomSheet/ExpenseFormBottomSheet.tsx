@@ -99,7 +99,6 @@ export const ExpenseFormBottomSheet = ({
           fieldType='number'
           errorMessage={amountErrorMessage}
           error={isAmountError}
-          allowZero={false}
         />
       </InputField>
 
