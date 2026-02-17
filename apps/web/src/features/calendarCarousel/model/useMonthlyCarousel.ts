@@ -37,6 +37,8 @@ export interface UseMonthlyCarouselReturn {
   getTransition: () => string;
   containerHeight: number;
   shouldTransitionHeight: boolean;
+  /** 스와이프로 월 전환 시 깜빡임 완화용: true면 선택일 하이라이트 숨김, 전환 후 일정 시간 뒤 다시 표시 */
+  hideSelection: boolean;
 }
 
 export const useMonthlyCarousel = ({
@@ -49,11 +51,19 @@ export const useMonthlyCarousel = ({
   const [dragOffset, setDragOffset] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [hideSelection, setHideSelection] = useState(false);
   const [slideWidth, setSlideWidth] = useState(0);
   const [containerHeight, setContainerHeight] = useState(0);
 
   const trackRef = useRef<HTMLDivElement>(null);
   const pendingActionRef = useRef<'left' | 'right' | null>(null);
+  const revealSelectionTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (revealSelectionTimerRef.current) clearTimeout(revealSelectionTimerRef.current);
+    };
+  }, []);
 
   // dates(부모의 데이터)가 변경되면 내부 상태 동기화 및 애니메이션 종료 처리
   useEffect(() => {
@@ -151,13 +161,18 @@ export const useMonthlyCarousel = ({
     if (pendingActionRef.current && isTransitioning) {
       const action = pendingActionRef.current;
 
-      // 상태 업데이트를 여기서 즉시 하지 않고 콜백만 호출하여 부모의 데이터 변경을 유도함
-      // 실제 상태 리셋은 위의 useEffect([dates])에서 처리됨
       if (action === 'left') {
         onSwipeLeft?.();
       } else {
         onSwipeRight?.();
       }
+
+      // 전환 끝난 뒤 잠시 있다가 선택일을 천천히 다시 표시 (임시 깜빡임 완화)
+      if (revealSelectionTimerRef.current) clearTimeout(revealSelectionTimerRef.current);
+      revealSelectionTimerRef.current = setTimeout(() => {
+        revealSelectionTimerRef.current = null;
+        setHideSelection(false);
+      }, 380);
     }
   };
 
@@ -186,11 +201,13 @@ export const useMonthlyCarousel = ({
         const swipeThreshold = slideWidth * SWIPE_THRESHOLD_RATIO;
 
         if (delta < -swipeThreshold && !disableNext) {
+          setHideSelection(true); // 전환 시작 시 선택일 숨김 (깜빡임 완화)
           setIsTransitioning(true);
           pendingActionRef.current = 'left';
           setDragOffset(-slideWidth);
           // 콜백은 handleTransitionEnd에서 호출
         } else if (delta > swipeThreshold) {
+          setHideSelection(true);
           setIsTransitioning(true);
           pendingActionRef.current = 'right';
           setDragOffset(slideWidth);
@@ -229,5 +246,6 @@ export const useMonthlyCarousel = ({
     getTransition,
     containerHeight,
     shouldTransitionHeight: !isDragging && !isTransitioning,
+    hideSelection,
   };
 };
