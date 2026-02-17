@@ -16,7 +16,7 @@ import {
 } from '@/shared/ui';
 import { EXPENSE_CONSTANTS, EXPENSE_ERROR_MESSAGES } from '@/entities/expense';
 import { IcTrash } from 'public/icons';
-import { formatDate } from '@/shared/utils';
+import { formatDate, formatNumberWithComma } from '@/shared/utils';
 export interface Category {
   id: string;
   icon: CategoryIconType;
@@ -84,6 +84,8 @@ export const ExpenseFormBottomSheet = ({
   isAmountError,
   isUsageError,
 }: ExpenseFormBottomSheetProps) => {
+  const formattedAmount = amount !== undefined ? formatNumberWithComma(String(amount)) : '';
+
   return (
     <BaseBottomSheetTemplate>
       <BaseBottomSheetTemplate.Header type='close' onClose={onClose} />
@@ -91,7 +93,7 @@ export const ExpenseFormBottomSheet = ({
       {/* 소비금액 */}
       <InputField label='소비금액'>
         <EditableTextInput
-          value={amount?.toString()}
+          value={formattedAmount}
           onValueChange={onAmountChange}
           fieldType='number'
           errorMessage={amountErrorMessage}
