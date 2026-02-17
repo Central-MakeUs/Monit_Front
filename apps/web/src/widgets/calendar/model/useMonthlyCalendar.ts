@@ -22,7 +22,6 @@ interface UseMonthlyCalendarProps {
 export const useMonthlyCalendar = ({
   currentDate,
   selectedDate,
-  variant,
   onDateSelect,
   onMonthChange,
 }: UseMonthlyCalendarProps) => {
@@ -149,6 +148,6 @@ export const useMonthlyCalendar = ({
     handlePrevMonth,
     handleNextMonth,
     isNextMonthDisabled,
-    carousel: variant === 'home' ? carousel : null,
+    carousel,
   };
 };

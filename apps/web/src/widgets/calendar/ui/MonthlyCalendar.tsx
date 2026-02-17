@@ -54,7 +54,7 @@ export const MonthlyCalendar = ({
           hideNextButton={isNextMonthDisabled}
         />
       )}
-      {variant === 'home' && carousel ? (
+      {carousel ? (
         <MonthlyCarousel
           prevMonth={carousel.prevMonth}
           currentMonth={carousel.currentMonth}
