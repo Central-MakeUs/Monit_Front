@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { createPortal } from 'react-dom';
 
 import { Button } from '../button';
 
@@ -154,10 +155,10 @@ export const AlertDialog = ({
     return dialogContent;
   }
 
-  // 일반 모드: overlay와 함께 렌더링
-  return (
+  return createPortal(
     <div className={styles.overlay} onClick={handleOverlayClick}>
       {dialogContent}
-    </div>
+    </div>,
+    document.body
   );
 };

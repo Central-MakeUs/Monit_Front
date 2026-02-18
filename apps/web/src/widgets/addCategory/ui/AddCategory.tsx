@@ -49,7 +49,9 @@ export const AddCategory = () => {
   const toast = useToast();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const isFromMypage = searchParams.get('from') === 'mypage';
+  const from = searchParams.get('from');
+  const isFromMypage = from === 'mypage';
+  const isFromEdit = from === 'edit';
   const mode = searchParams.get('mode') === 'edit' ? 'edit' : 'add';
   const editId = searchParams.get('id') ? Number(searchParams.get('id')) : null;
   const isEditMode = mode === 'edit' && editId !== null;
@@ -63,14 +65,19 @@ export const AddCategory = () => {
   const { mutate: createCategory, isPending } = useMutation({
     ...categoryQueries.createMutation(queryClient),
     onSuccess: (response) => {
+      setSubmitSuccess(true);
       queryClient.invalidateQueries({ queryKey: categoryQueries.all });
       const newId = response.result?.id;
       if (newId && !isFromMypage) {
         selectCategory(newId);
         setCategoryId(newId);
       }
+      if (isFromEdit) {
+        router.push('/');
+      } else {
+        router.back();
+      }
       toast.success('카테고리가 추가되었어요!');
-      router.back();
     },
   });
 
@@ -80,6 +87,7 @@ export const AddCategory = () => {
   const [categoryName, setCategoryName] = useState('');
   const [selectedIcon, setSelectedIcon] = useState<Category | null>(null);
   const [tempIcon, setTempIcon] = useState<Category | null>(null);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
 
   // 수정 모드일 때 초기값 설정
   useEffect(() => {
@@ -92,13 +100,14 @@ export const AddCategory = () => {
     }
   }, [editingCategory]);
 
-  // 에러 검사
+  // 에러 검사 (valid에서만 에러 표시, API 성공 직후 refetch 시 중복으로 잡히지 않도록)
   const validationError = useMemo(() => {
     if (!categoryName) return null;
     // 한글, 영문, 숫자만 허용
     if (!VALID_NAME_REGEX.test(categoryName)) {
       return 'invalid';
     }
+    if (submitSuccess) return null;
     // 이미 존재하는 이름인지 확인 (수정 모드일 때 자기 자신은 제외)
     const isDuplicate = categories.some(
       (c) =>
@@ -108,7 +117,7 @@ export const AddCategory = () => {
       return 'duplicate';
     }
     return null;
-  }, [categoryName, categories, isEditMode, editId]);
+  }, [categoryName, categories, isEditMode, editId, submitSuccess]);
 
   // 에러 메시지 (항상 표시, 에러 시 다른 메시지)
   const errorMessage =

@@ -46,7 +46,7 @@ export const ReadonlyDisplay = ({
           className={styles.editButton}
           disabled={disabled || hasError}
           aria-label='수정'>
-          <IcEdit />
+          <IcEdit color={vars.color.icon.subtle} />
         </button>
       </div>
       {hasError && errorMessage && (
