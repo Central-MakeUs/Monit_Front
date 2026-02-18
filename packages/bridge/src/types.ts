@@ -1,19 +1,4 @@
 /**
- * 애플 로그인 결과 타입
- */
-export interface AppleLoginResult {
-  identityToken: string;
-  authorizationCode: string;
-  user?: {
-    email?: string;
-    name?: {
-      firstName?: string;
-      lastName?: string;
-    };
-  };
-}
-
-/**
  * 소셜 로그인 결과 타입
  */
 export interface SocialLoginResult {
@@ -22,6 +7,9 @@ export interface SocialLoginResult {
   data?: {
     accessToken: string;
     refreshToken: string;
+    isNewUser?: boolean;
+    hasExpense?: boolean;
+    isTermsAgreed?: boolean;
   };
 }
 
