@@ -21,7 +21,6 @@ export const initializeBridge = async (): Promise<void> => {
       }) as unknown as AppBridge;
 
       (window as unknown as { bridge: AppBridge }).bridge = bridge;
-      console.log('[WEB] bridge ready');
       window.dispatchEvent(new CustomEvent('bridge-ready'));
       return;
     } catch (e) {

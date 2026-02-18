@@ -44,20 +44,20 @@ const refreshAccessToken = async (): Promise<string | null> => {
   return refreshPromise;
 };
 
-/** API 로그: 엔드포인트, 액세스/리프레시 토큰 유무, 응답 상태 */
-const logApi = (request: Request, response: Response | undefined) => {
-  const endpoint = request.url.replace(API_BASE_URL, '') || request.url;
-  const hasAccess = !!request.headers.get('Authorization');
-  const hasRefresh = !!request.headers.get('RefreshToken');
-  const status = response?.status ?? '-';
-  console.log(
-    '[API]\n' +
-      `1. API 요청 엔드포인트: ${endpoint}\n` +
-      `2. 액세스토큰: ${hasAccess ? '있음' : '없음'}\n` +
-      `3. 리프레쉬토큰: ${hasRefresh ? '있음' : '없음'}\n` +
-      `4. 응답 상태 코드: ${status}`
-  );
-};
+// /** API 로그: 엔드포인트, 액세스/리프레시 토큰 유무, 응답 상태 */
+// const logApi = (request: Request, response: Response | undefined) => {
+//   const endpoint = request.url.replace(API_BASE_URL, '') || request.url;
+//   const hasAccess = !!request.headers.get('Authorization');
+//   const hasRefresh = !!request.headers.get('RefreshToken');
+//   const status = response?.status ?? '-';
+//   console.log(
+//     '[API]\n' +
+//       `1. API 요청 엔드포인트: ${endpoint}\n` +
+//       `2. 액세스토큰: ${hasAccess ? '있음' : '없음'}\n` +
+//       `3. 리프레쉬토큰: ${hasRefresh ? '있음' : '없음'}\n` +
+//       `4. 응답 상태 코드: ${status}`
+//   );
+// };
 
 /**
  * 인증이 필요 없는 기본 API 클라이언트
@@ -77,7 +77,7 @@ export const apiClient = ky.create({
     beforeError: [
       async (error) => {
         if (error.request instanceof Request) {
-          logApi(error.request, error.response);
+          // logApi(error.request, error.response);
         }
         if (error.response) {
           try {
@@ -115,7 +115,7 @@ export const authenticatedApiClient = apiClient.extend({
     afterResponse: [
       async (request, options, response) => {
         if (typeof window !== 'undefined') {
-          logApi(request, response);
+          // logApi(request, response);
         }
 
         const ctx = (options.context ?? {}) as KyContext;
