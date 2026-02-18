@@ -12,15 +12,16 @@ export const postAppleLogin = async ({
 
     // 백엔드가 result 래핑 여부에 상관없이 동작하도록 (bridge 카카오와 동일한 방식)
     const result = response.data?.result ?? response.data;
+    const { isNewUser, hasExpense, isTermsAgreed } = result;
 
     return {
       success: true,
       data: {
         accessToken: result.accessToken,
         refreshToken: result.refreshToken,
-        isNewUser: result.isNewUser,
-        hasExpense: result.hasExpense,
-        termsAgreed: result.termsAgreed,
+        isNewUser,
+        hasExpense,
+        isTermsAgreed,
       },
     };
   } catch (error) {
