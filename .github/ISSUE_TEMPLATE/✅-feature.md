@@ -1,10 +1,9 @@
 ---
 name: Feature
 about: 기능 추가 이슈입니다.
-title: "[ Feat ]"
-labels: "✨ Feature"
+title: '[ Feat ]'
+labels: '✨ Feature'
 assignees: ''
-
 ---
 
 ## 💡 Feature Issue
@@ -15,7 +14,7 @@ assignees: ''
 
 <!-- 해야 할 일들을 적어주세요. -->
 
-- [ ]  todo
+- [ ] todo
 
 ## 📚 ETC
 

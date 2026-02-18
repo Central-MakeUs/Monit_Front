@@ -1,0 +1,77 @@
+pre-commit:
+  parallel: true
+  commands:
+    # 자동 포맷팅 및 stage
+    format:
+      glob: '*.{js,jsx,ts,tsx,json,md,yaml,yml}'
+      run: pnpm format {staged_files}
+      stage_fixed: true
+
+    # 변경된 워크스페이스만 lint 실행
+    lint:
+      run: |
+        CHANGED=$(git diff --cached --name-only \
+          | grep -E '^(apps|packages)/' \
+          | cut -d/ -f1,2 \
+          | sort -u \
+          | sed 's#^#./#' )
+
+        if [ -n "$CHANGED" ]; then
+          FILTER_ARGS=$(printf '%s\n' "$CHANGED" | sed 's/^/--filter=/' | paste -sd " " -)
+          turbo run lint $FILTER_ARGS
+        fi
+
+    # 변경된 워크스페이스만 타입 체크
+    check-types:
+      run: |
+        CHANGED=$(git diff --cached --name-only \
+          | grep -E '^(apps|packages)/' \
+          | cut -d/ -f1,2 \
+          | sort -u \
+          | sed 's#^#./#' )
+
+        if [ -n "$CHANGED" ]; then
+          FILTER_ARGS=$(printf '%s\n' "$CHANGED" | sed 's/^/--filter=/' | paste -sd " " -)
+          turbo run check-types $FILTER_ARGS
+        fi
+
+# Commit message 검증
+commit-msg:
+  commands:
+    check-convention:
+      run: |
+        MSG_FILE="{1}"
+        MSG=$(cat "$MSG_FILE")
+
+        # 빈 메시지 무시
+        if [ -z "$MSG" ]; then
+          exit 0
+        fi
+
+        # Merge 커밋 무시
+        if echo "$MSG" | grep -q "^Merge"; then
+          exit 0
+        fi
+
+        # 커밋 메시지 형식 검사: type: message
+        # 허용되는 타입: feat, fix, chore, docs, style, refactor, test, build, ci, perf
+        if ! echo "$MSG" | grep -qE "^(feat|fix|chore|docs|style|refactor|test|build|ci|perf):\s.+"; then
+          echo "❌ 커밋 메시지 형식이 올바르지 않습니다!"
+          echo ""
+          echo "올바른 형식: type: message"
+          echo ""
+          echo "허용되는 타입:"
+          echo "  - feat: 새로운 기능"
+          echo "  - fix: 버그 수정"
+          echo "  - chore: 기타 작업 (설정, 빌드 등)"
+          echo "  - docs: 문서 수정"
+          echo "  - style: 코드 스타일 변경 (포맷팅 등)"
+          echo "  - refactor: 리팩토링"
+          echo "  - test: 테스트 추가/수정"
+          echo "  - build: 빌드 시스템 변경"
+          echo "  - ci: CI 설정 변경"
+          echo "  - perf: 성능 개선"
+          echo ""
+          echo "예시: chore: Prettier 설정 추가"
+          exit 1
+        fi

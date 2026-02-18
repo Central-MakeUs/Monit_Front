@@ -1,10 +1,9 @@
 ---
 name: Refactor
 about: 리팩토링 이슈입니다.
-title: "[ Refactor ]"
+title: '[ Refactor ]'
 labels: "\U0001F528 Refactor"
 assignees: ''
-
 ---
 
 ## 📝 리팩토링 설명
@@ -15,7 +14,7 @@ assignees: ''
 
 <!-- 해야 할 일들을 적어주세요. -->
 
-- [ ]  todo
+- [ ] todo
 
 ## 📚 ETC
 

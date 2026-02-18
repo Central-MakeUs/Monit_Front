@@ -1,0 +1,86 @@
+import type { Meta, StoryObj } from '@storybook/nextjs';
+import { type ExpenseListDTO } from '@/entities/expense';
+import { ExpenseList } from './ExpenseList';
+
+const meta = {
+  title: 'Widgets/Home/ExpenseList',
+  component: ExpenseList,
+  parameters: {
+    layout: 'padded',
+  },
+  tags: ['autodocs'],
+} satisfies Meta<typeof ExpenseList>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+/**
+ * Mock 데이터
+ */
+const mockExpenses: ExpenseListDTO[] = [
+  {
+    expenseId: 1,
+    usageHistory: '스타벅스 아메리카노',
+    categoryIconType: 'coffee',
+    categoryName: '카페',
+    amount: 5000,
+    emotionType: '기분전환',
+    evaluationType: 'SATISFIED',
+  },
+  {
+    expenseId: 2,
+    usageHistory: 'GS25 편의점',
+    categoryIconType: 'shopping',
+    categoryName: '편의점',
+    amount: 12000,
+    emotionType: '살기위해',
+    evaluationType: 'NORMAL',
+  },
+  {
+    expenseId: 3,
+    usageHistory: '카카오택시',
+    categoryIconType: 'shopping',
+    categoryName: '교통',
+    amount: 8500,
+    emotionType: '기분전환',
+    evaluationType: 'SATISFIED',
+  },
+];
+
+/**
+ * 지출 목록이 있는 상태
+ */
+export const WithExpenses: Story = {
+  args: {
+    expenses: mockExpenses,
+  },
+};
+
+/**
+ * 많은 지출 항목
+ */
+export const ManyExpenses: Story = {
+  args: {
+    expenses: [
+      ...mockExpenses,
+      {
+        expenseId: 4,
+        usageHistory: '올리브영',
+        categoryIconType: 'beauty',
+        categoryName: '쇼핑',
+        amount: 15000,
+        emotionType: '홀린듯이',
+        evaluationType: 'VERY_SATISFIED',
+      },
+      {
+        expenseId: 5,
+        usageHistory: '점심식사',
+        categoryIconType: 'cook',
+        categoryName: '식비',
+        amount: 9000,
+        emotionType: '필수템',
+        evaluationType: 'SATISFIED',
+      },
+    ],
+  },
+};

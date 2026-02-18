@@ -1,0 +1,1 @@
+export { getSummaryRecord } from './getSummaryRecord';

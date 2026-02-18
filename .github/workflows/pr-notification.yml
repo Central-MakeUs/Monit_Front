@@ -1,0 +1,66 @@
+name: PR Slack Notification
+
+on:
+  pull_request:
+    types: [review_requested]
+    branches: [main, develop]
+  pull_request_review:
+    types: [submitted]
+
+jobs:
+  notify-slack:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send Slack Notification
+        run: |
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          PR_URL="${{ github.event.pull_request.html_url }}"
+          PR_AUTHOR="${{ github.event.pull_request.user.login }}"
+          EVENT_NAME="${{ github.event_name }}"
+
+          # GitHub 유저네임 -> Slack User ID 매핑
+          get_slack_user_id() {
+            case "$1" in
+              "hyun907")
+                echo "U0A6NAVG516"
+                ;;
+              "ssilver01")
+                echo "U0A5KB81ND9"
+                ;;
+              *)
+                echo "$1"  # 매핑이 없으면 GitHub 유저네임 그대로
+                ;;
+            esac
+          }
+
+          if [ "$EVENT_NAME" == "pull_request_review" ]; then
+            REVIEW_STATE="${{ github.event.review.state }}"
+            # approved일 때만 알림
+            if [ "$REVIEW_STATE" == "approved" ]; then
+              REVIEWER="${{ github.event.review.user.login }}"
+              PR_AUTHOR_SLACK_ID=$(get_slack_user_id "$PR_AUTHOR")
+              MESSAGE="✅ *PR 승인! 리뷰 확인하러 와주세요*\n\n<@${PR_AUTHOR_SLACK_ID}> *승인자:* ${REVIEWER}\n*제목:* ${PR_TITLE} (#${PR_NUMBER})\n*링크:* ${PR_URL}"
+            else
+              exit 0  # 코멘트나 변경요청은 알림 안 보냄
+            fi
+          else
+            # 리뷰 요청된 사람 정보 가져오기
+            REQUESTED_REVIEWER="${{ github.event.requested_reviewer.login }}"
+            if [ -z "$REQUESTED_REVIEWER" ]; then
+              # 팀이 요청된 경우
+              REQUESTED_TEAM="${{ github.event.requested_team.name }}"
+              MESSAGE="👀 *리뷰 요청!*\n\n*요청 대상:* @${REQUESTED_TEAM} 팀\n*제목:* ${PR_TITLE} (#${PR_NUMBER})\n*작성자:* ${PR_AUTHOR}\n*링크:* ${PR_URL}"
+            else
+              SLACK_USER_ID=$(get_slack_user_id "$REQUESTED_REVIEWER")
+              MESSAGE="👀 *리뷰 요청!*\n\n<@${SLACK_USER_ID}> 리뷰 부탁드려요!\n*제목:* ${PR_TITLE} (#${PR_NUMBER})\n*작성자:* ${PR_AUTHOR}\n*링크:* ${PR_URL}"
+            fi
+          fi
+
+          curl -X POST \
+            -H 'Content-type: application/json' \
+            --data "{
+              \"text\": \"${MESSAGE}\"
+            }" \
+            ${{ secrets.SLACK_WEBHOOK_URL }}

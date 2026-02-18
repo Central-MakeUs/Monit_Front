@@ -1,0 +1,51 @@
+name: PR Preview
+
+on:
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  vercel-preview:
+    if: |
+      github.actor == 'hyun907' || 
+      github.actor == 'ssilver01'
+
+    runs-on: ubuntu-latest
+
+    env:
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: pnpm 설치
+        uses: pnpm/action-setup@v4
+
+      - name: 노드 설치
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+
+      - name: Vercel CLI 설치
+        run: npm install --global vercel@latest
+
+      - name: Vercel 환경변수 가져오기
+        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: 프로젝트 빌드
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Vercel에 배포
+        id: deploy
+        run: |
+          vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }} > vercel-output.txt
+          echo "preview_url=$(cat vercel-output.txt)" >> $GITHUB_OUTPUT
+
+      - name: PR에 Preview URL 댓글 추가
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          message: |
+            🎉 구현한 기능 Preview: ${{ steps.deploy.outputs.preview_url }}

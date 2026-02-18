@@ -5,20 +5,25 @@
     "build": "turbo run build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "prettier": "prettier --cache --check \"**/*.{js,jsx,ts,tsx,json,md,yaml,yml}\"",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md,yaml,yml}\"",
     "check-types": "turbo run check-types",
     "dev:web": "turbo dev --filter=web",
     "dev:mobile": "turbo dev --filter=mobile",
     "build:web": "turbo build --filter=web",
-    "build:mobile": "turbo build --filter=mobile"
+    "build:mobile": "turbo build --filter=mobile",
+    "storybook": "pnpm --filter=web storybook",
+    "build-storybook": "pnpm --filter=web build-storybook",
+    "svgr": "cd apps/web && pnpm dlx @svgr/cli public/icons --out-dir src/assets/icons --ext tsx --typescript --no-prettier && pnpm exec prettier --write \"src/assets/**/*.tsx\""
   },
   "devDependencies": {
+    "lefthook": "^2.0.13",
     "prettier": "^3.7.4",
     "turbo": "^2.7.2",
     "typescript": "5.9.2"
   },
   "packageManager": "pnpm@9.0.0",
   "engines": {
-    "node": ">=18"
+    "node": ">=22"
   }
 }

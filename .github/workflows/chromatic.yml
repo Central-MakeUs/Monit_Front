@@ -1,0 +1,57 @@
+name: Chromatic Deployment
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+    paths:
+      - 'apps/web/**'
+
+jobs:
+  chromatic-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run Chromatic
+        id: chromatic
+        uses: chromaui/action@latest
+        with:
+          projectToken: ${{ secrets.CHROMATIC_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          workingDir: apps/web
+          buildScriptName: build-storybook
+          onlyChanged: true
+          exitZeroOnChanges: true
+          exitOnceUploaded: true
+        env:
+          NODE_OPTIONS: --max_old_space_size=4096
+
+      - name: Comment PR with Storybook URL
+        if: github.event_name == 'pull_request'
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          message: |
+            ## 🎨 Storybook 배포 완료
+
+            📚 **Storybook:** ${{ steps.chromatic.outputs.storybookUrl }}
+            🔍 **Chromatic 빌드:** ${{ steps.chromatic.outputs.buildUrl }}
+
+            > UI 변경사항을 확인해주세요!
+          comment_tag: chromatic-deployment

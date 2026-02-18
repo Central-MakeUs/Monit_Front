@@ -1,0 +1,78 @@
+# Dependencies
+node_modules
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# Turbo
+.turbo
+turbo.json
+
+# Next.js (apps/web)
+.next
+out
+next-env.d.ts
+
+# Expo (apps/mobile)
+.expo
+.expo-shared
+expo-env.d.ts
+android
+ios
+
+# Build outputs
+dist
+build
+coverage
+
+# Cache
+.cache
+.parcel-cache
+.eslintcache
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# IDE
+.vscode
+.idea
+*.sublime-*
+
+# Environment
+.env
+.env.local
+.env*.local
+
+# Assets (이미지, 폰트 등)
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.ico
+*.webp
+*.woff
+*.woff2
+*.ttf
+*.eot
+*.otf
+
+# Generated/Auto-generated files
+*.d.ts
+!src/**/*.d.ts
+!*.config.ts
+
+# Git
+.git
+.gitignore
+
