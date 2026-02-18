@@ -3,12 +3,12 @@ import { useBridge, initializeBridge } from '@/shared/lib/bridge';
 import { useToast } from '@/shared/ui';
 import { getPlatform } from '@/shared/utils';
 
-interface AppleLoginData {
+export interface AppleLoginData {
   accessToken: string;
   refreshToken: string;
-  isNewUser?: string;
+  isNewUser?: boolean;
   hasExpense?: boolean;
-  termsAgreed?: boolean;
+  isTermsAgreed?: boolean;
 }
 
 interface AppleLoginOptions {
@@ -50,7 +50,6 @@ export const useAppleLogin = (options: AppleLoginOptions = {}): AppleLoginReturn
       const result = await currentBridge.socialLogin('apple');
 
       if (result.success) {
-        toast.success('로그인 성공');
         onSuccess?.(result.data);
       } else {
         toast.attention(result.message || 'Apple 로그인 실패');

@@ -19,16 +19,7 @@ export interface AuthTokens {
  * 로그인 응답 데이터 타입
  */
 export interface LoginData extends AuthTokens {
-  isNewUser: string;
+  isNewUser: boolean;
   hasExpense: boolean;
-  termsAgreed: boolean;
-}
-
-/**
- * 소셜 로그인 응답 타입 (bridge에서 사용)
- */
-export interface SocialLoginData extends AuthTokens {
-  isNewUser?: string;
-  hasExpense?: boolean;
-  termsAgreed?: boolean;
+  isTermsAgreed: boolean;
 }

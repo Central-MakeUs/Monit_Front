@@ -5,7 +5,7 @@ import { postKakaoLogin } from '@/apis/postKakaoLogin';
 import { postReissue } from '@/apis/postReissue';
 import { authStorage } from './authStorage';
 import { useAppleLogin } from '@/social/useAppleLogin';
-import type { ApiResponse, SocialLoginData } from '@/shared/types/api.types';
+import type { ApiResponse, LoginData } from '@/shared/types/api.types';
 import { onboardingStorage } from './onboardingStorage';
 
 /**
@@ -17,7 +17,7 @@ export const appBridge = bridge({
    * 소셜 로그인
    * 네이티브에서 카카오 로그인 → 백엔드 API 호출 → 토큰 저장까지 모두 처리
    */
-  async socialLogin(type: 'kakao' | 'apple'): Promise<ApiResponse<SocialLoginData>> {
+  async socialLogin(type: 'kakao' | 'apple'): Promise<ApiResponse<LoginData>> {
     try {
       if (type === 'kakao') {
         const kakaoResult = await login();
@@ -29,22 +29,27 @@ export const appBridge = bridge({
 
         const { accessToken, refreshToken } = result.data;
         await authStorage.setTokens(accessToken, refreshToken ?? '');
+        const { isNewUser, hasExpense, isTermsAgreed } = result.data;
 
         return {
           success: true,
-          data: { accessToken, refreshToken: refreshToken ?? '' },
+          data: {
+            accessToken,
+            refreshToken: refreshToken ?? '',
+            isNewUser,
+            hasExpense,
+            isTermsAgreed,
+          },
         };
       } else if (type === 'apple') {
         const result = await useAppleLogin();
-        const accessToken = result.data?.accessToken;
-        const refreshToken = result.data?.refreshToken || null;
-        const isNewUser = result.data?.isNewUser;
-        const hasExpense = result.data?.hasExpense;
-        const termsAgreed = result.data?.termsAgreed;
 
-        if (!accessToken) {
+        if (!result.data?.accessToken) {
           throw new Error('애플 로그인 응답에 accessToken이 없습니다.');
         }
+
+        const { accessToken, refreshToken } = result.data;
+        const { isNewUser, hasExpense, isTermsAgreed } = result.data;
 
         await authStorage.setTokens(accessToken, refreshToken || '');
 
@@ -60,7 +65,7 @@ export const appBridge = bridge({
             refreshToken: refreshToken || '',
             isNewUser,
             hasExpense,
-            termsAgreed,
+            isTermsAgreed,
           },
         };
       }
