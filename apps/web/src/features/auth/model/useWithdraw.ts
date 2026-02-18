@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/shared/ui';
 import { clearAllUserStorage } from '@/shared/utils';
 import { authQueries } from './authQueries';
@@ -9,11 +9,14 @@ import { authQueries } from './authQueries';
 export const useWithdraw = () => {
   const router = useRouter();
   const toast = useToast();
+  const queryClient = useQueryClient();
 
   const { mutate: withdraw, isPending } = useMutation({
     ...authQueries.withdrawMutation(),
     onSuccess: () => {
       clearAllUserStorage();
+      // 이전 사용자 월별/요약 등 모든 쿼리 캐시 제거 (재로그인 시 다른 사용자 데이터 노출 방지)
+      queryClient.clear();
       toast.success('회원탈퇴가 완료되었어요');
       router.replace('/login');
     },
