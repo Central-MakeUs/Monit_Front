@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { DatePickerFeature } from '@/features/datePickerModal';
 import { useClientOnly, useModal } from '@/shared/hooks';
@@ -14,6 +14,7 @@ import { MonthlyExpenseInfo } from './MonthlyExpenseInfo';
 import { CalendarSection } from './CalendarSection';
 import { ExpenseContent } from './ExpenseContent';
 import * as styles from './Home.css';
+import { expenseEditNavigation } from '@/features/expense/lib/expenseEditNavigation';
 
 export interface HomeProps {
   onSettingsClick: () => void;
@@ -62,6 +63,17 @@ export const Home = ({
     isLoading,
     isFetching,
   } = useHomeExpenseData(selectedDate);
+
+  useEffect(() => {
+    const targetId = expenseEditNavigation.consumeTargetExpenseId();
+    if (!targetId) return;
+
+    const found = expenses.find((exp) => exp.expenseId === targetId);
+    if (!found) return;
+
+    setSelectedExpense(found);
+    openModal();
+  }, [expenses, openModal]);
 
   const handleExpenseClick = (expense: ExpenseListDTO) => {
     setSelectedExpense(expense);

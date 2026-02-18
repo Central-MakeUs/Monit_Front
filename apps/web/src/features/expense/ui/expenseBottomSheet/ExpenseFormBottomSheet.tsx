@@ -16,7 +16,7 @@ import {
 } from '@/shared/ui';
 import { EXPENSE_CONSTANTS, EXPENSE_ERROR_MESSAGES } from '@/entities/expense';
 import { IcTrash } from 'public/icons';
-import { formatDate } from '@/shared/utils';
+import { formatDate, formatNumberWithComma } from '@/shared/utils';
 export interface Category {
   id: string;
   icon: CategoryIconType;
@@ -76,6 +76,7 @@ export const ExpenseFormBottomSheet = ({
   selectedCategoryId,
   onCategorySelect,
   onMoreCategoryClick,
+  satisfactionLabel,
   onDelete,
   onConfirm,
   onClose,
@@ -84,6 +85,8 @@ export const ExpenseFormBottomSheet = ({
   isAmountError,
   isUsageError,
 }: ExpenseFormBottomSheetProps) => {
+  const formattedAmount = amount !== undefined ? formatNumberWithComma(String(amount)) : '';
+
   return (
     <BaseBottomSheetTemplate>
       <BaseBottomSheetTemplate.Header type='close' onClose={onClose} />
@@ -91,12 +94,11 @@ export const ExpenseFormBottomSheet = ({
       {/* 소비금액 */}
       <InputField label='소비금액'>
         <EditableTextInput
-          value={amount?.toString()}
+          value={formattedAmount}
           onValueChange={onAmountChange}
           fieldType='number'
           errorMessage={amountErrorMessage}
           error={isAmountError}
-          allowZero={false}
         />
       </InputField>
 
@@ -133,7 +135,7 @@ export const ExpenseFormBottomSheet = ({
           소비 상황
         </Text>
         <div className={styles.badgeList}>
-          <Badge label={'홀린듯이'} />
+          <Badge label={satisfactionLabel ?? '감정 누락'} />
           {/* <Badge label='정말 만족했어요' size='lg' evaluationType='VERY_SATISFIED' /> */}
         </div>
       </div>
