@@ -55,7 +55,7 @@ export const dateBadge = recipe({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: vars.radius.sm,
-    transition: 'background-color 0.15s ease-out',
+    transition: 'background-color 0.15s ease-out, box-shadow 0.15s ease-out',
     color: vars.color.text.secondary,
   },
   variants: {
@@ -117,6 +117,7 @@ export const dateBadge = recipe({
         backgroundColor: 'white',
         color: vars.color.text.primary,
         boxShadow: shadows.shadow2,
+        transition: 'background-color 0.35s ease-out, box-shadow 0.35s ease-out',
       },
     },
     {
