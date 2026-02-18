@@ -97,6 +97,7 @@ export const chevronIcon = recipe({
     flexShrink: 0,
     color: vars.color.icon.subtle,
     backgroundColor: 'transparent',
+    border: 'none',
   },
   variants: {
     selected: {
