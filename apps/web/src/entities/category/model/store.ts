@@ -20,9 +20,9 @@ export const useCategoryStore = create<CategoryPinnedStore>()(
           set({ pinnedCategoryIds: ids.slice(0, PINNED_CATEGORY_LIMIT) });
           return;
         }
-        // 기존 순서 유지, 새 ID만 뒤에 추가 (기존 ID 제거하지 않음)
-        const newIds = ids.filter((id) => !current.includes(id));
-        set({ pinnedCategoryIds: [...current, ...newIds].slice(0, PINNED_CATEGORY_LIMIT) });
+        const validCurrent = current.filter((id) => ids.includes(id));
+        const newIds = ids.filter((id) => !validCurrent.includes(id));
+        set({ pinnedCategoryIds: [...validCurrent, ...newIds].slice(0, PINNED_CATEGORY_LIMIT) });
       },
       selectCategory: (id) => {
         const { pinnedCategoryIds } = get();

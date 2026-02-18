@@ -33,16 +33,9 @@ export const UsageCategoryStep = ({
   defaultCategoryId,
 }: UsageCategoryStepProps) => {
   const { isOpen, openModal, closeModal } = useModal();
-  const { pinnedCategoryIds, selectCategory, setPinnedCategoryIds } = useCategoryStore();
+  const { selectCategory } = useCategoryStore();
   const { data: categoryResponse } = useQuery(categoryQueries.listQuery());
   const categories = useMemo(() => categoryResponse?.result ?? [], [categoryResponse?.result]);
-
-  useEffect(() => {
-    if (categories.length === 0) return;
-
-    const ids = categories.filter((c) => c.id != null).map((c) => c.id);
-    setPinnedCategoryIds(ids);
-  }, [categories, setPinnedCategoryIds]);
 
   // store 데이터를 Category 타입으로 변환
   const categoryOptions = useMemo<Category[]>(
@@ -55,13 +48,6 @@ export const UsageCategoryStep = ({
     [categories]
   );
 
-  // 홈에 고정 노출되는 카테고리
-  const pinnedCategories = useMemo<Category[]>(() => {
-    return (pinnedCategoryIds ?? [])
-      .map((id) => categoryOptions.find((c) => c.id === String(id)))
-      .filter((c): c is Category => c !== undefined);
-  }, [pinnedCategoryIds, categoryOptions]);
-
   const [usageHistory, setUsageHistory] = useState<string>(defaultUsageHistory ?? '');
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
     defaultCategoryId != null
@@ -69,6 +55,8 @@ export const UsageCategoryStep = ({
       : null
   );
   const [tempCategory, setTempCategory] = useState<Category | null>(null);
+  // 바텀시트에서 확인된 카테고리 (그리드 선택과 구분하기 위한 상태)
+  const [confirmedCategory, setConfirmedCategory] = useState<Category | null>(null);
 
   const hasValidationError = usageHistory !== '' && !VALID_NAME_REGEX.test(usageHistory);
   const isValid = usageHistory.trim() !== '' && !hasValidationError && selectedCategory !== null;
@@ -92,6 +80,7 @@ export const UsageCategoryStep = ({
         if (found) {
           setSelectedCategory(found);
           setTempCategory(found);
+          setConfirmedCategory(found);
         }
       }
     }
@@ -104,6 +93,18 @@ export const UsageCategoryStep = ({
     const rest = categoryOptions.filter((c) => c.id !== selectedCategory.id);
     return selected ? [selected, ...rest] : categoryOptions;
   }, [categoryOptions, selectedCategory]);
+
+  // 홈에 고정 노출되는 카테고리
+  const pinnedCategories = useMemo<Category[]>(() => {
+    const top7 = categoryOptions.slice(0, 7);
+    if (!confirmedCategory) return top7;
+    // confirmedCategory가 이미 top7에 있으면 맨 앞으로
+    if (top7.some((c) => c.id === confirmedCategory.id)) {
+      return [confirmedCategory, ...top7.filter((c) => c.id !== confirmedCategory.id)];
+    }
+    // top7에 없으면 맨 앞에 추가하고 마지막 하나 제거
+    return [confirmedCategory, ...top7.slice(0, 6)];
+  }, [categoryOptions, confirmedCategory]);
 
   const handleNext = () => {
     if (!isValid || !selectedCategory) return;
@@ -118,6 +119,7 @@ export const UsageCategoryStep = ({
   const handleConfirm = () => {
     if (tempCategory) {
       selectCategory(+tempCategory.id);
+      setConfirmedCategory(tempCategory);
     }
     setSelectedCategory(tempCategory);
     closeModal();
