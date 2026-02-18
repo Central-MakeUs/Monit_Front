@@ -28,7 +28,7 @@ module.exports = {
         backgroundImage: './assets/images/android-icon-background.png',
         monochromeImage: './assets/images/android-icon-monochrome.png',
       },
-      package: 'com.nitrogen18.store',
+      package: 'com.monit.app',
       edgeToEdgeEnabled: true,
       predictiveBackGestureEnabled: false,
       intentFilters: [
