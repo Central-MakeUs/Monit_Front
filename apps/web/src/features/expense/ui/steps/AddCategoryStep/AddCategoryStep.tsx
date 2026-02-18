@@ -68,7 +68,7 @@ export const AddCategoryStep = ({ onBack }: AddCategoryStepProps) => {
         setCategoryId(newId);
       }
       toast.success('카테고리가 추가되었어요!');
-      useExpenseFormStore.setState({ shouldOpenCategorySheet: true });
+      useExpenseFormStore.setState({ shouldOpenCategorySheet: false });
       onBack();
     },
   });
