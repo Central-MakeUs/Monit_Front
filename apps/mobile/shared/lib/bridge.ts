@@ -31,6 +31,11 @@ export const appBridge = bridge({
         await authStorage.setTokens(accessToken, refreshToken ?? '');
         const { isNewUser, hasExpense, isTermsAgreed } = result.data;
 
+        // 지출이 있을 경우 온보딩 완료 저장
+        if (hasExpense) {
+          await onboardingStorage.completeOnboarding();
+        }
+
         return {
           success: true,
           data: {
@@ -126,6 +131,12 @@ export const appBridge = bridge({
       // 애플 로그인 사용자는 카카오 세션이 없어 실패할 수 있음 → 무시하고 토큰만 삭제
     }
     await authStorage.clearTokens();
+    await onboardingStorage.clearOnboardingStatus();
+  },
+
+  async requestWithdraw(): Promise<void> {
+    await authStorage.clearTokens();
+    await onboardingStorage.clearOnboardingStatus();
   },
 
   /**
