@@ -20,4 +20,8 @@ export const onboardingStorage = {
       console.error('온보딩 상태 저장 실패:', error);
     }
   },
+
+  async clearOnboardingStatus(): Promise<void> {
+    await SecureStore.deleteItemAsync(ONBOARDING_KEY);
+  },
 };
