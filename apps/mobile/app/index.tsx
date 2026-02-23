@@ -12,7 +12,7 @@ import type { WebViewNavigation } from 'react-native-webview';
 
 // URL별 배경색 매핑
 const getBackgroundColorForUrl = (url: string): string => {
-  if (url.includes('/login') || url.includes('/auth/agreement')) {
+  if (url.includes('/auth/agreement')) {
     return '#FFFFFF';
   } else {
     return '#F6F7F9';
