@@ -5,7 +5,7 @@ import { useShallow } from 'zustand/react/shallow';
 import { useHomeExpenseData } from '@/features/homeExpenseData';
 import { useHomeStore } from '@/widgets/home/model/useHomeStore';
 import { MonthlyExpenseInfo } from '@/widgets/home/ui/MonthlyExpenseInfo';
-import { ReportHeader } from './ReportHeader';
+import { ReportHeader } from './ui/ReportHeader/ReportHeader';
 import * as styles from './Report.css';
 
 export interface ReportProps {
