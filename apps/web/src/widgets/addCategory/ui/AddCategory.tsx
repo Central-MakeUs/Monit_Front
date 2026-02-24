@@ -173,7 +173,7 @@ export const AddCategory = () => {
   return (
     <div>
       <TopBar
-        left={<IcLeftChevron onClick={openAlert} />}
+        left={<IcLeftChevron onClick={hasChanges ? openAlert : () => router.back()} />}
         center={
           <Text variant='t1' color={vars.color.text.primary}>
             {isEditMode ? '카테고리 수정' : '카테고리 추가'}
