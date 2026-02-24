@@ -13,3 +13,8 @@ export const content = style({
   display: 'flex',
   flexDirection: 'column',
 });
+
+export const cardSection = style({
+  padding: `0 ${vars.spacing.xl}`,
+  marginTop: '0.3rem',
+});
