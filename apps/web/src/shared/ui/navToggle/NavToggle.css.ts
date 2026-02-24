@@ -6,10 +6,6 @@ export const indicatorXVar = createVar();
 export const indicatorWVar = createVar();
 
 export const container = style({
-  // 1차 배포에선 숨김 처리
-  opacity: 0,
-  pointerEvents: 'none',
-
   display: 'inline-flex',
   alignItems: 'center',
   padding: vars.spacing.xs2,
