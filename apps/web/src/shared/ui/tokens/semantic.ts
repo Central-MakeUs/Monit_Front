@@ -82,13 +82,17 @@ export const semanticColors = {
     },
     disable: primitiveColors.gray[100],
     accent: {
+      red: {
+        default: primitiveColors.red[400],
+        subtle: primitiveColors.red[50],
+      },
       blue: {
         default: primitiveColors.blue[300],
-        subtle: primitiveColors.blue[200],
+        subtle: primitiveColors.blue[100],
       },
       green: {
         default: primitiveColors.green[300],
-        subtle: primitiveColors.green[100],
+        subtle: primitiveColors.green[50],
       },
       yellow: {
         default: primitiveColors.yellow[300],

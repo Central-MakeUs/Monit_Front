@@ -95,6 +95,10 @@ export const vars = createGlobalTheme(':root', {
         danger: semanticColors.bg.status.danger,
       },
       accent: {
+        red: {
+          default: semanticColors.bg.accent.red.default,
+          subtle: semanticColors.bg.accent.red.subtle,
+        },
         blue: {
           default: semanticColors.bg.accent.blue.default,
           subtle: semanticColors.bg.accent.blue.subtle,
@@ -136,6 +140,8 @@ export const vars = createGlobalTheme(':root', {
     lg: radius.lg,
     lg2: radius.lg2,
     xl: radius.xl,
+    xxl: radius.xxl,
+    xxxl: radius.xxxl,
     full: radius.full,
   },
   lineWidth: {
@@ -149,6 +155,7 @@ export const vars = createGlobalTheme(':root', {
     shadow3: shadows.shadow3,
     shadow4: shadows.shadow4,
     glow: shadows.glow,
+    ratingBtn: shadows.ratingBtn,
   },
   font: {
     family: {
