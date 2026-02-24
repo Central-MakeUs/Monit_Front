@@ -1,14 +1,12 @@
 'use client';
 
 import React from 'react';
+import { useRouter } from 'next/navigation';
+import { Report } from '@/widgets/report';
+import { ROUTES } from '@/shared/constants';
 
 export default function ReportPage() {
-  return (
-    <div>
-      <div>
-        <h1>리포트 페이지</h1>
-        <p>Coming soon...</p>
-      </div>
-    </div>
-  );
+  const router = useRouter();
+
+  return <Report onSettingsClick={() => router.push(ROUTES.MY)} />;
 }
