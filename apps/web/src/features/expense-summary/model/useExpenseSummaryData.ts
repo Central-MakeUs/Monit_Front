@@ -3,22 +3,20 @@ import { expenseQueries } from '@/entities/expense';
 import type { ExpenseListDTO, DailyExpenseResponseDTO, EmptyStateType } from '@/entities/expense';
 
 /**
- * 홈 화면에 필요한 소비 데이터를 페칭하고 가공하는 훅
- * @description /api/expense/calendar로 월별 총액(totalAmount) 조회, 일별 지출은 daily API 사용.
- * 캘린더에 보이는 달(currentDate)이 바뀌면 해당 월 calendar API가 자동으로 다시 요청됩니다.
+ * 월별/일별 소비 요약 데이터를 페칭하는 훅
+ * @description calendar API로 월별 총액, daily API로 일별 내역 조회.
+ * Home·Report 등에서 공통 사용.
  */
-export const useHomeExpenseData = (selectedDate: Date | null, currentDate: Date) => {
+export const useExpenseSummaryData = (selectedDate: Date | null, currentDate: Date) => {
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth() + 1;
 
-  // 월별 캘린더 API → totalAmount로 상단 월 금액 표시
   const {
     data: calendarData,
     isLoading: isCalendarLoading,
     error: calendarError,
   } = useQuery(expenseQueries.calendarExpense(year, month));
 
-  // 일일 지출 내역 조회
   const {
     data: dailyData,
     isLoading: isDailyLoading,

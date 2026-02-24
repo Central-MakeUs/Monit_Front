@@ -2,9 +2,8 @@
 
 import React from 'react';
 import { useShallow } from 'zustand/react/shallow';
-import { useHomeExpenseData } from '@/features/homeExpenseData';
-import { useHomeStore } from '@/widgets/home/model/useHomeStore';
-import { MonthlyExpenseInfo } from '@/widgets/home/ui/MonthlyExpenseInfo';
+import { useDateStore } from '@/entities/date';
+import { useExpenseSummaryData, MonthlyExpenseInfo } from '@/features/expense-summary';
 import { ReportHeader } from './ui/ReportHeader/ReportHeader';
 import * as styles from './Report.css';
 
@@ -13,9 +12,9 @@ export interface ReportProps {
 }
 
 export const Report = ({ onSettingsClick }: ReportProps) => {
-  const { currentDate } = useHomeStore(useShallow((state) => ({ currentDate: state.currentDate })));
+  const { currentDate } = useDateStore(useShallow((state) => ({ currentDate: state.currentDate })));
 
-  const { monthlyTotalAmount, isLoading, isFetching } = useHomeExpenseData(
+  const { monthlyTotalAmount, isLoading, isFetching } = useExpenseSummaryData(
     currentDate,
     currentDate
   );

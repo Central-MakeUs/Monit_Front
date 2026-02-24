@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs';
 import { MonthlyExpenseInfo } from './MonthlyExpenseInfo';
 
 const meta = {
-  title: 'Widgets/Home/MonthlyExpenseInfo',
+  title: 'Features/ExpenseSummary/MonthlyExpenseInfo',
   component: MonthlyExpenseInfo,
   parameters: {
     layout: 'padded',

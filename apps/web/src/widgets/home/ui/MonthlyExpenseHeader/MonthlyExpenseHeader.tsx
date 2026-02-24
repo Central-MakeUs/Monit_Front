@@ -1,7 +1,7 @@
 import React from 'react';
 import { ViewToggle } from '@/shared/ui/viewToggle';
 import type { ViewMode } from '../../model/types';
-import { MonthlyExpenseInfo } from '../MonthlyExpenseInfo';
+import { MonthlyExpenseInfo } from '@/features/expense-summary';
 import * as styles from './MonthlyExpenseHeader.css';
 
 export interface MonthlyExpenseHeaderProps {

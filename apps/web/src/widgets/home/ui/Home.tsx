@@ -5,7 +5,8 @@ import { useShallow } from 'zustand/react/shallow';
 import { DatePickerFeature } from '@/features/datePickerModal';
 import { useClientOnly, useModal } from '@/shared/hooks';
 import { ExpenseEditBottomSheet } from '@/features/expense';
-import { useHomeExpenseData } from '@/features/homeExpenseData';
+import { useDateStore } from '@/entities/date';
+import { useExpenseSummaryData } from '@/features/expense-summary';
 import { useRetrospectBannerProps } from '@/features/retrospectBanner';
 import { type ExpenseListDTO } from '@/entities/expense';
 import type { WeeklyCalendarSlotProps, MonthlyCalendarSlotProps } from '../model/types';
@@ -35,27 +36,21 @@ export const Home = ({
   const { isOpen, openModal, closeModal } = useModal();
   const [selectedExpense, setSelectedExpense] = useState<ExpenseListDTO | null>(null);
 
-  const {
-    currentDate,
-    selectedDate,
-    viewMode,
-    setCurrentDate,
-    setSelectedDate,
-    setViewMode,
-    setDateFromPicker,
-  } = useHomeStore(
-    useShallow((state) => ({
-      currentDate: state.currentDate,
-      selectedDate: state.selectedDate,
-      viewMode: state.viewMode,
-      setCurrentDate: state.setCurrentDate,
-      setSelectedDate: state.setSelectedDate,
-      setViewMode: state.setViewMode,
-      setDateFromPicker: state.setDateFromPicker,
-    }))
+  const { currentDate, selectedDate, setCurrentDate, setSelectedDate, setDateFromPicker } =
+    useDateStore(
+      useShallow((state) => ({
+        currentDate: state.currentDate,
+        selectedDate: state.selectedDate,
+        setCurrentDate: state.setCurrentDate,
+        setSelectedDate: state.setSelectedDate,
+        setDateFromPicker: state.setDateFromPicker,
+      }))
+    );
+
+  const { viewMode, setViewMode } = useHomeStore(
+    useShallow((state) => ({ viewMode: state.viewMode, setViewMode: state.setViewMode }))
   );
 
-  // Features 레이어: calendar API로 월별 금액(currentDate 기준), daily API로 일별 내역(selectedDate 기준)
   const {
     monthlyTotalAmount,
     expenses,
@@ -69,7 +64,7 @@ export const Home = ({
     bannerSubMessage,
     retrospectCompleted,
     dailyDate,
-  } = useHomeExpenseData(selectedDate, currentDate);
+  } = useExpenseSummaryData(selectedDate, currentDate);
 
   const bannerProps = useRetrospectBannerProps({
     selectedDate,
@@ -80,7 +75,7 @@ export const Home = ({
     bannerSubMessage,
   });
 
-  // 달력에서 달이 바뀌면 보이는 달 = 선택한 달로 맞춰서, useHomeExpenseData의 “선택한 날짜 달 변경” 리페치가 바로 동작하도록 함
+  // 달력에서 달이 바뀌면 보이는 달 = 선택한 달로 맞춰서, useExpenseSummaryData의 “선택한 날짜 달 변경” 리페치가 바로 동작하도록 함
   useEffect(() => {
     const targetId = expenseEditNavigation.consumeTargetExpenseId();
     if (!targetId) return;

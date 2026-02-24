@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text } from '@/shared/ui/text';
-import { getLoadingClass } from '../../lib/getLoadingClass';
+import { getLoadingClass } from '@/shared/lib/getLoadingClass';
 import * as styles from './MonthlyExpenseInfo.css';
 
 export interface MonthlyExpenseInfoProps {
