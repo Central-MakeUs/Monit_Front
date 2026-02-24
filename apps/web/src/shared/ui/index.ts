@@ -67,3 +67,6 @@ export { Tooltip } from './tooltip/Tooltip';
 export type { TooltipProps } from './tooltip/Tooltip';
 
 export { SelectionTile } from './selectionTile';
+
+export { Card } from './card';
+export type { CardProps } from './card';

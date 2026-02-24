@@ -130,6 +130,7 @@ export const vars = createGlobalTheme(':root', {
     lg2: spacing.lg2,
     xl: spacing.xl,
     '2xl': spacing['2xl'],
+    '3xl': spacing['3xl'],
   },
   radius: {
     xs: radius.xs,
