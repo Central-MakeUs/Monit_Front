@@ -62,11 +62,11 @@ export const AddCategory = () => {
   const { data: categoryData } = useQuery(categoryQueries.listQuery());
   const categories = useMemo(() => categoryData?.result ?? [], [categoryData?.result]);
 
-  const { mutate: createCategory, isPending } = useMutation({
+  const { mutate: createCategory, isPending: isCreatePending } = useMutation({
     ...categoryQueries.createMutation(queryClient),
-    onSuccess: (response) => {
+    onSuccess: async (response) => {
       setSubmitSuccess(true);
-      queryClient.invalidateQueries({ queryKey: categoryQueries.all });
+      await queryClient.invalidateQueries({ queryKey: categoryQueries.all });
       const newId = response.result?.id;
       if (newId && !isFromMypage) {
         selectCategory(newId);
@@ -80,6 +80,17 @@ export const AddCategory = () => {
       toast.success('카테고리가 추가되었어요!');
     },
   });
+
+  const { mutate: updateCategory, isPending: isUpdatePending } = useMutation({
+    ...categoryQueries.updateMutation(queryClient),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: categoryQueries.all });
+      toast.success('수정한 내용이 저장되었어요!');
+      router.back();
+    },
+  });
+
+  const isPending = isCreatePending || isUpdatePending;
 
   // 수정 모드일 때 기존 카테고리 찾기
   const editingCategory = isEditMode ? categories.find((c) => c.id === editId) : null;
@@ -147,9 +158,10 @@ export const AddCategory = () => {
   const handleSubmit = () => {
     if (!selectedIcon) return;
     if (isEditMode && editId) {
-      // 수정 모드 - TODO: patchCategoryUpdate 구현 시 연결
-      toast.success('수정한 내용이 저장되었어요!');
-      router.back();
+      updateCategory({
+        categoryId: editId,
+        data: { name: categoryName, icon: selectedIcon.icon as CategoryDetailsDTO['icon'] },
+      });
     } else {
       createCategory({
         name: categoryName,
