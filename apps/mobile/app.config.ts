@@ -64,18 +64,6 @@ module.exports = {
         },
       ],
       [
-        'expo-splash-screen',
-        {
-          image: './assets/images/splash-icon.png',
-          imageWidth: 140,
-          resizeMode: 'contain',
-          backgroundColor: '#FF604B',
-          dark: {
-            backgroundColor: '#FF604B',
-          },
-        },
-      ],
-      [
         'expo-build-properties',
         {
           android: {
