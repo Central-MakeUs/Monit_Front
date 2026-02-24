@@ -30,6 +30,10 @@ export const useHomeExpenseData = (selectedDate: Date | null, currentDate: Date)
   const dailyResult = dailyData?.result as DailyExpenseResponseDTO | undefined;
   const expenses: ExpenseListDTO[] = dailyResult?.expenses ?? [];
   const hasExpenses = dailyResult?.hasAnyExpense ?? false;
+  const bannerMessage = dailyResult?.bannerMessage;
+  const bannerSubMessage = dailyResult?.bannerSubMessage;
+  const retrospectCompleted = dailyResult?.retrospectCompleted ?? false;
+  const dailyDate = dailyResult?.date;
   const dailyTotalAmount = expenses.reduce(
     (sum: number, exp: ExpenseListDTO) => sum + (exp.amount ?? 0),
     0
@@ -62,5 +66,9 @@ export const useHomeExpenseData = (selectedDate: Date | null, currentDate: Date)
     isLoading: (!calendarData && isCalendarLoading) || (!dailyData && isDailyLoading),
     isFetching: (!!calendarData && isCalendarLoading) || (!!dailyData && isDailyLoading),
     error: calendarError || dailyError,
+    bannerMessage,
+    bannerSubMessage,
+    retrospectCompleted,
+    dailyDate,
   };
 };

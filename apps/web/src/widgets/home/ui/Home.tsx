@@ -6,6 +6,7 @@ import { DatePickerFeature } from '@/features/datePickerModal';
 import { useClientOnly, useModal } from '@/shared/hooks';
 import { ExpenseEditBottomSheet } from '@/features/expense';
 import { useHomeExpenseData } from '@/features/homeExpenseData';
+import { useRetrospectBannerProps } from '@/features/retrospectBanner';
 import { type ExpenseListDTO } from '@/entities/expense';
 import type { WeeklyCalendarSlotProps, MonthlyCalendarSlotProps } from '../model/types';
 import { useHomeStore } from '../model/useHomeStore';
@@ -15,6 +16,7 @@ import { CalendarSection } from './CalendarSection';
 import { ExpenseContent } from './ExpenseContent';
 import * as styles from './Home.css';
 import { expenseEditNavigation } from '@/features/expense/lib/expenseEditNavigation';
+import { Banner } from '@/shared/ui/banner';
 
 export interface HomeProps {
   onSettingsClick: () => void;
@@ -57,12 +59,26 @@ export const Home = ({
   const {
     monthlyTotalAmount,
     expenses,
+    hasExpenses,
     expenseCount,
     dailyTotalAmount,
     emptyStateType,
     isLoading,
     isFetching,
+    bannerMessage,
+    bannerSubMessage,
+    retrospectCompleted,
+    dailyDate,
   } = useHomeExpenseData(selectedDate, currentDate);
+
+  const bannerProps = useRetrospectBannerProps({
+    selectedDate,
+    dailyDate: dailyDate ?? undefined,
+    hasExpenses,
+    retrospectCompleted,
+    bannerMessage,
+    bannerSubMessage,
+  });
 
   // 달력에서 달이 바뀌면 보이는 달 = 선택한 달로 맞춰서, useHomeExpenseData의 “선택한 날짜 달 변경” 리페치가 바로 동작하도록 함
   useEffect(() => {
@@ -115,7 +131,7 @@ export const Home = ({
           renderWeeklyCalendar={renderWeeklyCalendar}
           renderMonthlyCalendar={renderMonthlyCalendar}
         />
-
+        <Banner {...bannerProps} onClickReview={() => alert('돌아보기 클릭!')} />
         <ExpenseContent
           hasExpenses={expenses.length > 0}
           emptyStateType={emptyStateType}
