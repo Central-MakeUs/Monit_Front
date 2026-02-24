@@ -11,7 +11,6 @@ export { ExpenseEditBottomSheet } from './ExpenseEditBottomSheet';
 
 export type {
   ExpenseFormBottomSheetProps,
-  Category,
   CategoryBottomSheetTemplateProps,
   DatePickerBottomSheetTemplateProps,
   IconPickerBottomSheetTemplateProps,

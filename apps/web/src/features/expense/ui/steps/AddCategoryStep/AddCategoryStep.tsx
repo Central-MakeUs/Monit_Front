@@ -12,12 +12,13 @@ import {
   BottomSheet,
   useToast,
   AlertDialog,
+  type CategoryItem,
 } from '@/shared/ui';
 import { IcLeftChevron } from 'public/icons';
 import React, { useState, useMemo } from 'react';
 import * as styles from './AddCategoryStep.css';
 import { IconPickerBottomSheetTemplate } from '@/features/expense';
-import type { Category } from '@/features/expense';
+import { ICON_OPTIONS } from '@/shared/constants';
 import { useModal } from '@/shared/hooks';
 import { useCategoryStore } from '@/entities/category/model/store';
 import { useExpenseFormStore } from '@/widgets/expenseRecordFunnel/model/store';
@@ -26,18 +27,6 @@ import { categoryQueries } from '@/features/expense/model/categoryQueries';
 import { CategoryDetailsDTO } from '@/features/expense/model/types';
 
 const VALID_NAME_REGEX = /^[가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z0-9]*$/;
-
-const ICON_OPTIONS: Category[] = [
-  { id: 'shopping', icon: 'shopping', label: '쇼핑' },
-  { id: 'cook', icon: 'cook', label: '요리' },
-  { id: 'coffee', icon: 'coffee', label: '커피' },
-  { id: 'credit', icon: 'credit', label: '카드' },
-  { id: 'book', icon: 'book', label: '도서' },
-  { id: 'beauty', icon: 'beauty', label: '뷰티' },
-  { id: 'beer', icon: 'beer', label: '맥주' },
-  { id: 'camera', icon: 'camera', label: '카메라' },
-  { id: 'cup', icon: 'cup', label: '컵' },
-];
 
 export interface AddCategoryStepProps {
   onBack: () => void;
@@ -74,8 +63,8 @@ export const AddCategoryStep = ({ onBack }: AddCategoryStepProps) => {
   });
 
   const [categoryName, setCategoryName] = useState('');
-  const [selectedIcon, setSelectedIcon] = useState<Category | null>(null);
-  const [tempIcon, setTempIcon] = useState<Category | null>(null);
+  const [selectedIcon, setSelectedIcon] = useState<CategoryItem | null>(null);
+  const [tempIcon, setTempIcon] = useState<CategoryItem | null>(null);
 
   // 에러 검사
   const validationError = useMemo(() => {
