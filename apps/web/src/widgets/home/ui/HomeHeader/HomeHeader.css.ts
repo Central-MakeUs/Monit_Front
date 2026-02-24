@@ -24,11 +24,14 @@ export const dropdownIcon = style({
 
 export const headerActions = style({
   display: 'flex',
+  justifyContent: 'center',
   alignItems: 'center',
-  gap: vars.spacing.xl,
+  gap: vars.spacing.sm,
 });
 
 export const iconButton = style({
+  width: '3.2rem',
+  height: '3.2rem',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
@@ -36,18 +39,6 @@ export const iconButton = style({
   border: 'none',
   padding: 0,
   cursor: 'pointer',
-});
-
-export const alarmIc = style({
-  width: '2rem',
-  height: '2.36rem',
-  fill: vars.color.icon.tertiary,
-});
-
-export const menuIc = style({
-  width: '2.2rem',
-  height: '1.6rem',
-  fill: vars.color.icon.tertiary,
 });
 
 export const settingIc = style({
