@@ -10,7 +10,7 @@ export const container = style({
 });
 
 export const textArea = style({
-  ...typography.body.b2,
+  ...typography.body.b3,
   width: '100%',
   height: '39rem',
   padding: `${vars.spacing.lg} ${vars.spacing.lg2}`,
