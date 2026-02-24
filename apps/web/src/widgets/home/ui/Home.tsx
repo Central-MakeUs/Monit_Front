@@ -64,7 +64,7 @@ export const Home = ({
     bannerSubMessage,
     retrospectCompleted,
     dailyDate,
-  } = useExpenseSummaryData(selectedDate, currentDate);
+  } = useExpenseSummaryData({ monthDate: currentDate, dayDate: selectedDate });
 
   const bannerProps = useRetrospectBannerProps({
     selectedDate,
