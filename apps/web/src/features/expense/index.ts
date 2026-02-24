@@ -9,7 +9,6 @@ export {
 
 export type {
   ExpenseFormBottomSheetProps,
-  Category,
   CategoryBottomSheetTemplateProps,
   DatePickerBottomSheetTemplateProps,
   IconPickerBottomSheetTemplateProps,

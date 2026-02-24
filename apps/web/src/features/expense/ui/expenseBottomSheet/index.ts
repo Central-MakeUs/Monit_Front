@@ -1,5 +1,5 @@
 export { ExpenseFormBottomSheet } from './ExpenseFormBottomSheet';
-export type { ExpenseFormBottomSheetProps, Category } from './ExpenseFormBottomSheet';
+export type { ExpenseFormBottomSheetProps } from './ExpenseFormBottomSheet';
 
 export { CategoryBottomSheetTemplate } from './CategoryBottomSheet';
 export type { CategoryBottomSheetTemplateProps } from './CategoryBottomSheet';

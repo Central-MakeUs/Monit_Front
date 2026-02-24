@@ -6,7 +6,7 @@ import {
   EditableTextInput,
   InputField,
   TextInput,
-  CategoryIconType,
+  CategoryItem,
   CategoryGrid,
   DateInfoField,
   Text,
@@ -17,11 +17,6 @@ import {
 import { EXPENSE_CONSTANTS, EXPENSE_ERROR_MESSAGES } from '@/entities/expense';
 import { IcTrash } from 'public/icons';
 import { formatDate, formatNumberWithComma } from '@/shared/utils';
-export interface Category {
-  id: string;
-  icon: CategoryIconType;
-  label: string;
-}
 
 export interface ExpenseFormBottomSheetProps {
   /** 소비 금액 */
@@ -37,11 +32,11 @@ export interface ExpenseFormBottomSheetProps {
   /** 날짜 선택 클릭 콜백 */
   onDateClick?: () => void;
   /** 카테고리 목록 */
-  categories?: Category[];
+  categories?: CategoryItem[];
   /** 선택된 카테고리 ID */
   selectedCategoryId?: string | null;
   /** 카테고리 선택 시 콜백 */
-  onCategorySelect?: (category: Category) => void;
+  onCategorySelect?: (category: CategoryItem) => void;
   /** 더보기 버튼 클릭 시 콜백 */
   onMoreCategoryClick?: () => void;
   /** 만족도 라벨 */
