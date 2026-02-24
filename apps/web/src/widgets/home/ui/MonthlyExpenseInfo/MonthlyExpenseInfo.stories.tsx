@@ -9,39 +9,37 @@ const meta = {
   },
   tags: ['autodocs'],
   argTypes: {
-    viewMode: {
-      control: 'radio',
-      options: ['list', 'calendar'],
-      description: '캘린더 표시 모드',
+    standalone: {
+      control: 'boolean',
+      description: '단독 사용 시 margin/padding 루트 적용',
     },
-    onViewModeChange: { action: 'viewModeChanged' },
-  },
-  args: {
-    onViewModeChange: () => {},
   },
 } satisfies Meta<typeof MonthlyExpenseInfo>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/**
- * 리스트 뷰 모드
- *
- * ViewToggle이 리스트 모드로 설정된 상태입니다.
- */
-export const ListView: Story = {
+/** 기본 (조립 시 사용, 헤더 내부) */
+export const Default: Story = {
   args: {
-    viewMode: 'list',
+    monthlyTotalAmount: 1234567,
+    standalone: false,
   },
 };
 
-/**
- * 캘린더 뷰 모드
- *
- * ViewToggle이 캘린더 모드로 설정된 상태입니다.
- */
-export const CalendarView: Story = {
+/** 단독 사용 (Report 등) */
+export const Standalone: Story = {
   args: {
-    viewMode: 'calendar',
+    monthlyTotalAmount: 1234567,
+    standalone: true,
+  },
+};
+
+/** 로딩 중 */
+export const Loading: Story = {
+  args: {
+    monthlyTotalAmount: 0,
+    isLoading: true,
+    standalone: true,
   },
 };

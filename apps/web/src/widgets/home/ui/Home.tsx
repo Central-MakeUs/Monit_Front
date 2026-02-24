@@ -11,7 +11,7 @@ import { type ExpenseListDTO } from '@/entities/expense';
 import type { WeeklyCalendarSlotProps, MonthlyCalendarSlotProps } from '../model/types';
 import { useHomeStore } from '../model/useHomeStore';
 import { HomeHeader } from './HomeHeader';
-import { MonthlyExpenseInfo } from './MonthlyExpenseInfo';
+import { MonthlyExpenseHeader } from './MonthlyExpenseHeader';
 import { CalendarSection } from './CalendarSection';
 import { ExpenseContent } from './ExpenseContent';
 import * as styles from './Home.css';
@@ -114,7 +114,7 @@ export const Home = ({
       </DatePickerFeature>
 
       <div className={styles.content}>
-        <MonthlyExpenseInfo
+        <MonthlyExpenseHeader
           viewMode={viewMode}
           onViewModeChange={setViewMode}
           monthlyTotalAmount={monthlyTotalAmount}
