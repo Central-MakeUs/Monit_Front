@@ -57,7 +57,7 @@ export const appBridge = bridge({
         const { isNewUser, hasExpense } = result.data;
 
         // 기존 사용자만 토큰 저장 (신규 사용자는 약관 동의 완료 후 appleSignup에서 저장)
-        if (!isNewUser) {
+        if (isNewUser === false) {
           await authStorage.setTokens(accessToken, refreshToken || '');
 
           // 지출이 있을 경우 온보딩 완료 저장
