@@ -8,7 +8,6 @@ export interface AppleLoginData {
   refreshToken: string;
   isNewUser?: boolean;
   hasExpense?: boolean;
-  isTermsAgreed?: boolean;
 }
 
 interface AppleLoginOptions {

@@ -5,21 +5,35 @@ import * as styles from './Agreement.css';
 import { Button, Text, vars } from '@/shared/ui';
 import { SelectionTile } from '@/shared/ui/selectionTile/SelectionTile';
 import { EXTERNAL_URLS } from '@/shared/constants/urls';
-import { useRouter } from 'next/navigation';
-import { useMutation } from '@tanstack/react-query';
-import { authQueries } from '../../model/authQueries';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useAuthStore } from '@/shared/stores/authStore';
+import { useBridge } from '@/shared/lib/bridge';
+import { getPlatform } from '@/shared/utils';
 
 export const Agreement = () => {
   const route = useRouter();
+  const searchParams = useSearchParams();
+  const registerToken = searchParams.get('registerToken') ?? '';
+  const setAccessToken = useAuthStore((state) => state.setAccessToken);
+  const bridge = useBridge();
+  const platform = getPlatform();
+
   const [termsOfService, setTermsOfService] = useState(false);
   const [privacyPolicy, setPrivacyPolicy] = useState(false);
+  const [isPending, setIsPending] = useState(false);
 
   const allAgreed = termsOfService && privacyPolicy;
 
-  const { mutate: agreeTerms, isPending } = useMutation({
-    ...authQueries.termsMutation(),
-    onSuccess: () => route.push('/'),
-  });
+  const syncNativeToken = async () => {
+    if ((platform === 'ios' || platform === 'android') && bridge) {
+      try {
+        const accessToken = await bridge.getAccessToken();
+        if (accessToken) setAccessToken(accessToken);
+      } catch {
+        // 토큰 로드 실패
+      }
+    }
+  };
 
   const toggleTermsOfService = () => setTermsOfService((prev) => !prev);
   const togglePrivacyPolicy = () => setPrivacyPolicy((prev) => !prev);
@@ -30,8 +44,18 @@ export const Agreement = () => {
     setPrivacyPolicy(next);
   };
 
-  const handleNext = () => {
-    agreeTerms();
+  const handleNext = async () => {
+    if (!bridge || (platform !== 'ios' && platform !== 'android')) return;
+    setIsPending(true);
+    try {
+      const result = await bridge.appleSignup(registerToken);
+      if (result.success) {
+        await syncNativeToken();
+        route.push('/');
+      }
+    } finally {
+      setIsPending(false);
+    }
   };
 
   return (

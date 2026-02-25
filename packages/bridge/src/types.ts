@@ -42,6 +42,13 @@ export type AppBridge = {
   // 외부 링크 열기 (인앱 브라우저)
   openExternalUrl: (url: string) => Promise<void>;
 
+  // Apple 신규 사용자 회원가입 (약관 동의 후 호출)
+  appleSignup: (registerToken: string) => Promise<{
+    success: boolean;
+    message?: string;
+    data?: { accessToken: string; refreshToken: string; isNewUser?: boolean; hasExpense?: boolean };
+  }>;
+
   // 온보딩 완료
   completeOnboarding: () => Promise<void>;
 

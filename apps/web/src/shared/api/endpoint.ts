@@ -4,7 +4,6 @@ export const ENDPOINT = {
     KAKAO_LOGIN: 'api/auth/kakao/login',
     REISSUE: 'api/auth/reissue',
     WITHDRAW: 'api/auth/withdraw',
-    TERMS: 'api/auth/terms',
   },
   // Expense
   EXPENSE: {
