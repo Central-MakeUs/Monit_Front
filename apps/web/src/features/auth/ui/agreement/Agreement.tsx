@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import * as styles from './Agreement.css';
-import { Button, Text, vars } from '@/shared/ui';
+import { Button, Text, vars, useToast } from '@/shared/ui';
 import { SelectionTile } from '@/shared/ui/selectionTile/SelectionTile';
 import { EXTERNAL_URLS } from '@/shared/constants/urls';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -17,6 +17,7 @@ export const Agreement = () => {
   const setAccessToken = useAuthStore((state) => state.setAccessToken);
   const bridge = useBridge();
   const platform = getPlatform();
+  const toast = useToast();
 
   const [termsOfService, setTermsOfService] = useState(false);
   const [privacyPolicy, setPrivacyPolicy] = useState(false);
@@ -49,10 +50,14 @@ export const Agreement = () => {
     setIsPending(true);
     try {
       const result = await bridge.appleSignup(registerToken);
-      if (result.success) {
-        await syncNativeToken();
-        route.push('/');
+      if (!result.success) {
+        toast.attention('Apple 회원가입에 실패했습니다. 다시 시도해 주세요.');
+        return;
       }
+      await syncNativeToken();
+      route.push('/');
+    } catch {
+      toast.attention('Apple 회원가입에 실패했습니다. 다시 시도해 주세요.');
     } finally {
       setIsPending(false);
     }
