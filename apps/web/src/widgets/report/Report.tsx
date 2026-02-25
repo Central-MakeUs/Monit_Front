@@ -6,6 +6,8 @@ import { useDateStore } from '@/entities/date';
 import { useExpenseSummaryData, MonthlyExpenseInfo } from '@/features/expense-summary';
 import { ReportHeader } from './ui/ReportHeader/ReportHeader';
 import { ReportOverviewCard } from './ui/ReportOverviewCard/ReportOverviewCard';
+import { ReportSummaryCard } from './ui/ReportSummaryCard/ReportSummaryCard';
+import { MOCK_REPORT_SUMMARY } from './model/mockReportSummary';
 import * as styles from './Report.css';
 
 export interface ReportProps {
@@ -31,6 +33,12 @@ export const Report = ({ onSettingsClick }: ReportProps) => {
         />
         <div className={styles.cardSection}>
           <ReportOverviewCard />
+          <ReportSummaryCard
+            vm={MOCK_REPORT_SUMMARY}
+            onViewReport={() => {
+              alert('리포트 확인하기 클릭!');
+            }}
+          />
         </div>
       </div>
     </div>

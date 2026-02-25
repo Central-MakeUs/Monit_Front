@@ -54,6 +54,7 @@ export const vars = createGlobalTheme(':root', {
       onBrand: semanticColors.icon.onBrand,
       disabled: semanticColors.icon.disabled,
       tertiary: semanticColors.icon.tertiary,
+      card: semanticColors.icon.card,
     },
     bg: {
       base: semanticColors.bg.base,
@@ -110,6 +111,14 @@ export const vars = createGlobalTheme(':root', {
         yellow: {
           default: semanticColors.bg.accent.yellow.default,
           subtle: semanticColors.bg.accent.yellow.subtle,
+        },
+      },
+      reportSummary: {
+        bar: {
+          strong: semanticColors.bg.reportSummary.bar.strong,
+          medium: semanticColors.bg.reportSummary.bar.medium,
+          light: semanticColors.bg.reportSummary.bar.light,
+          subtle: semanticColors.bg.reportSummary.bar.subtle,
         },
       },
     },

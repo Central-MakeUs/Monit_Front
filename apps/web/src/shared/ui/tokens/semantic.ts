@@ -46,6 +46,7 @@ export const semanticColors = {
     brand: primitiveColors.primary[500],
     onBrand: primitiveColors.gray[0],
     disabled: primitiveColors.gray[400],
+    card: primitiveColors.gray[600],
   },
   bg: {
     base: primitiveColors.gray[50],
@@ -97,6 +98,14 @@ export const semanticColors = {
       yellow: {
         default: primitiveColors.yellow[300],
         subtle: primitiveColors.yellow[50],
+      },
+    },
+    reportSummary: {
+      bar: {
+        strong: primitiveColors.primary[600],
+        medium: primitiveColors.primary[400],
+        light: primitiveColors.primary[200],
+        subtle: primitiveColors.primary[50],
       },
     },
     status: {

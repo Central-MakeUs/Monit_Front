@@ -17,4 +17,7 @@ export const content = style({
 export const cardSection = style({
   padding: `0 ${vars.spacing.xl}`,
   marginTop: '0.3rem',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: vars.spacing.md,
 });
