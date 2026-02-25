@@ -11,14 +11,24 @@ export const postAppleSignup = async ({
     const response = await baseAPI.post('/api/auth/apple/signup', { registerToken });
 
     const result = response.data?.result ?? response.data;
+    const { accessToken, refreshToken, isNewUser, hasExpense } = result ?? {};
+
+    if (
+      !accessToken ||
+      !refreshToken ||
+      typeof isNewUser !== 'boolean' ||
+      typeof hasExpense !== 'boolean'
+    ) {
+      throw new Error('회원가입 응답 형식이 올바르지 않습니다.');
+    }
 
     return {
       success: true,
       data: {
-        accessToken: result.accessToken,
-        refreshToken: result.refreshToken,
-        isNewUser: result.isNewUser,
-        hasExpense: result.hasExpense,
+        accessToken,
+        refreshToken,
+        isNewUser,
+        hasExpense,
       },
     };
   } catch (error) {
