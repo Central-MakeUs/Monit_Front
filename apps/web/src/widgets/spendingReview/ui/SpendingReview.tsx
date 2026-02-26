@@ -1,6 +1,15 @@
 'use client';
 
-import { TopBar, vars, Text, DateLabel, AlertDialog, BottomFixedArea, Button } from '@/shared/ui';
+import {
+  TopBar,
+  vars,
+  Text,
+  DateLabel,
+  AlertDialog,
+  BottomFixedArea,
+  Button,
+  useToast,
+} from '@/shared/ui';
 import { useRouter } from 'next/navigation';
 import { IcLeftChevron } from 'public/icons';
 import React, { useEffect, useRef, useState } from 'react';
@@ -21,6 +30,7 @@ interface SpendingReviewProps {
 export const SpendingReview = ({ date }: SpendingReviewProps) => {
   const router = useRouter();
   const { isOpen, openModal, closeModal } = useModal();
+  const toast = useToast();
 
   const { expenses } = useRetrospectExpenses(date);
 
@@ -47,6 +57,7 @@ export const SpendingReview = ({ date }: SpendingReviewProps) => {
     mutationFn: patchRemind,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: entityExpenseQueries.all });
+      toast.success('만족도 기록이 잘 저장되었어요!');
       router.push(ROUTES.HOME);
     },
   });
