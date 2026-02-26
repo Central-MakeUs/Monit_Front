@@ -1,6 +1,10 @@
 import { Agreement } from '@/features/auth';
-import React from 'react';
+import React, { Suspense } from 'react';
 
 export default function AgreementPage() {
-  return <Agreement />;
+  return (
+    <Suspense>
+      <Agreement />
+    </Suspense>
+  );
 }
