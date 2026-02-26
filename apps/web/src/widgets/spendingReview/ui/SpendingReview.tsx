@@ -1,15 +1,6 @@
 'use client';
 
-import {
-  TopBar,
-  vars,
-  Text,
-  DateLabel,
-  PageIndicator,
-  AlertDialog,
-  BottomFixedArea,
-  Button,
-} from '@/shared/ui';
+import { TopBar, vars, Text, DateLabel, AlertDialog, BottomFixedArea, Button } from '@/shared/ui';
 import { useRouter } from 'next/navigation';
 import { IcLeftChevron } from 'public/icons';
 import React, { useEffect, useRef, useState } from 'react';
@@ -154,9 +145,9 @@ export const SpendingReview = ({ date }: SpendingReviewProps) => {
         </div>
       </div>
 
-      <div className={styles.pageIndicatorWrapper}>
+      {/* <div className={styles.pageIndicatorWrapper}>
         <PageIndicator currentPage={currentIndex} totalPages={expenses.length} />
-      </div>
+      </div> */}
       <AlertDialog
         isOpen={isOpen}
         onClose={closeModal}
