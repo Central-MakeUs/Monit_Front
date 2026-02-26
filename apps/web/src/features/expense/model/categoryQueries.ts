@@ -1,6 +1,7 @@
 import { queryOptions, mutationOptions, type QueryClient } from '@tanstack/react-query';
 import { getCategoryList } from '../api/getCategoryList';
 import { postCategoryCreate } from '../api/postCategoryCreate';
+import { patchCategoryUpdate } from '../api/patchCategoryUpdate';
 import type { CategoryDetailsDTO } from './types';
 
 export const categoryQueries = {
@@ -13,6 +14,14 @@ export const categoryQueries = {
   createMutation: (queryClient: QueryClient) =>
     mutationOptions({
       mutationFn: (data: CategoryDetailsDTO) => postCategoryCreate(data),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: categoryQueries.all });
+      },
+    }),
+  updateMutation: (queryClient: QueryClient) =>
+    mutationOptions({
+      mutationFn: ({ categoryId, data }: { categoryId: number; data: CategoryDetailsDTO }) =>
+        patchCategoryUpdate(categoryId, data),
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: categoryQueries.all });
       },

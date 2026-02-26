@@ -11,12 +11,13 @@ import {
   BottomSheet,
   useToast,
   AlertDialog,
+  type CategoryItem,
 } from '@/shared/ui';
 import { IcLeftChevron } from 'public/icons';
 import React, { useState, useMemo, useEffect } from 'react';
 import * as styles from './AddCategory.css';
 import { IconPickerBottomSheetTemplate } from '@/features/expense';
-import type { Category } from '@/features/expense';
+import { ICON_OPTIONS } from '@/shared/constants';
 import { useModal } from '@/shared/hooks';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCategoryStore } from '@/entities/category/model/store';
@@ -26,18 +27,6 @@ import { categoryQueries } from '@/features/expense/model/categoryQueries';
 import { CategoryDetailsDTO } from '@/features/expense/model/types';
 
 const VALID_NAME_REGEX = /^[가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z0-9]*$/;
-
-const ICON_OPTIONS: Category[] = [
-  { id: 'shopping', icon: 'shopping', label: '쇼핑' },
-  { id: 'cook', icon: 'cook', label: '요리' },
-  { id: 'coffee', icon: 'coffee', label: '커피' },
-  { id: 'credit', icon: 'credit', label: '카드' },
-  { id: 'book', icon: 'book', label: '도서' },
-  { id: 'beauty', icon: 'beauty', label: '뷰티' },
-  { id: 'beer', icon: 'beer', label: '맥주' },
-  { id: 'camera', icon: 'camera', label: '카메라' },
-  { id: 'cup', icon: 'cup', label: '컵' },
-];
 
 export const AddCategory = () => {
   const {
@@ -62,11 +51,11 @@ export const AddCategory = () => {
   const { data: categoryData } = useQuery(categoryQueries.listQuery());
   const categories = useMemo(() => categoryData?.result ?? [], [categoryData?.result]);
 
-  const { mutate: createCategory, isPending } = useMutation({
+  const { mutate: createCategory, isPending: isCreatePending } = useMutation({
     ...categoryQueries.createMutation(queryClient),
-    onSuccess: (response) => {
+    onSuccess: async (response) => {
       setSubmitSuccess(true);
-      queryClient.invalidateQueries({ queryKey: categoryQueries.all });
+      await queryClient.invalidateQueries({ queryKey: categoryQueries.all });
       const newId = response.result?.id;
       if (newId && !isFromMypage) {
         selectCategory(newId);
@@ -81,12 +70,23 @@ export const AddCategory = () => {
     },
   });
 
+  const { mutate: updateCategory, isPending: isUpdatePending } = useMutation({
+    ...categoryQueries.updateMutation(queryClient),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: categoryQueries.all });
+      toast.success('수정한 내용이 저장되었어요!');
+      router.back();
+    },
+  });
+
+  const isPending = isCreatePending || isUpdatePending;
+
   // 수정 모드일 때 기존 카테고리 찾기
   const editingCategory = isEditMode ? categories.find((c) => c.id === editId) : null;
 
   const [categoryName, setCategoryName] = useState('');
-  const [selectedIcon, setSelectedIcon] = useState<Category | null>(null);
-  const [tempIcon, setTempIcon] = useState<Category | null>(null);
+  const [selectedIcon, setSelectedIcon] = useState<CategoryItem | null>(null);
+  const [tempIcon, setTempIcon] = useState<CategoryItem | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
   // 수정 모드일 때 초기값 설정
@@ -147,9 +147,10 @@ export const AddCategory = () => {
   const handleSubmit = () => {
     if (!selectedIcon) return;
     if (isEditMode && editId) {
-      // 수정 모드 - TODO: patchCategoryUpdate 구현 시 연결
-      toast.success('수정한 내용이 저장되었어요!');
-      router.back();
+      updateCategory({
+        categoryId: editId,
+        data: { name: categoryName, icon: selectedIcon.icon as CategoryDetailsDTO['icon'] },
+      });
     } else {
       createCategory({
         name: categoryName,
@@ -161,7 +162,7 @@ export const AddCategory = () => {
   return (
     <div>
       <TopBar
-        left={<IcLeftChevron onClick={openAlert} />}
+        left={<IcLeftChevron onClick={hasChanges ? openAlert : () => router.back()} />}
         center={
           <Text variant='t1' color={vars.color.text.primary}>
             {isEditMode ? '카테고리 수정' : '카테고리 추가'}
