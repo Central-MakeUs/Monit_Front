@@ -2,6 +2,7 @@ import { bridge, createWebView } from '@webview-bridge/react-native';
 import { login, logout } from '@react-native-kakao/user';
 import { canOpenURL, openURL } from 'expo-linking';
 import { postKakaoLogin } from '@/apis/postKakaoLogin';
+import { postAppleSignup } from '@/apis/postAppleSignup';
 import { postReissue } from '@/apis/postReissue';
 import { authStorage } from './authStorage';
 import { useAppleLogin } from '@/social/useAppleLogin';
@@ -29,7 +30,7 @@ export const appBridge = bridge({
 
         const { accessToken, refreshToken } = result.data;
         await authStorage.setTokens(accessToken, refreshToken ?? '');
-        const { isNewUser, hasExpense, isTermsAgreed } = result.data;
+        const { isNewUser, hasExpense } = result.data;
 
         // 지출이 있을 경우 온보딩 완료 저장
         if (hasExpense) {
@@ -43,7 +44,6 @@ export const appBridge = bridge({
             refreshToken: refreshToken ?? '',
             isNewUser,
             hasExpense,
-            isTermsAgreed,
           },
         };
       } else if (type === 'apple') {
@@ -54,13 +54,16 @@ export const appBridge = bridge({
         }
 
         const { accessToken, refreshToken } = result.data;
-        const { isNewUser, hasExpense, isTermsAgreed } = result.data;
+        const { isNewUser, hasExpense } = result.data;
 
-        await authStorage.setTokens(accessToken, refreshToken || '');
+        // 기존 사용자만 토큰 저장 (신규 사용자는 약관 동의 완료 후 appleSignup에서 저장)
+        if (isNewUser === false) {
+          await authStorage.setTokens(accessToken, refreshToken || '');
 
-        // 지출이 있을 경우 온보딩 완료 저장
-        if (hasExpense) {
-          await onboardingStorage.completeOnboarding();
+          // 지출이 있을 경우 온보딩 완료 저장
+          if (hasExpense) {
+            await onboardingStorage.completeOnboarding();
+          }
         }
 
         return {
@@ -70,7 +73,6 @@ export const appBridge = bridge({
             refreshToken: refreshToken || '',
             isNewUser,
             hasExpense,
-            isTermsAgreed,
           },
         };
       }
@@ -83,6 +85,43 @@ export const appBridge = bridge({
       return {
         success: false,
         message: error instanceof Error ? error.message : '로그인에 실패했습니다.',
+      };
+    }
+  },
+
+  /**
+   * Apple 신규 사용자 회원가입
+   * 약관 동의 후 웹에서 호출 → 네이티브가 signup API 호출 → 최종 토큰 SecureStore 저장
+   */
+  async appleSignup(registerToken: string): Promise<ApiResponse<LoginData>> {
+    try {
+      const result = await postAppleSignup({ registerToken });
+
+      if (!result.data?.accessToken) {
+        throw new Error('서버 응답에 accessToken이 없습니다.');
+      }
+
+      const { accessToken, refreshToken } = result.data;
+      await authStorage.setTokens(accessToken, refreshToken || '');
+      const { isNewUser, hasExpense } = result.data;
+      // 지출이 있을 경우 온보딩 완료 저장
+      if (hasExpense) {
+        await onboardingStorage.completeOnboarding();
+      }
+
+      return {
+        success: true,
+        data: {
+          accessToken,
+          refreshToken: refreshToken || '',
+          isNewUser,
+          hasExpense,
+        },
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: error instanceof Error ? error.message : '회원가입에 실패했습니다.',
       };
     }
   },

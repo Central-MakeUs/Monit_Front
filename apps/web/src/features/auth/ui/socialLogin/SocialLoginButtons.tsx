@@ -38,15 +38,11 @@ export const SocialLoginButtons = () => {
   };
 
   const { handleKakaoLogin } = useKakaoLogin({
-    onSuccess: async (data) => {
+    onSuccess: async () => {
       await syncNativeToken();
       setIsNativeLoginLoading(false);
       toast.success('로그인에 성공했어요');
-      if (data?.isTermsAgreed) {
-        router.replace(ROUTES.HOME);
-      } else {
-        router.replace(ROUTES.AGREEMENT);
-      }
+      router.replace(ROUTES.HOME);
     },
     onError: () => {
       setIsNativeLoginLoading(false);
@@ -56,13 +52,15 @@ export const SocialLoginButtons = () => {
 
   const { handleAppleLogin } = useAppleLogin({
     onSuccess: async (data) => {
-      await syncNativeToken();
       setIsNativeLoginLoading(false);
-      toast.success('로그인에 성공했어요');
-      if (data?.isTermsAgreed) {
+      if (!data?.isNewUser) {
+        await syncNativeToken();
+        toast.success('로그인에 성공했어요');
         router.replace(ROUTES.HOME);
       } else {
-        router.replace(ROUTES.AGREEMENT);
+        // 신규 사용자: 임시 토큰을 저장하지 않고 약관 동의 페이지로 이동
+        const registerToken = data?.accessToken ?? '';
+        router.replace(`/${ROUTES.AGREEMENT}?registerToken=${registerToken}`);
       }
     },
     onError: () => {

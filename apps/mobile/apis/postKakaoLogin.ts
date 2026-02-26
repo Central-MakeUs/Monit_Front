@@ -22,7 +22,6 @@ export const postKakaoLogin = async ({
         refreshToken: newRefreshToken,
         isNewUser,
         hasExpense,
-        isTermsAgreed,
       },
     };
   } catch (error) {
