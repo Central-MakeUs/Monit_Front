@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import * as styles from './SpendingReview.css';
+import * as styles from './ReviewCard.css';
 import { CategoryBtn, Divider, Text, vars } from '@/shared/ui';
 import { SatisfactionRating } from '@/features/review';
 import type { ExpenseResponseDTO } from '@/entities/expense/model/expenseTypes';
