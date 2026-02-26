@@ -19,22 +19,35 @@ export const contentWrapper = style({
   alignItems: 'center',
 });
 
-export const iconWrapper = style({
-  display: 'flex',
-  width: '40px',
-  height: '40px',
-  padding: '2px',
-  justifyContent: 'center',
-  alignItems: 'center',
-  borderRadius: vars.radius.lg2,
-  backgroundColor: vars.color.bg.brand.subtle,
-  flexShrink: 0,
+export const iconWrapper = recipe({
+  base: {
+    display: 'flex',
+    width: '4.4rem',
+    height: '4.4rem',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: vars.radius.xxxl,
+    boxShadow: vars.shadow.ratingBtn,
+    flexShrink: 0,
+  },
+  variants: {
+    state: {
+      today: { backgroundColor: vars.color.bg.base },
+      success1: { backgroundColor: vars.color.bg.accent.red.subtle },
+      success2: { backgroundColor: vars.color.bg.brand.subtle },
+      success3: { backgroundColor: vars.color.bg.accent.yellow.subtle },
+      success4: { backgroundColor: vars.color.bg.accent.green.subtle },
+      success5: { backgroundColor: vars.color.bg.accent.blue.subtle },
+    },
+  },
+  defaultVariants: {
+    state: 'today',
+  },
 });
 
-export const iconInner = style({
-  width: '30px',
-  height: '31px',
-  color: vars.color.bg.brand.default,
+export const emojiIcon = style({
+  width: '2.8rem',
+  height: '2.8rem',
 });
 
 export const textWrapper = style({
@@ -57,8 +70,14 @@ export const bannerButton = recipe({
     flexShrink: 0,
   },
   variants: {
-    active: {
-      true: {
+    variant: {
+      disabled: {
+        backgroundColor: vars.color.bg.disable,
+        color: vars.color.text.onDisabled,
+        cursor: 'not-allowed',
+        pointerEvents: 'none' as const,
+      },
+      active: {
         backgroundColor: vars.color.bg.brand.default,
         color: vars.color.text.onBrand,
         ':hover': {
@@ -68,16 +87,16 @@ export const bannerButton = recipe({
           backgroundColor: vars.color.bg.brand.active,
         },
       },
-      false: {
+      hidden: {
+        opacity: 0,
+        pointerEvents: 'none' as const,
         backgroundColor: vars.color.bg.disable,
         color: vars.color.text.onDisabled,
-        cursor: 'not-allowed',
-        pointerEvents: 'none' as const,
       },
     },
   },
   defaultVariants: {
-    active: false,
+    variant: 'disabled',
   },
 });
 

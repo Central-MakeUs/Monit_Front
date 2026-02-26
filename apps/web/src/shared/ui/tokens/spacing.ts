@@ -27,6 +27,7 @@ export const spacing = {
   lg2: '1.6rem',
   xl: '1.8rem',
   '2xl': '2rem',
+  '3xl': '2.2rem',
 } as const;
 
 export const radius = {
