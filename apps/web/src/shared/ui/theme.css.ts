@@ -54,6 +54,7 @@ export const vars = createGlobalTheme(':root', {
       onBrand: semanticColors.icon.onBrand,
       disabled: semanticColors.icon.disabled,
       tertiary: semanticColors.icon.tertiary,
+      card: semanticColors.icon.card,
     },
     bg: {
       base: semanticColors.bg.base,
@@ -95,6 +96,10 @@ export const vars = createGlobalTheme(':root', {
         danger: semanticColors.bg.status.danger,
       },
       accent: {
+        red: {
+          default: semanticColors.bg.accent.red.default,
+          subtle: semanticColors.bg.accent.red.subtle,
+        },
         blue: {
           default: semanticColors.bg.accent.blue.default,
           subtle: semanticColors.bg.accent.blue.subtle,
@@ -106,6 +111,14 @@ export const vars = createGlobalTheme(':root', {
         yellow: {
           default: semanticColors.bg.accent.yellow.default,
           subtle: semanticColors.bg.accent.yellow.subtle,
+        },
+      },
+      reportSummary: {
+        bar: {
+          strong: semanticColors.bg.reportSummary.bar.strong,
+          medium: semanticColors.bg.reportSummary.bar.medium,
+          light: semanticColors.bg.reportSummary.bar.light,
+          subtle: semanticColors.bg.reportSummary.bar.subtle,
         },
       },
     },
@@ -126,6 +139,7 @@ export const vars = createGlobalTheme(':root', {
     lg2: spacing.lg2,
     xl: spacing.xl,
     '2xl': spacing['2xl'],
+    '3xl': spacing['3xl'],
   },
   radius: {
     xs: radius.xs,
@@ -136,6 +150,8 @@ export const vars = createGlobalTheme(':root', {
     lg: radius.lg,
     lg2: radius.lg2,
     xl: radius.xl,
+    xxl: radius.xxl,
+    xxxl: radius.xxxl,
     full: radius.full,
   },
   lineWidth: {
@@ -149,6 +165,7 @@ export const vars = createGlobalTheme(':root', {
     shadow3: shadows.shadow3,
     shadow4: shadows.shadow4,
     glow: shadows.glow,
+    ratingBtn: shadows.ratingBtn,
   },
   font: {
     family: {

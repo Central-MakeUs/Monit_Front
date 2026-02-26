@@ -73,6 +73,19 @@ export const button = recipe({
           backgroundColor: vars.color.bg.brand.active,
         },
       },
+      white: {
+        backgroundColor: vars.color.bg.surface.secondary.default,
+        color: vars.color.text.primary,
+        border: `1px solid ${vars.color.border.default}`,
+        ':hover': {
+          backgroundColor: vars.color.bg.surface.secondary.hover,
+          color: vars.color.text.secondary,
+        },
+        ':active': {
+          backgroundColor: vars.color.bg.surface.secondary.active,
+          color: vars.color.text.secondary,
+        },
+      },
     },
     size: {
       sm: {
