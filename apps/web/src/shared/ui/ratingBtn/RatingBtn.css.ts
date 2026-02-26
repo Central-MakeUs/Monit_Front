@@ -58,8 +58,8 @@ export const ratingIconContainer = recipe({
 export const ratingIconSvg = recipe({
   base: {
     display: 'block',
-    width: '3.2rem',
-    height: '3.2rem',
+    width: '2.8rem',
+    height: '2.8rem',
     alignItems: 'center',
   },
 });
