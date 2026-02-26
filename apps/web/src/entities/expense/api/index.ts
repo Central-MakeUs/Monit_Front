@@ -4,3 +4,4 @@ export {
   type DailyAmount,
   type ExpenseCalendarResponse,
 } from './getExpenseCalendar';
+export { getRetrospectList } from './getRetrospectList';

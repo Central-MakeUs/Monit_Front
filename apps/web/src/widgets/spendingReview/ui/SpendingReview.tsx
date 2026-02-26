@@ -8,16 +8,15 @@ import * as styles from './SpendingReview.css';
 import { ReviewCard } from './ReviewCard';
 import { useReviewCarousel } from '../model/useReviewCarousel';
 import type { EvaluationType } from '@/shared/types/evaluation.types';
-import { MOCK_EXPENSES } from '../model/mockExpenses';
+import { useRetrospectExpenses } from '@/features/spendingReview';
 
 interface SpendingReviewProps {
   date: string; // YYYY-MM-DD
 }
 
-export const SpendingReview = ({ date: _date }: SpendingReviewProps) => {
+export const SpendingReview = ({ date }: SpendingReviewProps) => {
   const router = useRouter();
-  const expenses = MOCK_EXPENSES; // TODO: API 데이터로 교체 (date 파라미터 사용)
-  console.log('SpendingReview - date:', _date);
+  const { expenses } = useRetrospectExpenses(date);
 
   const { currentIndex, trackRef, handlers, handleTransitionEnd, getTransform, getTransition } =
     useReviewCarousel({ totalItems: expenses.length });
@@ -37,7 +36,7 @@ export const SpendingReview = ({ date: _date }: SpendingReviewProps) => {
         left={<IcLeftChevron onClick={() => router.back()} />}
         center={
           <Text variant='t1' color={vars.color.text.primary}>
-            회고
+            돌아보기
           </Text>
         }
       />
@@ -46,7 +45,7 @@ export const SpendingReview = ({ date: _date }: SpendingReviewProps) => {
           지금 돌아보면,
           <br /> 이 소비는 어땠나요?
         </Text>
-        <DateLabel date={expenses[currentIndex]?.date ?? ''} />
+        <DateLabel date={date} />
       </div>
 
       <div className={styles.carouselContainer} {...handlers}>

@@ -101,7 +101,7 @@ export const Home = ({
 
   const handleClickReview = () => {
     if (!selectedDate) return;
-    const dateString = selectedDate.toISOString().slice(0, 10);
+    const dateString = selectedDate.toLocaleDateString('en-CA');
     router.push(ROUTES.REVIEW(dateString));
   };
   return (

@@ -1,8 +1,9 @@
 import { SpendingReview } from '@/widgets/spendingReview';
-import React from 'react';
+import React, { use } from 'react';
 
-type Props = { params: { date: string } };
+type Props = { params: Promise<{ date: string }> };
 
 export default function ReviewPage({ params }: Props) {
-  return <SpendingReview date={params.date} />;
+  const { date } = use(params);
+  return <SpendingReview date={date} />;
 }

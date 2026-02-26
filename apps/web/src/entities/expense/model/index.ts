@@ -4,4 +4,6 @@ export type {
   DailyExpenseResponseDTO,
   ExpenseListDTO,
   EmptyStateType,
+  RetrospectListResponse,
 } from './types';
+export type { ExpenseResponseDTO } from './expenseTypes';
