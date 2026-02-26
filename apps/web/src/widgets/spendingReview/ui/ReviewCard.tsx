@@ -19,7 +19,6 @@ export const ReviewCard = ({
   usageHistory,
   categoryName,
   amount,
-  emotionType,
   currentPage,
   totalPages,
   evaluationType,
@@ -37,7 +36,9 @@ export const ReviewCard = ({
         {totalPages}
       </Text>
     </div>
-    <CategoryBtn size='sm' icon={categoryIconType} />
+    <div className={styles.iconWrapper}>
+      <CategoryBtn size='sm' icon={categoryIconType} />
+    </div>
     <div className={styles.textWrapper}>
       <Text variant='b4' color={vars.color.text.primary}>
         {usageHistory}
@@ -49,16 +50,6 @@ export const ReviewCard = ({
     <Text variant='h4' color={vars.color.text.primary}>
       {amount.toLocaleString()}원
     </Text>
-    <div className={styles.situationWrapper}>
-      <Text variant='b1' color={vars.color.text.secondary}>
-        소비 상황
-      </Text>
-      <div className={styles.badgeContainer}>
-        <Text variant='b2' color={vars.color.text.secondary}>
-          {emotionType}
-        </Text>
-      </div>
-    </div>
     <Divider color='#E8E8E8' />
     <Text variant='b2' color={vars.color.text.tertiary}>
       소비 돌아보기

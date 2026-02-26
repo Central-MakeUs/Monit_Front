@@ -9,6 +9,10 @@ export const container = style({
   marginTop: '2rem',
 });
 
+export const titleText = style({
+  marginLeft: '0.2rem',
+});
+
 export const reviewCardContainer = style({
   display: 'flex',
   flexDirection: 'column',
@@ -39,24 +43,6 @@ export const textWrapper = style({
   gap: spacing.xs,
 });
 
-export const situationWrapper = style({
-  display: 'flex',
-  width: '100%',
-  gap: spacing.lg,
-  padding: `${spacing.md} ${spacing.xl}`,
-  borderRadius: radius.sm,
-  backgroundColor: vars.color.bg.base,
-  alignItems: 'center',
-});
-
-export const badgeContainer = style({
-  display: 'flex',
-  padding: `${spacing.xs} ${spacing.sm}`,
-  borderRadius: radius.xs,
-  backgroundColor: vars.color.bg.neutral.subtle,
-  border: `0.08rem solid ${vars.color.border.default}`,
-});
-
 export const pageIndicatorWrapper = style({
   marginTop: '1.4rem',
   display: 'flex',
@@ -83,4 +69,8 @@ export const carouselSlide = style({
   padding: `0 ${spacing.xl}`,
   marginTop: '1.25rem',
   boxSizing: 'border-box',
+});
+
+export const iconWrapper = style({
+  marginLeft: '-0.8rem',
 });

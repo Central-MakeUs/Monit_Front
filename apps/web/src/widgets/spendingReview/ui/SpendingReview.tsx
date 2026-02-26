@@ -41,7 +41,7 @@ export const SpendingReview = ({ date }: SpendingReviewProps) => {
         }
       />
       <div className={styles.container}>
-        <Text variant='t4' color={vars.color.text.primary}>
+        <Text variant='t4' color={vars.color.text.primary} className={styles.titleText}>
           지금 돌아보면,
           <br /> 이 소비는 어땠나요?
         </Text>
