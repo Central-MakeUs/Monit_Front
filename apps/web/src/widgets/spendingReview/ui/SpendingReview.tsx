@@ -12,13 +12,16 @@ import {
 } from '@/shared/ui';
 import { useRouter } from 'next/navigation';
 import { IcLeftChevron } from 'public/icons';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as styles from './SpendingReview.css';
 import { ReviewCard } from './ReviewCard';
 import { useReviewCarousel } from '../model/useReviewCarousel';
 import type { EvaluationType } from '@/shared/types/evaluation.types';
-import { useRetrospectExpenses } from '@/features/spendingReview';
+import { useRetrospectExpenses, patchRemind } from '@/features/spendingReview';
 import { useModal } from '@/shared/hooks';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { expenseQueries as entityExpenseQueries } from '@/entities/expense';
+import { ROUTES } from '@/shared/constants/routes';
 
 interface SpendingReviewProps {
   date: string; // YYYY-MM-DD
@@ -30,18 +33,65 @@ export const SpendingReview = ({ date }: SpendingReviewProps) => {
 
   const { expenses } = useRetrospectExpenses(date);
 
-  const { currentIndex, trackRef, handlers, handleTransitionEnd, getTransform, getTransition } =
-    useReviewCarousel({ totalItems: expenses.length });
+  const {
+    currentIndex,
+    trackRef,
+    handlers,
+    handleTransitionEnd,
+    getTransform,
+    getTransition,
+    goToNext,
+  } = useReviewCarousel({ totalItems: expenses.length });
 
   const [evaluations, setEvaluations] = useState<Record<number, EvaluationType>>({});
-
-  const handleEvaluationChange = (expenseId: number, value: EvaluationType) => {
-    setEvaluations((prev) => ({ ...prev, [expenseId]: value }));
-  };
+  const autoAdvanceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const isLastCard = currentIndex === expenses.length - 1;
   const [showButton, setShowButton] = useState(isLastCard);
   const [isExiting, setIsExiting] = useState(false);
+
+  const queryClient = useQueryClient();
+
+  const { mutate: saveRemind, isPending } = useMutation({
+    mutationFn: patchRemind,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: entityExpenseQueries.all });
+      router.push(ROUTES.HOME);
+    },
+  });
+
+  const buildRemindBody = () =>
+    Object.entries(evaluations).map(([id, type]) => ({
+      expenseId: Number(id),
+      evaluationType: type,
+    }));
+
+  const handleSave = () => {
+    const body = buildRemindBody();
+    if (body.length > 0) {
+      saveRemind(body);
+    } else {
+      router.push(ROUTES.HOME);
+    }
+  };
+
+  const handleEvaluationChange = (expenseId: number, value: EvaluationType) => {
+    setEvaluations((prev) => ({ ...prev, [expenseId]: value }));
+
+    if (!isLastCard) {
+      if (autoAdvanceTimerRef.current) clearTimeout(autoAdvanceTimerRef.current);
+      autoAdvanceTimerRef.current = setTimeout(() => {
+        goToNext();
+      }, 2000);
+    }
+  };
+
+  useEffect(
+    () => () => {
+      if (autoAdvanceTimerRef.current) clearTimeout(autoAdvanceTimerRef.current);
+    },
+    []
+  );
 
   useEffect(() => {
     if (isLastCard) {
@@ -59,12 +109,9 @@ export const SpendingReview = ({ date }: SpendingReviewProps) => {
 
   const slides = [expenses[currentIndex - 1], expenses[currentIndex], expenses[currentIndex + 1]];
 
-  const handleSubmit = () => {};
-
   return (
     <div>
       <TopBar
-        //TODO: 뒤로가기 클릭시 API 호출 추가
         left={<IcLeftChevron onClick={openModal} />}
         center={
           <Text variant='t1' color={vars.color.text.primary}>
@@ -119,13 +166,12 @@ export const SpendingReview = ({ date }: SpendingReviewProps) => {
         confirmText='계속 돌아보기'
         cancelText='나중에 하기'
         onConfirm={closeModal}
-        onCancel={() => router.back()}
+        onCancel={handleSave}
       />
       {showButton && (
         <BottomFixedArea zIndex={1}>
-          {/* isPending/ 상태 추가 */}
           <div className={isExiting ? styles.submitButtonExit : styles.submitButtonEnter}>
-            <Button variant='primary' size='lg' onClick={handleSubmit}>
+            <Button variant='primary' size='lg' onClick={handleSave} disabled={isPending}>
               만족도 저장하기
             </Button>
           </div>
