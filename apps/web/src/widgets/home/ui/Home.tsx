@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useShallow } from 'zustand/react/shallow';
 import { DatePickerFeature } from '@/features/datePickerModal';
 import { useClientOnly, useModal } from '@/shared/hooks';
@@ -18,6 +19,7 @@ import { ExpenseContent } from './ExpenseContent';
 import * as styles from './Home.css';
 import { expenseEditNavigation } from '@/features/expense/lib/expenseEditNavigation';
 import { Banner } from '@/shared/ui/banner';
+import { ROUTES } from '@/shared/constants/routes';
 
 export interface HomeProps {
   onSettingsClick: () => void;
@@ -32,6 +34,7 @@ export const Home = ({
   renderWeeklyCalendar,
   renderMonthlyCalendar,
 }: HomeProps) => {
+  const router = useRouter();
   const isMounted = useClientOnly();
   const { isOpen, openModal, closeModal } = useModal();
   const [selectedExpense, setSelectedExpense] = useState<ExpenseListDTO | null>(null);
@@ -96,6 +99,11 @@ export const Home = ({
     return null;
   }
 
+  const handleClickReview = () => {
+    if (!selectedDate) return;
+    const dateString = selectedDate.toISOString().slice(0, 10);
+    router.push(ROUTES.REVIEW(dateString));
+  };
   return (
     <div className={styles.container}>
       <DatePickerFeature currentDate={currentDate} onDateConfirm={setDateFromPicker}>
@@ -126,7 +134,7 @@ export const Home = ({
           renderWeeklyCalendar={renderWeeklyCalendar}
           renderMonthlyCalendar={renderMonthlyCalendar}
         />
-        <Banner {...bannerProps} onClickReview={() => alert('돌아보기 클릭!')} />
+        <Banner {...bannerProps} onClickReview={handleClickReview} />
         <ExpenseContent
           hasExpenses={expenses.length > 0}
           emptyStateType={emptyStateType}

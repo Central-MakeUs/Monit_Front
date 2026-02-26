@@ -10,9 +10,14 @@ import { useReviewCarousel } from '../model/useReviewCarousel';
 import type { EvaluationType } from '@/shared/types/evaluation.types';
 import { MOCK_EXPENSES } from '../model/mockExpenses';
 
-export const SpendingReview = () => {
+interface SpendingReviewProps {
+  date: string; // YYYY-MM-DD
+}
+
+export const SpendingReview = ({ date: _date }: SpendingReviewProps) => {
   const router = useRouter();
-  const expenses = MOCK_EXPENSES; // TODO: API 데이터로 교체
+  const expenses = MOCK_EXPENSES; // TODO: API 데이터로 교체 (date 파라미터 사용)
+  console.log('SpendingReview - date:', _date);
 
   const { currentIndex, trackRef, handlers, handleTransitionEnd, getTransform, getTransition } =
     useReviewCarousel({ totalItems: expenses.length });
