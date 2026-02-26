@@ -1,6 +1,6 @@
 'use client';
 
-import { TopBar, vars, Text, DateLabel, PageIndicator } from '@/shared/ui';
+import { TopBar, vars, Text, DateLabel, PageIndicator, AlertDialog } from '@/shared/ui';
 import { useRouter } from 'next/navigation';
 import { IcLeftChevron } from 'public/icons';
 import React, { useState } from 'react';
@@ -9,6 +9,7 @@ import { ReviewCard } from './ReviewCard';
 import { useReviewCarousel } from '../model/useReviewCarousel';
 import type { EvaluationType } from '@/shared/types/evaluation.types';
 import { useRetrospectExpenses } from '@/features/spendingReview';
+import { useModal } from '@/shared/hooks';
 
 interface SpendingReviewProps {
   date: string; // YYYY-MM-DD
@@ -16,6 +17,8 @@ interface SpendingReviewProps {
 
 export const SpendingReview = ({ date }: SpendingReviewProps) => {
   const router = useRouter();
+  const { isOpen, openModal, closeModal } = useModal();
+
   const { expenses } = useRetrospectExpenses(date);
 
   const { currentIndex, trackRef, handlers, handleTransitionEnd, getTransform, getTransition } =
@@ -33,7 +36,7 @@ export const SpendingReview = ({ date }: SpendingReviewProps) => {
     <div>
       <TopBar
         //TODO: 뒤로가기 클릭시 API 호출 추가
-        left={<IcLeftChevron onClick={() => router.back()} />}
+        left={<IcLeftChevron onClick={openModal} />}
         center={
           <Text variant='t1' color={vars.color.text.primary}>
             돌아보기
@@ -76,6 +79,17 @@ export const SpendingReview = ({ date }: SpendingReviewProps) => {
       <div className={styles.pageIndicatorWrapper}>
         <PageIndicator currentPage={currentIndex} totalPages={expenses.length} />
       </div>
+      <AlertDialog
+        isOpen={isOpen}
+        onClose={closeModal}
+        title='아직 돌아보지 않은 소비가 있어요'
+        description='지금 나가더라도 기록한 내용은 저장되어요'
+        variant='left'
+        confirmText='계속 돌아보기'
+        cancelText='나중에 하기'
+        onConfirm={closeModal}
+        onCancel={() => router.back()}
+      />
     </div>
   );
 };
