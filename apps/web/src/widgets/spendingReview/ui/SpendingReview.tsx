@@ -80,28 +80,30 @@ export const SpendingReview = ({ date }: SpendingReviewProps) => {
         <DateLabel date={date} />
       </div>
 
-      <div className={styles.carouselContainer} {...handlers}>
-        <div
-          ref={trackRef}
-          className={styles.carouselTrack}
-          onTransitionEnd={handleTransitionEnd}
-          style={{
-            transform: getTransform(),
-            transition: getTransition(),
-          }}>
-          {slides.map((expense, i) => (
-            <div key={expense?.expenseId ?? `empty-${i}`} className={styles.carouselSlide}>
-              {expense && (
-                <ReviewCard
-                  {...expense}
-                  currentPage={currentIndex + i}
-                  totalPages={expenses.length}
-                  evaluationType={evaluations[expense.expenseId]}
-                  onEvaluationChange={(value) => handleEvaluationChange(expense.expenseId, value)}
-                />
-              )}
-            </div>
-          ))}
+      <div className={styles.carouselWrapper}>
+        <div className={styles.carouselContainer} {...handlers}>
+          <div
+            ref={trackRef}
+            className={styles.carouselTrack}
+            onTransitionEnd={handleTransitionEnd}
+            style={{
+              transform: getTransform(),
+              transition: getTransition(),
+            }}>
+            {slides.map((expense, i) => (
+              <div key={expense?.expenseId ?? `empty-${i}`} className={styles.carouselSlide}>
+                {expense && (
+                  <ReviewCard
+                    {...expense}
+                    currentPage={currentIndex + i}
+                    totalPages={expenses.length}
+                    evaluationType={evaluations[expense.expenseId]}
+                    onEvaluationChange={(value) => handleEvaluationChange(expense.expenseId, value)}
+                  />
+                )}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 

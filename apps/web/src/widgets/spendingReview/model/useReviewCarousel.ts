@@ -50,9 +50,10 @@ export const useReviewCarousel = ({
   // ─── 슬라이드 너비 측정 (마운트 + 리사이즈) ───
   useLayoutEffect(() => {
     const updateWidth = () => {
-      if (trackRef.current?.parentElement) {
-        setSlideWidth(trackRef.current.parentElement.offsetWidth);
-      }
+      const container = trackRef.current?.parentElement;
+      if (!container) return;
+      const { paddingLeft, paddingRight } = window.getComputedStyle(container);
+      setSlideWidth(container.offsetWidth - parseFloat(paddingLeft) - parseFloat(paddingRight));
     };
     updateWidth();
     window.addEventListener('resize', updateWidth);

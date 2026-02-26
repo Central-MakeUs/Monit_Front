@@ -67,10 +67,16 @@ export const pageIndicatorWrapper = style({
   justifyContent: 'center',
 });
 
-export const carouselContainer = style({
+export const carouselWrapper = style({
   width: '100%',
   overflow: 'hidden',
+});
+
+export const carouselContainer = style({
+  width: '100%',
+  overflow: 'visible',
   position: 'relative',
+  padding: `0 ${spacing.lg}`,
 });
 
 export const carouselTrack = style({
@@ -84,7 +90,7 @@ export const carouselSlide = style({
   width: '100%',
   minWidth: '100%',
   flexShrink: 0,
-  padding: `0 ${spacing.xl}`,
+  padding: `0 ${spacing.xs2}`,
   marginTop: '1.25rem',
   boxSizing: 'border-box',
 });
