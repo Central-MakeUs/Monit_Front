@@ -1,9 +1,18 @@
 'use client';
 
-import { TopBar, vars, Text, DateLabel, PageIndicator, AlertDialog } from '@/shared/ui';
+import {
+  TopBar,
+  vars,
+  Text,
+  DateLabel,
+  PageIndicator,
+  AlertDialog,
+  BottomFixedArea,
+  Button,
+} from '@/shared/ui';
 import { useRouter } from 'next/navigation';
 import { IcLeftChevron } from 'public/icons';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as styles from './SpendingReview.css';
 import { ReviewCard } from './ReviewCard';
 import { useReviewCarousel } from '../model/useReviewCarousel';
@@ -30,7 +39,27 @@ export const SpendingReview = ({ date }: SpendingReviewProps) => {
     setEvaluations((prev) => ({ ...prev, [expenseId]: value }));
   };
 
+  const isLastCard = currentIndex === expenses.length - 1;
+  const [showButton, setShowButton] = useState(isLastCard);
+  const [isExiting, setIsExiting] = useState(false);
+
+  useEffect(() => {
+    if (isLastCard) {
+      setShowButton(true);
+      setIsExiting(false);
+    } else if (showButton) {
+      setIsExiting(true);
+      const timer = setTimeout(() => {
+        setShowButton(false);
+        setIsExiting(false);
+      }, 200);
+      return () => clearTimeout(timer);
+    }
+  }, [isLastCard, showButton]);
+
   const slides = [expenses[currentIndex - 1], expenses[currentIndex], expenses[currentIndex + 1]];
+
+  const handleSubmit = () => {};
 
   return (
     <div>
@@ -90,6 +119,16 @@ export const SpendingReview = ({ date }: SpendingReviewProps) => {
         onConfirm={closeModal}
         onCancel={() => router.back()}
       />
+      {showButton && (
+        <BottomFixedArea zIndex={1}>
+          {/* isPending/ 상태 추가 */}
+          <div className={isExiting ? styles.submitButtonExit : styles.submitButtonEnter}>
+            <Button variant='primary' size='lg' onClick={handleSubmit}>
+              만족도 저장하기
+            </Button>
+          </div>
+        </BottomFixedArea>
+      )}
     </div>
   );
 };

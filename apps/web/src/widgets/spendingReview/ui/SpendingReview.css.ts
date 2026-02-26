@@ -1,5 +1,23 @@
 import { radius, shadows, spacing, vars } from '@/shared/ui/theme.css';
-import { style } from '@vanilla-extract/css';
+import { keyframes, style } from '@vanilla-extract/css';
+
+const fadeSlideUp = keyframes({
+  from: { opacity: 0, transform: 'translateY(1.2rem)' },
+  to: { opacity: 1, transform: 'translateY(0)' },
+});
+
+const fadeSlideDown = keyframes({
+  from: { opacity: 1, transform: 'translateY(0)' },
+  to: { opacity: 0, transform: 'translateY(1.2rem)' },
+});
+
+export const submitButtonEnter = style({
+  animation: `${fadeSlideUp} 0.2s ease-in-out`,
+});
+
+export const submitButtonExit = style({
+  animation: `${fadeSlideDown} 0.2s ease-in-out forwards`,
+});
 
 export const container = style({
   display: 'flex',
