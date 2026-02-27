@@ -59,6 +59,7 @@ export const useSpendingReview = ({ date }: UseSpendingReviewParams): UseSpendin
     mutationFn: patchRemind,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: entityExpenseQueries.all });
+      queryClient.invalidateQueries({ queryKey: ['dailyAverageSatisfaction'] });
       toast.success('만족도 기록이 잘 저장되었어요!');
       router.push(ROUTES.HOME);
     },

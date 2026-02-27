@@ -42,9 +42,9 @@ export interface ExpenseFormBottomSheetProps {
   /** 더보기 버튼 클릭 시 콜백 */
   onMoreCategoryClick?: () => void;
   /** 만족도 라벨 */
-  satisfactionLabel?: string; //TODO: 임시
+  satisfactionLabel?: string;
   /** 만족도 이모지 */
-  satisfactionEmoji?: string; //TODO: 임시
+  satisfactionEmoji?: string;
   /** 만족도 평가 타입 */
   satisfactionEvaluationType?: EvaluationType;
   /** 삭제 버튼 클릭 시 콜백 */
@@ -86,7 +86,9 @@ export const ExpenseFormBottomSheet = ({
   isUsageError,
 }: ExpenseFormBottomSheetProps) => {
   const formattedAmount = amount !== undefined ? formatNumberWithComma(String(amount)) : '';
-  const evaluationLabel = getEvaluationLabel(satisfactionEvaluationType);
+  const evaluationLabel = satisfactionEvaluationType
+    ? getEvaluationLabel(satisfactionEvaluationType)
+    : null;
 
   return (
     <BaseBottomSheetTemplate>
@@ -130,14 +132,15 @@ export const ExpenseFormBottomSheet = ({
         onMoreClick={onMoreCategoryClick}
       />
 
-      {/* 훌린듯이 소비 */}
       <div className={styles.badgeContainer}>
         <Text variant='b2' color={vars.color.text.secondary}>
           소비 상황
         </Text>
         <div className={styles.badgeList}>
           <Badge label={satisfactionLabel ?? '감정 누락'} />
-          <Badge label={evaluationLabel} size='sm' evaluationType={satisfactionEvaluationType} />
+          {satisfactionEvaluationType && evaluationLabel && (
+            <Badge label={evaluationLabel} size='sm' evaluationType={satisfactionEvaluationType} />
+          )}
         </div>
       </div>
 
