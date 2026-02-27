@@ -20,6 +20,7 @@ export interface UseReviewCarouselReturn {
   handleTransitionEnd: () => void;
   getTransform: () => string;
   getTransition: () => string;
+  goToNext: () => void;
 }
 
 /**
@@ -50,9 +51,10 @@ export const useReviewCarousel = ({
   // ─── 슬라이드 너비 측정 (마운트 + 리사이즈) ───
   useLayoutEffect(() => {
     const updateWidth = () => {
-      if (trackRef.current?.parentElement) {
-        setSlideWidth(trackRef.current.parentElement.offsetWidth);
-      }
+      const container = trackRef.current?.parentElement;
+      if (!container) return;
+      const { paddingLeft, paddingRight } = window.getComputedStyle(container);
+      setSlideWidth(container.offsetWidth - parseFloat(paddingLeft) - parseFloat(paddingRight));
     };
     updateWidth();
     window.addEventListener('resize', updateWidth);
@@ -149,6 +151,14 @@ export const useReviewCarousel = ({
     preventScrollOnSwipe: true, // 스와이프 중 세로 스크롤 방지
   });
 
+  // ─── 프로그래매틱 카드 전환 ───
+  const goToNext = useCallback(() => {
+    if (isLast || isTransitioning || slideWidth === 0) return;
+    setIsTransitioning(true);
+    pendingActionRef.current = 'left';
+    setDragOffset(-slideWidth);
+  }, [isLast, isTransitioning, slideWidth]);
+
   // ─── CSS transform / transition 생성 ───
 
   /** 트랙의 translateX 값. 기본: -slideWidth (가운데 슬라이드 표시) + dragOffset */
@@ -175,5 +185,6 @@ export const useReviewCarousel = ({
     handleTransitionEnd, // 트랙의 onTransitionEnd에 연결
     getTransform, // 트랙의 style.transform에 사용
     getTransition, // 트랙의 style.transition에 사용
+    goToNext, // 프로그래매틱 다음 카드 전환
   };
 };

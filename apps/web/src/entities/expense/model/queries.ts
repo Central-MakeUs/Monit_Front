@@ -1,6 +1,7 @@
 import { queryOptions } from '@tanstack/react-query';
 import { getDailyExpense } from '../api/getDailyExpense';
 import { getExpenseCalendar } from '../api/getExpenseCalendar';
+import { getRetrospectList } from '../api/getRetrospectList';
 
 /**
  * 지출 관련 쿼리 키 설계
@@ -24,5 +25,10 @@ export const expenseQueries = {
     queryOptions({
       queryKey: [...expenseQueries.all, 'calendar', year, month],
       queryFn: () => getExpenseCalendar({ year, month }),
+    }),
+  retrospectList: (date: string) =>
+    queryOptions({
+      queryKey: [...expenseQueries.all, 'retrospect-list', date],
+      queryFn: () => getRetrospectList({ date }),
     }),
 };

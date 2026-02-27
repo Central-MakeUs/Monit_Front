@@ -5,4 +5,5 @@ export const ROUTES = {
   REPORT: '/report',
   EXPENSE_CATEGORY: '/expense/category',
   AGREEMENT: 'auth/agreement',
+  REVIEW: (date: string) => `/review/${date}`,
 } as const;
