@@ -4,7 +4,8 @@ import React from 'react';
 import { koFormatter } from '@/shared/ui/datePicker/config/formatters';
 import { TopBar } from '@/shared/ui/topBar';
 import { Text } from '@/shared/ui/text';
-import { IcBell, IcRightChevron, IcSetting } from 'public/icons';
+import { IcRightChevron, IcSetting } from 'public/icons';
+import { NotificationBell } from '@/features/notification';
 import * as styles from './HomeHeader.css';
 
 export interface HomeHeaderProps {
@@ -43,7 +44,7 @@ export const HomeHeader = ({
       right={
         <div className={styles.headerActions}>
           <button className={styles.iconButton} aria-label='알림' onClick={onNotificationClick}>
-            <IcBell />
+            <NotificationBell />
           </button>
           <button className={styles.iconButton} aria-label='설정' onClick={onSettingsClick}>
             <IcSetting className={styles.settingIc} />

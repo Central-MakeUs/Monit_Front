@@ -3,7 +3,8 @@
 import React from 'react';
 import { TopBar } from '@/shared/ui/topBar';
 import { Text } from '@/shared/ui/text';
-import { IcBell, IcSetting } from 'public/icons';
+import { IcSetting } from 'public/icons';
+import { NotificationBell } from '@/features/notification';
 import * as styles from './ReportHeader.css';
 
 export interface ReportHeaderProps {
@@ -25,7 +26,7 @@ export const ReportHeader = ({
       right={
         <div className={styles.headerActions}>
           <button className={styles.iconButton} aria-label='알림' onClick={onNotificationClick}>
-            <IcBell />
+            <NotificationBell />
           </button>
           <button className={styles.iconButton} aria-label='설정' onClick={onSettingsClick}>
             <IcSetting className={styles.settingIc} />
