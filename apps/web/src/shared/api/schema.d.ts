@@ -75,7 +75,7 @@ export interface paths {
         put?: never;
         /**
          * 토큰 재발급 API
-         * @description 리프레시 토큰으로 액세스 토큰을 재발급하는 API입니다.
+         * @description 헤더의 RefreshToken(Bearer 형기)으로 토큰을 재발급합니다.
          */
         post: operations["reissue"];
         delete?: never;
@@ -104,6 +104,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/auth/kakao/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * 카카오 로그인
+         * @description 프론트에서 받은 카카오 유저 정보를 통해 로그인을 진행하고 JWT 및 유저 정보를 반환한다.
+         */
+        post: operations["kakaoLogin"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/apple/signup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * 애플 회원가입 완료
+         * @description 약관 동의 후 임시 토큰을 전달받아 실제 회원가입(DB 저장)을 처리하고 서비스 토큰을 발급합니다.
+         */
+        post: operations["appleSignup"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/auth/apple/login": {
         parameters: {
             query?: never;
@@ -114,8 +154,8 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * 애플 로그인 및 회원가입
-         * @description 애플 OAuth 코드를 받아 로그인 또는 회원가입을 처리합니다.
+         * 애플 로그인 체크
+         * @description 애플 OAuth 코드를 받아 가입 여부를 확인합니다. 신규 유저라면 임시 토큰을, 기존 유저라면 서비스 토큰을 반환합니다.
          */
         post: operations["appleLogin"];
         delete?: never;
@@ -142,6 +182,54 @@ export interface paths {
         options?: never;
         head?: never;
         patch?: never;
+        trace?: never;
+    };
+    "/api/onboarding/remind": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["completeRemindOnboarding"];
+        trace?: never;
+    };
+    "/api/onboarding/home": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["completeHomeOnboarding"];
+        trace?: never;
+    };
+    "/api/onboarding/category": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["completeCategoryOnboarding"];
         trace?: never;
     };
     "/api/expense/update_record/{expenseId}": {
@@ -204,6 +292,66 @@ export interface paths {
         patch: operations["updateCategory"];
         trace?: never;
     };
+    "/api/alerts/{alertId}/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * 알림 개별 읽음 처리
+         * @description 특정 알림을 읽음 상태로 변경합니다.
+         */
+        patch: operations["markAsRead"];
+        trace?: never;
+    };
+    "/api/alerts/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * 알림 수신 동의 상태 변경
+         * @description 유저의 알림 수신 허용/거부 상태를 업데이트합니다.
+         */
+        patch: operations["updateAlarmStatus"];
+        trace?: never;
+    };
+    "/api/alerts/fcm-token": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * FCM 토큰 업데이트(등록)
+         * @description 로그인 직후 기기의 FCM 토큰을 서버에 등록합니다.
+         */
+        patch: operations["updateFcmToken"];
+        trace?: never;
+    };
     "/api/expense/weekly_detail": {
         parameters: {
             query?: never;
@@ -256,6 +404,26 @@ export interface paths {
          * @description 특정 날짜의 지출 중 아직 회고(만족도 조사)가 완료되지 않은 내역만 리스트로 조회합니다.
          */
         get: operations["getRetrospectList"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/expense/monthly_totals": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * 월별 지출 총액 조회
+         * @description 소비 기록이 존재하는 모든 달의 지출 총액 목록을 최신순으로 조회합니다.
+         */
+        get: operations["getMonthlyTotalList"];
         put?: never;
         post?: never;
         delete?: never;
@@ -324,7 +492,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/auth/kakao/callback": {
+    "/api/expense/calendar": {
         parameters: {
             query?: never;
             header?: never;
@@ -332,10 +500,50 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * 카카오 로그인 콜백
-         * @description 카카오 인가 코드를 통해 로그인을 진행하고 JWT 및 유저 정보를 반환한다.
+         * 특정 월의 총 소비액 및 일별 지출 합계 반환
+         * @description 특정 월의 총 소비액과 일별 지출 합계를 조회합니다.
          */
-        get: operations["kakaoCallback"];
+        get: operations["getExpenseCalendar"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/alerts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * 알림 목록 조회
+         * @description 유저의 알림 목록을 최신순으로 조회합니다.
+         */
+        get: operations["getAlertList"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/alerts/unread-status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * 읽지 않은 알림 존재 여부 확인
+         * @description 빨간 점(Badge) 표시 여부
+         */
+        get: operations["hasUnreadAlerts"];
         put?: never;
         post?: never;
         delete?: never;
@@ -445,14 +653,47 @@ export interface components {
         };
         TokenReissueResultDTO: {
             accessToken?: string;
+            refreshToken?: string;
         };
-        ApiResponseMapStringObject: {
+        ApiResponseAuthResponse: {
             isSuccess?: boolean;
             code?: string;
             message?: string;
-            result?: {
-                [key: string]: Record<string, never>;
-            };
+            result?: components["schemas"]["AuthResponse"];
+        };
+        AuthResponse: {
+            /** Format: int64 */
+            userId?: number;
+            email?: string;
+            nickname?: string;
+            accessToken?: string;
+            refreshToken?: string;
+            type?: string;
+            homeOnboarding?: boolean;
+            categoryOnboarding?: boolean;
+            remindOnboarding?: boolean;
+            isNewUser?: boolean;
+            hasExpense?: boolean;
+        };
+        ApiResponseAppleUserResponseDTO: {
+            isSuccess?: boolean;
+            code?: string;
+            message?: string;
+            result?: components["schemas"]["AppleUserResponseDTO"];
+        };
+        AppleUserResponseDTO: {
+            /** Format: int64 */
+            userId?: number;
+            email?: string;
+            nickname?: string;
+            accessToken?: string;
+            refreshToken?: string;
+            appleSub?: string;
+            homeOnboarding?: boolean;
+            categoryOnboarding?: boolean;
+            remindOnboarding?: boolean;
+            isNewUser?: boolean;
+            hasExpense?: boolean;
         };
         ExpenseRemindRequestDTO: {
             /** Format: int64 */
@@ -552,6 +793,12 @@ export interface components {
             amount?: number;
             emotionType?: string;
         };
+        ApiResponseListMonthlyReportSummaryResponse: {
+            isSuccess?: boolean;
+            code?: string;
+            message?: string;
+            result?: components["schemas"]["MonthlyReportSummaryResponse"][];
+        };
         ApiResponseDailyExpenseResponseDTO: {
             isSuccess?: boolean;
             code?: string;
@@ -596,25 +843,46 @@ export interface components {
             /** @enum {string} */
             icon?: "cook" | "coffee" | "credit" | "book" | "beauty" | "beer" | "shopping" | "camera" | "cup";
         };
-        ApiResponseAuthResponse: {
+        ApiResponseCalendarResponseDTO: {
             isSuccess?: boolean;
             code?: string;
             message?: string;
-            result?: components["schemas"]["AuthResponse"];
+            result?: components["schemas"]["CalendarResponseDTO"];
         };
-        AuthResponse: {
-            accessToken?: string;
-            user?: components["schemas"]["UserInfo"];
-        };
-        UserInfo: {
+        CalendarResponseDTO: {
             /** Format: int64 */
-            userId?: number;
-            nickname?: string;
-            /** Format: int32 */
-            age?: number;
-            gender?: string;
-            region?: string;
-            type?: string;
+            totalAmount?: number;
+            dailyAmount?: components["schemas"]["DailyAmountDTO"][];
+        };
+        DailyAmountDTO: {
+            /** Format: date */
+            date?: string;
+            /** Format: int64 */
+            dayAmount?: number;
+        };
+        AlertResponseDTO: {
+            /** Format: int64 */
+            alertId?: number;
+            /** @enum {string} */
+            alertType?: "RETROSPECT" | "WEEKLY_REPORT" | "SERVICE_NOTICE";
+            title?: string;
+            message?: string;
+            redirectUrl?: string;
+            isRead?: boolean;
+            /** Format: date-time */
+            createdAt?: string;
+        };
+        ApiResponseListAlertResponseDTO: {
+            isSuccess?: boolean;
+            code?: string;
+            message?: string;
+            result?: components["schemas"]["AlertResponseDTO"][];
+        };
+        ApiResponseBoolean: {
+            isSuccess?: boolean;
+            code?: string;
+            message?: string;
+            result?: boolean;
         };
     };
     responses: never;
@@ -700,7 +968,9 @@ export interface operations {
     reissue: {
         parameters: {
             query?: never;
-            header?: never;
+            header: {
+                RefreshToken: string;
+            };
             path?: never;
             cookie?: never;
         };
@@ -737,10 +1007,68 @@ export interface operations {
             };
         };
     };
+    kakaoLogin: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                /**
+                 * @example {
+                 *       "accessToken": ""
+                 *     }
+                 */
+                "application/json": {
+                    [key: string]: Record<string, never>;
+                };
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseAuthResponse"];
+                };
+            };
+        };
+    };
+    appleSignup: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    [key: string]: string;
+                };
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseAppleUserResponseDTO"];
+                };
+            };
+        };
+    };
     appleLogin: {
         parameters: {
             query: {
                 code: string;
+                platform?: string;
             };
             header?: never;
             path?: never;
@@ -754,7 +1082,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ApiResponseMapStringObject"];
+                    "*/*": components["schemas"]["ApiResponseAppleUserResponseDTO"];
                 };
             };
         };
@@ -773,6 +1101,66 @@ export interface operations {
                 };
             };
         };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseString"];
+                };
+            };
+        };
+    };
+    completeRemindOnboarding: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseString"];
+                };
+            };
+        };
+    };
+    completeHomeOnboarding: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseString"];
+                };
+            };
+        };
+    };
+    completeCategoryOnboarding: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
         responses: {
             /** @description OK */
             200: {
@@ -861,6 +1249,72 @@ export interface operations {
             };
         };
     };
+    markAsRead: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                alertId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseString"];
+                };
+            };
+        };
+    };
+    updateAlarmStatus: {
+        parameters: {
+            query: {
+                isAlarmOn: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseString"];
+                };
+            };
+        };
+    };
+    updateFcmToken: {
+        parameters: {
+            query: {
+                fcmToken: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseString"];
+                };
+            };
+        };
+    };
     getWeeklyDetailReport: {
         parameters: {
             query: {
@@ -921,6 +1375,26 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ApiResponseListExpenseResponseDTO"];
+                };
+            };
+        };
+    };
+    getMonthlyTotalList: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseListMonthlyReportSummaryResponse"];
                 };
             };
         };
@@ -991,11 +1465,11 @@ export interface operations {
             };
         };
     };
-    kakaoCallback: {
+    getExpenseCalendar: {
         parameters: {
             query: {
-                code: string;
-                redirect_uri?: string;
+                year: number;
+                month: number;
             };
             header?: never;
             path?: never;
@@ -1009,7 +1483,47 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ApiResponseAuthResponse"];
+                    "*/*": components["schemas"]["ApiResponseCalendarResponseDTO"];
+                };
+            };
+        };
+    };
+    getAlertList: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseListAlertResponseDTO"];
+                };
+            };
+        };
+    };
+    hasUnreadAlerts: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseBoolean"];
                 };
             };
         };

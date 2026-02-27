@@ -1,0 +1,1 @@
+export { NotificationsHeader } from './NotificationsHeader';
