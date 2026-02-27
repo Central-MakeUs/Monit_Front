@@ -18,14 +18,14 @@ export function toReportSummaryVM(params: {
 
   const totalCount = rankItems.reduce((sum, item) => sum + item.count, 0);
 
-  // 개수(count) 내림차순 정렬
-  const sortedByCount = [...rankItems].sort((a, b) => {
-    if (b.count !== a.count) return b.count - a.count;
-    return b.amount - a.amount;
+  // 금액(amount) 내림차순 정렬 (동률이면 count로 정렬)
+  const sortedByAmount = [...rankItems].sort((a, b) => {
+    if (b.amount !== a.amount) return b.amount - a.amount;
+    return b.count - a.count;
   });
   // 상위 4개 → 막대 그래프, 상위 3개 → 순위 리스트
-  const barItems = sortedByCount.slice(0, 4);
-  const listItems = sortedByCount.slice(0, 3);
+  const barItems = sortedByAmount.slice(0, 4);
+  const listItems = sortedByAmount.slice(0, 3);
 
   return {
     title,
