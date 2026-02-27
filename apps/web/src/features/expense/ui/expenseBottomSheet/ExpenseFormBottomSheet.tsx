@@ -14,6 +14,8 @@ import {
   Badge,
   Divider,
 } from '@/shared/ui';
+import type { EvaluationType } from '@/shared/types/evaluation.types';
+import { getEvaluationLabel } from '@/features/expense/model/evaluationLabel';
 import { EXPENSE_CONSTANTS, EXPENSE_ERROR_MESSAGES } from '@/entities/expense';
 import { IcTrash } from 'public/icons';
 import { formatDate, formatNumberWithComma } from '@/shared/utils';
@@ -43,6 +45,8 @@ export interface ExpenseFormBottomSheetProps {
   satisfactionLabel?: string; //TODO: 임시
   /** 만족도 이모지 */
   satisfactionEmoji?: string; //TODO: 임시
+  /** 만족도 평가 타입 */
+  satisfactionEvaluationType?: EvaluationType;
   /** 삭제 버튼 클릭 시 콜백 */
   onDelete?: () => void;
   /** 선택 버튼 클릭 시 콜백 */
@@ -72,6 +76,7 @@ export const ExpenseFormBottomSheet = ({
   onCategorySelect,
   onMoreCategoryClick,
   satisfactionLabel,
+  satisfactionEvaluationType,
   onDelete,
   onConfirm,
   onClose,
@@ -81,6 +86,7 @@ export const ExpenseFormBottomSheet = ({
   isUsageError,
 }: ExpenseFormBottomSheetProps) => {
   const formattedAmount = amount !== undefined ? formatNumberWithComma(String(amount)) : '';
+  const evaluationLabel = getEvaluationLabel(satisfactionEvaluationType);
 
   return (
     <BaseBottomSheetTemplate>
@@ -131,7 +137,7 @@ export const ExpenseFormBottomSheet = ({
         </Text>
         <div className={styles.badgeList}>
           <Badge label={satisfactionLabel ?? '감정 누락'} />
-          {/* <Badge label='정말 만족했어요' size='lg' evaluationType='VERY_SATISFIED' /> */}
+          <Badge label={evaluationLabel} size='sm' evaluationType={satisfactionEvaluationType} />
         </div>
       </div>
 
