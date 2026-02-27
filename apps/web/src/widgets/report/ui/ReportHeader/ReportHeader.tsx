@@ -8,9 +8,13 @@ import * as styles from './ReportHeader.css';
 
 export interface ReportHeaderProps {
   onSettingsClick: () => void;
+  onNotificationClick: () => void;
 }
 
-export const ReportHeader = ({ onSettingsClick }: ReportHeaderProps): React.JSX.Element => {
+export const ReportHeader = ({
+  onSettingsClick,
+  onNotificationClick,
+}: ReportHeaderProps): React.JSX.Element => {
   return (
     <TopBar
       left={
@@ -20,7 +24,7 @@ export const ReportHeader = ({ onSettingsClick }: ReportHeaderProps): React.JSX.
       }
       right={
         <div className={styles.headerActions}>
-          <button className={styles.iconButton} aria-label='알림'>
+          <button className={styles.iconButton} aria-label='알림' onClick={onNotificationClick}>
             <IcBell />
           </button>
           <button className={styles.iconButton} aria-label='설정' onClick={onSettingsClick}>
