@@ -6,6 +6,7 @@ import { Text, vars } from '@/shared/ui';
 import { notificationQueries } from '@/entities/notification';
 import { NotificationCard } from '../NotificationCard';
 import * as styles from './NotificationCardList.css';
+import { IcNoticeDisable } from 'public/icons';
 
 export const NotificationCardList = () => {
   const { data } = useQuery(notificationQueries.list());
@@ -14,8 +15,13 @@ export const NotificationCardList = () => {
   if (notifications.length === 0) {
     return (
       <div className={styles.emptyState}>
-        <Text variant='b2' color={vars.color.text.tertiary}>
-          알림이 없어요
+        <div className={styles.iconWrapper}>
+          <IcNoticeDisable width={37} height={38} />
+        </div>
+
+        <Text variant='t4' color={vars.color.text.tertiary} align='center'>
+          아직 알림이
+          <br /> 도착하지 않았어요!
         </Text>
       </div>
     );
