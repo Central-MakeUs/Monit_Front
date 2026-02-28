@@ -35,4 +35,9 @@ export const ENDPOINT = {
     ALERT_UNREAD_STATUS: 'api/alerts/unread-status',
     ALERT_READ_ALL: 'api/alerts/read-all',
   },
+  ONBOARDING: {
+    REMIND: 'api/onboarding/remind',
+    HOME: 'api/onboarding/home',
+    CATEGORY: 'api/onboarding/category',
+  },
 } as const;
