@@ -3,13 +3,15 @@
  */
 export interface SocialLoginResult {
   success: boolean;
-  message?: string;
-  data?: {
+  message: string;
+  data: {
     accessToken: string;
     refreshToken: string;
-    isNewUser?: boolean;
-    hasExpense?: boolean;
-    isTermsAgreed?: boolean;
+    isNewUser: boolean;
+    hasExpense: boolean;
+    homeOnboarding: boolean;
+    categoryOnboarding: boolean;
+    remindOnboarding: boolean;
   };
 }
 
@@ -50,8 +52,8 @@ export type AppBridge = {
   }>;
 
   // 온보딩 완료
-  completeOnboarding: () => Promise<void>;
+  completeOnboarding: (type: 'home' | 'remind' | 'category') => Promise<void>;
 
   // 온보딩 상태 확인
-  onboardingStatus: () => Promise<boolean>;
+  onboardingStatus: () => Promise<{ home: boolean; remind: boolean; category: boolean }>;
 };
