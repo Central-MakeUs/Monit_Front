@@ -17,7 +17,8 @@ export const postKakaoSignup = async ({
     const result = response.data?.result ?? response.data;
     const accessToken = result.accessToken ?? result.access_token;
     const refreshToken = result.refreshToken ?? result.refresh_token ?? '';
-    const { isNewUser, hasExpense } = result ?? {};
+    const { isNewUser, hasExpense, homeOnboarding, categoryOnboarding, remindOnboarding } =
+      result ?? {};
 
     if (!accessToken) {
       throw new Error('회원가입 응답 형식이 올바르지 않습니다.');
@@ -30,6 +31,9 @@ export const postKakaoSignup = async ({
         refreshToken,
         isNewUser: isNewUser ?? false,
         hasExpense: hasExpense ?? false,
+        homeOnboarding: homeOnboarding ?? true,
+        categoryOnboarding: categoryOnboarding ?? true,
+        remindOnboarding: remindOnboarding ?? true,
       },
     };
   } catch (error) {

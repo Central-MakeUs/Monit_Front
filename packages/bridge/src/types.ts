@@ -14,6 +14,9 @@ export interface SocialLoginResult {
     remindOnboarding: boolean;
     /** 카카오 신규 유저 시 백엔드에서 내려주는 임시 토큰 (약관 동의 후 signup에 사용) */
     registerToken?: string;
+    homeOnboarding: boolean;
+    categoryOnboarding: boolean;
+    remindOnboarding: boolean;
   };
 }
 

@@ -24,4 +24,5 @@ export interface LoginData extends AuthTokens {
   homeOnboarding: boolean;
   categoryOnboarding: boolean;
   remindOnboarding: boolean;
+  registerToken?: string;
 }

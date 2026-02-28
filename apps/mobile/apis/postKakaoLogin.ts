@@ -31,6 +31,9 @@ export const postKakaoLogin = async ({
           refreshToken: '',
           isNewUser: true,
           hasExpense: result.hasExpense ?? false,
+          homeOnboarding: result.homeOnboarding ?? true,
+          categoryOnboarding: result.categoryOnboarding ?? true,
+          remindOnboarding: result.remindOnboarding ?? true,
           registerToken: tempToken ?? '',
         },
       };
@@ -38,9 +41,7 @@ export const postKakaoLogin = async ({
 
     const newAccessToken = result.accessToken ?? result.access_token;
     const newRefreshToken = result.refreshToken ?? result.refresh_token ?? '';
-    const { isNewUser, hasExpense, homeOnboarding, categoryOnboarding, remindOnboarding } = result;
-
-
+    const { hasExpense, homeOnboarding, categoryOnboarding, remindOnboarding } = result;
     return {
       success: true,
       data: {
