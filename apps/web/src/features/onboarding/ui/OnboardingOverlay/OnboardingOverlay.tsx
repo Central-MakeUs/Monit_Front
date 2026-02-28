@@ -3,8 +3,9 @@ import * as styles from './OnboardingOverlay.css';
 
 interface OnboardingOverlayProps {
   onNext: () => void;
+  dim?: boolean;
 }
 
-export const OnboardingOverlay = ({ onNext }: OnboardingOverlayProps) => {
-  return <div className={styles.overlay} onClick={onNext} />;
+export const OnboardingOverlay = ({ onNext, dim = false }: OnboardingOverlayProps) => {
+  return <div className={dim ? styles.overlayDim : styles.overlay} onClick={onNext} />;
 };

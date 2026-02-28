@@ -28,8 +28,8 @@ export interface CategoryBtnProps extends Omit<
   label?: string;
   /** edit 버튼 클릭 핸들러 */
   onEditClick?: (e: React.MouseEvent<HTMLElement>) => void;
-  /** 하이라이트 여부 (온보딩에서 사용) */
-  highlighted?: boolean;
+  /** 온보딩 타겟 식별자 */
+  'data-onboarding-id'?: string;
 }
 
 export const CategoryBtn = ({
@@ -41,14 +41,17 @@ export const CategoryBtn = ({
   label,
   onEditClick,
   onClick,
-  highlighted = false,
+  'data-onboarding-id': onboardingId,
   ...props
 }: CategoryBtnProps): React.JSX.Element => {
   const { component: IconComponent, color } = CATEGORY_ICON_MAP[icon];
 
   return (
     <button className={categoryButtonWrapper()} onClick={onClick} {...props}>
-      <div className={categoryIconContainer({ size, type, mode, highlighted })} style={{ color }}>
+      <div
+        className={categoryIconContainer({ size, type, mode })}
+        style={{ color }}
+        data-onboarding-id={onboardingId}>
         <IconComponent className={categoryIconSvg({ size })} />
         {mode === 'edit' && <EditCategoryBtn size={size} onClick={onEditClick} />}
       </div>

@@ -73,19 +73,11 @@ export const categoryIconContainer = recipe({
         border: 'none',
       },
     },
-    highlighted: {
-      true: {
-        zIndex: 101,
-        backgroundColor: vars.color.bg.base,
-      },
-      false: {},
-    },
   },
   defaultVariants: {
     size: 'md',
     type: 'primary',
     mode: 'default',
-    highlighted: false,
   },
 });
 

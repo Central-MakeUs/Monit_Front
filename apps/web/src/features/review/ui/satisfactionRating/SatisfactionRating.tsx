@@ -20,7 +20,7 @@ interface SatisfactionRatingProps {
 
 export const SatisfactionRating = ({ value, onChange }: SatisfactionRatingProps) => {
   return (
-    <div className={styles.container}>
+    <div className={styles.container} data-onboarding-id='satisfaction-rating'>
       {RATINGS.map(({ type, label }) => (
         <RatingBtn
           key={type}

@@ -7,6 +7,7 @@ import * as styles from './Review.css';
 import { useModal } from '@/shared/hooks';
 import { useSpendingReview } from '@/features/review';
 import { ReviewCard } from './reviewCard';
+import { RemindOnboardingTour } from '@/features/onboarding';
 
 interface SpendingReviewProps {
   date: string; // YYYY-MM-DD
@@ -99,6 +100,7 @@ export const Review = ({ date }: SpendingReviewProps) => {
           </div>
         </BottomFixedArea>
       )}
+      <RemindOnboardingTour />
     </div>
   );
 };

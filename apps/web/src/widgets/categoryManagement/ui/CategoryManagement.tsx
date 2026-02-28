@@ -1,7 +1,7 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import * as styles from './CategoryManagement.css';
-import { TopBar, vars, Text, CategoryBtn, Tooltip } from '@/shared/ui';
+import { TopBar, vars, Text, CategoryBtn } from '@/shared/ui';
 import { IcLeftChevron, IcPlusCircle } from 'public/icons';
 import { useRouter } from 'next/navigation';
 import {
@@ -23,17 +23,16 @@ import { CSS } from '@dnd-kit/utilities';
 import { useQuery } from '@tanstack/react-query';
 import { categoryQueries } from '@/features/expense/model/categoryQueries';
 import type { CategoryListResponseDTO } from '@/features/expense/model/types';
-
-const ONBOARDING_KEY = 'category-management-onboarding-completed';
+import { CategoryOnboardingTour } from '@/features/onboarding';
 
 const SortableCategoryItem = ({
   category,
   onClick,
-  highlighted,
+  onboardingId,
 }: {
   category: CategoryListResponseDTO;
   onClick: () => void;
-  highlighted?: boolean;
+  onboardingId?: string;
 }) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: category.id,
@@ -55,7 +54,7 @@ const SortableCategoryItem = ({
         icon={category.icon ?? 'coin'}
         label={category.name}
         type='secondary'
-        highlighted={highlighted}
+        data-onboarding-id={onboardingId}
         onClick={onClick}
       />
     </div>
@@ -66,14 +65,6 @@ export const CategoryManagement = () => {
   const router = useRouter();
   const { data: categoryData } = useQuery(categoryQueries.listQuery());
   const categories = categoryData?.result ?? [];
-  const [onboardingStep, setOnboardingStep] = useState<number | null>(null);
-
-  useEffect(() => {
-    const hasSeenOnboarding = localStorage.getItem(ONBOARDING_KEY) === 'true';
-    if (!hasSeenOnboarding) {
-      setOnboardingStep(1);
-    }
-  }, []);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -94,15 +85,6 @@ export const CategoryManagement = () => {
     }
   };
 
-  const handleOverlayClick = () => {
-    if (onboardingStep === 1) {
-      setOnboardingStep(2);
-    } else if (onboardingStep === 2) {
-      setOnboardingStep(null);
-      localStorage.setItem(ONBOARDING_KEY, 'true');
-    }
-  };
-
   const validCategories = categories.filter(
     (c): c is typeof c & { id: number } => c.id !== undefined && c.id !== null
   );
@@ -117,7 +99,7 @@ export const CategoryManagement = () => {
           </Text>
         }
         right={
-          <div className={onboardingStep === 2 ? styles.highlightAddButton : undefined}>
+          <div data-onboarding-id='category-add-btn'>
             <IcPlusCircle
               color={vars.color.icon.tertiary}
               onClick={() => router.push('/expense/category?from=mypage')}
@@ -132,9 +114,8 @@ export const CategoryManagement = () => {
               <SortableCategoryItem
                 key={category.id}
                 category={category}
-                highlighted={onboardingStep === 1 && index === 0}
+                onboardingId={index === 0 ? 'category-first-item' : undefined}
                 onClick={() => {
-                  if (onboardingStep) return;
                   router.push(`/expense/category?mode=edit&id=${category.id}&from=mypage`);
                 }}
               />
@@ -143,31 +124,7 @@ export const CategoryManagement = () => {
         </SortableContext>
       </DndContext>
 
-      {/* 온보딩 오버레이 */}
-      {onboardingStep !== null && (
-        <div className={styles.onboardingOverlay} onClick={handleOverlayClick}>
-          {onboardingStep === 1 && (
-            <Tooltip
-              className={styles.tooltipStep1}
-              arrow='left'
-              direction='top'
-              title='카테고리 수정하기'
-              step='(1/2)'
-              description='카테고리의 이름과 아이콘을 수정할 수 있어요'
-            />
-          )}
-          {onboardingStep === 2 && (
-            <Tooltip
-              className={styles.tooltipStep2}
-              arrow='top'
-              direction='right'
-              title='카테고리 추가하기'
-              step='(2/2)'
-              description='새로운 카테고리를 추가할 수 있어요'
-            />
-          )}
-        </div>
-      )}
+      <CategoryOnboardingTour />
     </div>
   );
 };
