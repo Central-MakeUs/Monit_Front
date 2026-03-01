@@ -3,14 +3,19 @@
 import React from 'react';
 import { TopBar } from '@/shared/ui/topBar';
 import { Text } from '@/shared/ui/text';
-import { IcBell, IcSetting } from 'public/icons';
+import { IcSetting } from 'public/icons';
+import { NotificationBell } from '@/features/notification';
 import * as styles from './ReportHeader.css';
 
 export interface ReportHeaderProps {
   onSettingsClick: () => void;
+  onNotificationClick: () => void;
 }
 
-export const ReportHeader = ({ onSettingsClick }: ReportHeaderProps): React.JSX.Element => {
+export const ReportHeader = ({
+  onSettingsClick,
+  onNotificationClick,
+}: ReportHeaderProps): React.JSX.Element => {
   return (
     <TopBar
       left={
@@ -20,8 +25,8 @@ export const ReportHeader = ({ onSettingsClick }: ReportHeaderProps): React.JSX.
       }
       right={
         <div className={styles.headerActions}>
-          <button className={styles.iconButton} aria-label='알림'>
-            <IcBell />
+          <button className={styles.iconButton} aria-label='알림' onClick={onNotificationClick}>
+            <NotificationBell />
           </button>
           <button className={styles.iconButton} aria-label='설정' onClick={onSettingsClick}>
             <IcSetting className={styles.settingIc} />

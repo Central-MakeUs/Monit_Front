@@ -8,5 +8,10 @@ import { ROUTES } from '@/shared/constants';
 export default function ReportPage() {
   const router = useRouter();
 
-  return <Report onSettingsClick={() => router.push(ROUTES.MY)} />;
+  return (
+    <Report
+      onSettingsClick={() => router.push(ROUTES.MY)}
+      onNotificationClick={() => router.push(ROUTES.NOTIFICATIONS)}
+    />
+  );
 }

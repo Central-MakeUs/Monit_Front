@@ -7,7 +7,7 @@ const SAMPLE_ICON = <IcCheckCircle color='#00B28D' />;
 
 const SAMPLE_ARGS = {
   icon: SAMPLE_ICON,
-  category: '회고 알림',
+  title: '회고 알림',
   message: '1월 29일의 회고가 도착했어요.\n오늘의 소비를 돌아보고, 나의 소비 습관을 점검해보세요.',
   date: '1월 30일',
   actionLabel: '소비 돌아보기',
@@ -38,7 +38,7 @@ const meta: Meta<typeof NotificationCard> = {
           '<NotificationCard',
           '  state="unread"',
           '  icon={<CheckIcon />}',
-          '  category="회고 알림"',
+          '  title="회고 알림"',
           '  message="1월 29일의 회고가 도착했어요."',
           '  date="1월 30일"',
           '  actionLabel="소비 돌아보기"',
@@ -69,7 +69,7 @@ const meta: Meta<typeof NotificationCard> = {
         type: { summary: 'ReactNode' },
       },
     },
-    category: {
+    title: {
       control: { type: 'text' },
       description: '알림 카테고리 라벨',
     },

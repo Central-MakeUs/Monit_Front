@@ -12,9 +12,10 @@ import * as styles from './Report.css';
 
 export interface ReportProps {
   onSettingsClick: () => void;
+  onNotificationClick: () => void;
 }
 
-export const Report = ({ onSettingsClick }: ReportProps) => {
+export const Report = ({ onSettingsClick, onNotificationClick }: ReportProps) => {
   const { currentDate } = useDateStore(useShallow((state) => ({ currentDate: state.currentDate })));
 
   const { monthlyTotalAmount, isLoading, isFetching } = useExpenseSummaryData({
@@ -23,7 +24,7 @@ export const Report = ({ onSettingsClick }: ReportProps) => {
 
   return (
     <div className={styles.container}>
-      <ReportHeader onSettingsClick={onSettingsClick} />
+      <ReportHeader onSettingsClick={onSettingsClick} onNotificationClick={onNotificationClick} />
       <div className={styles.content}>
         <MonthlyExpenseInfo
           monthlyTotalAmount={monthlyTotalAmount}

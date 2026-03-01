@@ -23,6 +23,7 @@ import { ROUTES } from '@/shared/constants/routes';
 
 export interface HomeProps {
   onSettingsClick: () => void;
+  onNotificationClick: () => void;
   /** 주간 캘린더 렌더 슬롯 (page에서 widgets/calendar를 주입) */
   renderWeeklyCalendar: (props: WeeklyCalendarSlotProps) => React.ReactNode;
   /** 월간 캘린더 렌더 슬롯 (page에서 widgets/calendar를 주입) */
@@ -31,6 +32,7 @@ export interface HomeProps {
 
 export const Home = ({
   onSettingsClick,
+  onNotificationClick,
   renderWeeklyCalendar,
   renderMonthlyCalendar,
 }: HomeProps) => {
@@ -112,6 +114,7 @@ export const Home = ({
             currentDate={currentDate}
             onDateButtonClick={onOpen}
             onSettingsClick={onSettingsClick}
+            onNotificationClick={onNotificationClick}
           />
         )}
       </DatePickerFeature>
