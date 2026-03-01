@@ -26,6 +26,11 @@ export const ENDPOINT = {
     CATEGORY_UPDATE: 'api/expense/category_update/{categoryId}',
   },
   INQUIRY: { INQUIRY_SEND: 'api/inquiry/send' },
+  ONBOARDING: {
+    REMIND: 'api/onboarding/remind',
+    HOME: 'api/onboarding/home',
+    CATEGORY: 'api/onboarding/category',
+  },
   ALERT: {
     ALERT_LIST: 'api/alerts',
     ALERT_UNREAD_STATUS: 'api/alerts/unread-status',

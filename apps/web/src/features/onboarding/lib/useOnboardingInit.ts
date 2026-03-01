@@ -23,8 +23,8 @@ export function useOnboardingInit() {
 
     bridge
       .onboardingStatus()
-      .then((completed) => {
-        hydrateFromServer(completed);
+      .then((flags) => {
+        hydrateFromServer(flags);
       })
       .catch(() => {
         // bridge 호출 실패 시 localStorage 상태 유지

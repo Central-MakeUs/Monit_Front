@@ -137,7 +137,7 @@ export const Home = ({
           renderWeeklyCalendar={renderWeeklyCalendar}
           renderMonthlyCalendar={renderMonthlyCalendar}
         />
-        <Banner {...bannerProps} onClickReview={handleClickReview} />
+        <Banner {...bannerProps} onClickReview={handleClickReview} data-onboarding-id='banner' />
         <ExpenseContent
           hasExpenses={expenses.length > 0}
           emptyStateType={emptyStateType}

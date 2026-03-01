@@ -25,7 +25,14 @@ export const appBridge = bridge({
         const kakaoResult = await login();
         const result = await postKakaoLogin({ accessToken: kakaoResult.accessToken });
 
-        const { isNewUser, hasExpense, registerToken } = result.data ?? {};
+        const {
+          isNewUser,
+          hasExpense,
+          registerToken,
+          homeOnboarding,
+          categoryOnboarding,
+          remindOnboarding,
+        } = result.data ?? {};
 
         // 신규 사용자: 임시 토큰(registerToken) 반환 → 약관 동의 후 웹에서 kakaoSignup(registerToken) 호출
         if (isNewUser === true) {
@@ -35,8 +42,11 @@ export const appBridge = bridge({
               accessToken: '',
               refreshToken: '',
               isNewUser: true,
-              hasExpense,
+              hasExpense: false,
               registerToken: registerToken ?? '',
+              homeOnboarding: homeOnboarding ?? true,
+              categoryOnboarding: categoryOnboarding ?? true,
+              remindOnboarding: remindOnboarding ?? true,
             },
           };
         }
@@ -48,17 +58,21 @@ export const appBridge = bridge({
         const { accessToken, refreshToken } = result.data;
         await authStorage.setTokens(accessToken, refreshToken ?? '');
 
-        if (hasExpense) {
-          await onboardingStorage.completeOnboarding();
-        }
+        // 각 피처별 온보딩 완료 상태 저장 (false=완료, true=미완료)
+        if (!homeOnboarding) await onboardingStorage.completeOnboarding('home');
+        if (!categoryOnboarding) await onboardingStorage.completeOnboarding('category');
+        if (!remindOnboarding) await onboardingStorage.completeOnboarding('remind');
 
         return {
           success: true,
           data: {
             accessToken,
             refreshToken: refreshToken ?? '',
-            isNewUser,
-            hasExpense,
+            isNewUser: isNewUser ?? false,
+            hasExpense: hasExpense ?? false,
+            homeOnboarding: homeOnboarding ?? true,
+            categoryOnboarding: categoryOnboarding ?? true,
+            remindOnboarding: remindOnboarding ?? true,
           },
         };
       } else if (type === 'apple') {
@@ -68,17 +82,24 @@ export const appBridge = bridge({
           throw new Error('애플 로그인 응답에 accessToken이 없습니다.');
         }
 
-        const { accessToken, refreshToken } = result.data;
-        const { isNewUser, hasExpense } = result.data;
+        const {
+          accessToken,
+          refreshToken,
+          isNewUser,
+          hasExpense,
+          homeOnboarding,
+          categoryOnboarding,
+          remindOnboarding,
+        } = result.data;
 
         // 기존 사용자만 토큰 저장 (신규 사용자는 약관 동의 완료 후 appleSignup에서 저장)
         if (isNewUser === false) {
           await authStorage.setTokens(accessToken, refreshToken || '');
 
-          // 지출이 있을 경우 온보딩 완료 저장
-          if (hasExpense) {
-            await onboardingStorage.completeOnboarding();
-          }
+          // 각 피처별 온보딩 완료 상태 저장 (false=완료, true=미완료)
+          if (!homeOnboarding) await onboardingStorage.completeOnboarding('home');
+          if (!categoryOnboarding) await onboardingStorage.completeOnboarding('category');
+          if (!remindOnboarding) await onboardingStorage.completeOnboarding('remind');
         }
 
         return {
@@ -88,6 +109,9 @@ export const appBridge = bridge({
             refreshToken: refreshToken || '',
             isNewUser,
             hasExpense,
+            homeOnboarding,
+            categoryOnboarding,
+            remindOnboarding,
           },
         };
       }
@@ -116,13 +140,21 @@ export const appBridge = bridge({
         throw new Error('서버 응답에 accessToken이 없습니다.');
       }
 
-      const { accessToken, refreshToken } = result.data;
+      const {
+        accessToken,
+        refreshToken,
+        isNewUser,
+        hasExpense,
+        homeOnboarding,
+        categoryOnboarding,
+        remindOnboarding,
+      } = result.data;
       await authStorage.setTokens(accessToken, refreshToken || '');
-      const { isNewUser, hasExpense } = result.data;
-      // 지출이 있을 경우 온보딩 완료 저장
-      if (hasExpense) {
-        await onboardingStorage.completeOnboarding();
-      }
+
+      // 각 피처별 온보딩 완료 상태 저장 (false=완료, true=미완료)
+      if (!homeOnboarding) await onboardingStorage.completeOnboarding('home');
+      if (!categoryOnboarding) await onboardingStorage.completeOnboarding('category');
+      if (!remindOnboarding) await onboardingStorage.completeOnboarding('remind');
 
       return {
         success: true,
@@ -131,6 +163,9 @@ export const appBridge = bridge({
           refreshToken: refreshToken || '',
           isNewUser,
           hasExpense,
+          homeOnboarding,
+          categoryOnboarding,
+          remindOnboarding,
         },
       };
     } catch (error) {
@@ -155,11 +190,13 @@ export const appBridge = bridge({
 
       const { accessToken, refreshToken } = result.data;
       await authStorage.setTokens(accessToken, refreshToken ?? '');
-      const { isNewUser, hasExpense } = result.data;
+      const { isNewUser, hasExpense, homeOnboarding, categoryOnboarding, remindOnboarding } =
+        result.data;
 
-      if (hasExpense) {
-        await onboardingStorage.completeOnboarding();
-      }
+      // 각 피처별 온보딩 완료 상태 저장 (false=완료, true=미완료)
+      if (!homeOnboarding) await onboardingStorage.completeOnboarding('home');
+      if (!categoryOnboarding) await onboardingStorage.completeOnboarding('category');
+      if (!remindOnboarding) await onboardingStorage.completeOnboarding('remind');
 
       return {
         success: true,
@@ -168,6 +205,9 @@ export const appBridge = bridge({
           refreshToken: refreshToken ?? '',
           isNewUser,
           hasExpense,
+          homeOnboarding,
+          categoryOnboarding,
+          remindOnboarding,
         },
       };
     } catch (error) {
@@ -246,14 +286,14 @@ export const appBridge = bridge({
   },
 
   /**
-   * 온보딩 완료
+   * 피처별 온보딩 완료 저장
    */
-  completeOnboarding: async () => {
-    await onboardingStorage.completeOnboarding();
+  completeOnboarding: async (type: 'home' | 'remind' | 'category') => {
+    await onboardingStorage.completeOnboarding(type);
   },
 
   /**
-   * 온보딩 완료
+   * 온보딩 상태 확인 (피처별)
    */
   onboardingStatus: async () => {
     return await onboardingStorage.onboardingStatus();

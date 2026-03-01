@@ -5,10 +5,10 @@ import { createPortal } from 'react-dom';
 import { OnboardingOverlay } from '../shared/OnboardingOverlay/OnboardingOverlay';
 import { OnboardingHighlight } from '../shared/OnboardingHighlight/OnboardingHighlight';
 import { OnboardingTooltip } from '../shared/OnboardingTooltip/OnboardingTooltip';
-import { useOnboardingTour } from '../../lib/useOnboardingTour';
+import { useRemindOnboardingTour } from '../../lib/useRemindOnboardingTour';
 
-export function OnboardingTour(): React.JSX.Element | null {
-  const { isActive, currentStep, rect, handleNext } = useOnboardingTour();
+export function RemindOnboardingTour(): React.JSX.Element | null {
+  const { isActive, currentStep, rect, handleNext } = useRemindOnboardingTour();
 
   if (!isActive || !currentStep) return null;
 
@@ -20,8 +20,10 @@ export function OnboardingTour(): React.JSX.Element | null {
         <>
           <OnboardingHighlight
             rect={rect}
-            glow={currentStep.key !== 'banner'}
+            glow={false}
             key={currentStep.key}
+            padding={currentStep.highlightPadding}
+            borderRadius={currentStep.highlightBorderRadius}
           />
 
           <OnboardingTooltip rect={rect} step={currentStep} key={`${currentStep.key}-tooltip`} />

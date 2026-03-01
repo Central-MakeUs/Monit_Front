@@ -6,8 +6,11 @@ import { getPlatform } from '@/shared/utils';
 export interface AppleLoginData {
   accessToken: string;
   refreshToken: string;
-  isNewUser?: boolean;
-  hasExpense?: boolean;
+  isNewUser: boolean;
+  hasExpense: boolean;
+  homeOnboarding: boolean;
+  categoryOnboarding: boolean;
+  remindOnboarding: boolean;
 }
 
 interface AppleLoginOptions {

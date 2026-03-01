@@ -5,24 +5,27 @@ import { createPortal } from 'react-dom';
 import { OnboardingOverlay } from '../shared/OnboardingOverlay/OnboardingOverlay';
 import { OnboardingHighlight } from '../shared/OnboardingHighlight/OnboardingHighlight';
 import { OnboardingTooltip } from '../shared/OnboardingTooltip/OnboardingTooltip';
-import { useOnboardingTour } from '../../lib/useOnboardingTour';
+import { useCategoryOnboardingTour } from '../../lib/useCategoryOnboardingTour';
 
-export function OnboardingTour(): React.JSX.Element | null {
-  const { isActive, currentStep, rect, handleNext } = useOnboardingTour();
+export function CategoryOnboardingTour(): React.JSX.Element | null {
+  const { isActive, currentStep, rect, handleNext } = useCategoryOnboardingTour();
 
   if (!isActive || !currentStep) return null;
 
   return createPortal(
     <div>
-      <OnboardingOverlay onNext={handleNext} />
+      <OnboardingOverlay onNext={handleNext} dim={currentStep.highlightDisabled} />
 
       {rect && (
         <>
-          <OnboardingHighlight
-            rect={rect}
-            glow={currentStep.key !== 'banner'}
-            key={currentStep.key}
-          />
+          {!currentStep.highlightDisabled && (
+            <OnboardingHighlight
+              rect={rect}
+              glow={false}
+              key={currentStep.key}
+              borderRadius={currentStep.highlightBorderRadius}
+            />
+          )}
 
           <OnboardingTooltip rect={rect} step={currentStep} key={`${currentStep.key}-tooltip`} />
         </>

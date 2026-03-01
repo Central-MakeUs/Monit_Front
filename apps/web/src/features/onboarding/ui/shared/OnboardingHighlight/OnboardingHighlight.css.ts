@@ -1,7 +1,7 @@
 import { keyframes } from '@vanilla-extract/css';
 import { recipe } from '@vanilla-extract/recipes';
 import { vars } from '@/shared/ui/theme.css';
-import { zIndex } from '../../config/zIndex';
+import { zIndex } from '../../../config/zIndex';
 
 const fadeIn = keyframes({
   '0%': { opacity: 0 },
