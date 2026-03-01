@@ -2,6 +2,7 @@ import { bridge, createWebView } from '@webview-bridge/react-native';
 import { login, logout } from '@react-native-kakao/user';
 import { canOpenURL, openURL } from 'expo-linking';
 import { postKakaoLogin } from '@/apis/postKakaoLogin';
+import { postKakaoSignup } from '@/apis/postKakaoSignup';
 import { postAppleSignup } from '@/apis/postAppleSignup';
 import { postReissue } from '@/apis/postReissue';
 import { authStorage } from './authStorage';
@@ -23,6 +24,22 @@ export const appBridge = bridge({
       if (type === 'kakao') {
         const kakaoResult = await login();
         const result = await postKakaoLogin({ accessToken: kakaoResult.accessToken });
+
+        const { isNewUser, hasExpense, registerToken } = result.data ?? {};
+
+        // 신규 사용자: 임시 토큰(registerToken) 반환 → 약관 동의 후 웹에서 kakaoSignup(registerToken) 호출
+        if (isNewUser === true) {
+          return {
+            success: true,
+            data: {
+              accessToken: '',
+              refreshToken: '',
+              isNewUser: true,
+              hasExpense,
+              registerToken: registerToken ?? '',
+            },
+          };
+        }
 
         if (!result.data?.accessToken) {
           throw new Error('백엔드 응답에 accessToken이 없습니다.');
@@ -147,6 +164,43 @@ export const appBridge = bridge({
           homeOnboarding,
           categoryOnboarding,
           remindOnboarding,
+        },
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: error instanceof Error ? error.message : '회원가입에 실패했습니다.',
+      };
+    }
+  },
+
+  /**
+   * 카카오 신규 사용자 회원가입
+   * 약관 동의 후 웹에서 호출 → 네이티브가 임시 토큰으로 /api/auth/kakao/signup 호출 → 정식 JWT 저장
+   */
+  async kakaoSignup(registerToken: string): Promise<ApiResponse<LoginData>> {
+    try {
+      const result = await postKakaoSignup({ registerToken });
+
+      if (!result.data?.accessToken) {
+        throw new Error('서버 응답에 accessToken이 없습니다.');
+      }
+
+      const { accessToken, refreshToken } = result.data;
+      await authStorage.setTokens(accessToken, refreshToken ?? '');
+      const { isNewUser, hasExpense } = result.data;
+
+      if (hasExpense) {
+        await onboardingStorage.completeOnboarding();
+      }
+
+      return {
+        success: true,
+        data: {
+          accessToken,
+          refreshToken: refreshToken ?? '',
+          isNewUser,
+          hasExpense,
         },
       };
     } catch (error) {

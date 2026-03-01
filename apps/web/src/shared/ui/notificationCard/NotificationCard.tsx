@@ -9,7 +9,7 @@ export interface NotificationCardProps {
   /** 아이콘 React 노드 */
   icon: ReactNode;
   /** 카테고리 라벨 (예: "회고 알림") */
-  category: string;
+  title: string;
   /** 알림 본문 메시지 */
   message: string;
   /** 날짜 텍스트 (예: "1월 30일") */
@@ -23,7 +23,7 @@ export interface NotificationCardProps {
 export const NotificationCard = ({
   state = 'default',
   icon,
-  category,
+  title,
   message,
   date,
   actionLabel,
@@ -35,7 +35,7 @@ export const NotificationCard = ({
       <div className={styles.content}>
         <div className={styles.header}>
           <Text variant='b2' color={vars.color.text.tertiary}>
-            {category}
+            {title}
           </Text>
           <Text variant='b2' color={vars.color.text.tertiary}>
             {date}

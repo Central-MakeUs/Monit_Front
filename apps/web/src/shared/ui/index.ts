@@ -71,3 +71,6 @@ export { SelectionTile } from './selectionTile';
 
 export { Card } from './card';
 export type { CardProps } from './card';
+
+export { NotificationCard } from './notificationCard';
+export type { NotificationCardProps } from './notificationCard';

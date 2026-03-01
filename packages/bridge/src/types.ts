@@ -12,6 +12,8 @@ export interface SocialLoginResult {
     homeOnboarding: boolean;
     categoryOnboarding: boolean;
     remindOnboarding: boolean;
+    /** 카카오 신규 유저 시 백엔드에서 내려주는 임시 토큰 (약관 동의 후 signup에 사용) */
+    registerToken?: string;
   };
 }
 
@@ -46,6 +48,13 @@ export type AppBridge = {
 
   // Apple 신규 사용자 회원가입 (약관 동의 후 호출)
   appleSignup: (registerToken: string) => Promise<{
+    success: boolean;
+    message?: string;
+    data?: { accessToken: string; refreshToken: string; isNewUser?: boolean; hasExpense?: boolean };
+  }>;
+
+  // 카카오 신규 사용자 회원가입 (약관 동의 후 호출, 임시 토큰으로 /api/auth/kakao/signup)
+  kakaoSignup: (registerToken: string) => Promise<{
     success: boolean;
     message?: string;
     data?: { accessToken: string; refreshToken: string; isNewUser?: boolean; hasExpense?: boolean };
