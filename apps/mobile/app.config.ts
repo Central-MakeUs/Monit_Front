@@ -4,7 +4,7 @@ module.exports = {
   expo: {
     name: '모닛',
     slug: 'monit',
-    version: '1.0.0',
+    version: '1.0.1',
     orientation: 'portrait',
     icon: './assets/images/icon.png',
     scheme: process.env.EXPO_PUBLIC_KAKAO_NATIVE_APP_KEY
