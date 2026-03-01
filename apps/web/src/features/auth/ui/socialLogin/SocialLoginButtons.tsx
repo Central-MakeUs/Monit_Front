@@ -6,8 +6,7 @@ import * as styles from './SocialLoginButtons.css';
 import { Text, useToast } from '@/shared/ui';
 import { IcApple, IcKakao } from 'public/icons';
 import { useKakaoLogin, useAppleLogin } from '@/features/auth/model';
-import { useBridge } from '@/shared/lib/bridge';
-import { useAuthStore } from '@/shared/stores/authStore';
+import { useNativeAuth } from '@/shared/lib/bridge';
 import { getPlatform } from '@/shared/utils';
 import { ROUTES } from '@/shared/constants';
 
@@ -21,28 +20,20 @@ export const SocialLoginButtons = () => {
   const platform = getPlatform();
   const router = useRouter();
   const toast = useToast();
-  const bridge = useBridge();
-  const setAccessToken = useAuthStore((state) => state.setAccessToken);
-
-  const syncNativeToken = async () => {
-    if ((platform === 'ios' || platform === 'android') && bridge) {
-      try {
-        const accessToken = await bridge.getAccessToken();
-        if (accessToken) {
-          setAccessToken(accessToken);
-        }
-      } catch {
-        // 토큰 로드 실패
-      }
-    }
-  };
+  const { syncNativeToken } = useNativeAuth();
 
   const { handleKakaoLogin } = useKakaoLogin({
-    onSuccess: async () => {
-      await syncNativeToken();
+    onSuccess: async (data) => {
       setIsNativeLoginLoading(false);
-      toast.success('로그인에 성공했어요');
-      router.replace(ROUTES.HOME);
+      if (!data?.isNewUser) {
+        await syncNativeToken();
+        router.replace(ROUTES.HOME);
+      } else {
+        // 신규 사용자: 임시 토큰(registerToken)을 들고 약관 동의 페이지로 이동
+        const registerToken = (data as { registerToken?: string })?.registerToken ?? '';
+        const params = new URLSearchParams({ registerToken, provider: 'kakao' });
+        router.replace(`/${ROUTES.AGREEMENT}?${params.toString()}`);
+      }
     },
     onError: () => {
       setIsNativeLoginLoading(false);
@@ -58,9 +49,10 @@ export const SocialLoginButtons = () => {
         toast.success('로그인에 성공했어요');
         router.replace(ROUTES.HOME);
       } else {
-        // 신규 사용자: 임시 토큰을 저장하지 않고 약관 동의 페이지로 이동
+        // 신규 사용자: 임시 토큰을 들고 약관 동의 페이지로 이동
         const registerToken = data?.accessToken ?? '';
-        router.replace(`/${ROUTES.AGREEMENT}?registerToken=${registerToken}`);
+        const params = new URLSearchParams({ registerToken, provider: 'apple' });
+        router.replace(`/${ROUTES.AGREEMENT}?${params.toString()}`);
       }
     },
     onError: () => {
