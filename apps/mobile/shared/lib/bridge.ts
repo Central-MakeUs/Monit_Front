@@ -55,15 +55,7 @@ export const appBridge = bridge({
           throw new Error('백엔드 응답에 accessToken이 없습니다.');
         }
 
-        const {
-          accessToken,
-          refreshToken,
-          isNewUser,
-          hasExpense,
-          homeOnboarding,
-          categoryOnboarding,
-          remindOnboarding,
-        } = result.data;
+        const { accessToken, refreshToken } = result.data;
         await authStorage.setTokens(accessToken, refreshToken ?? '');
 
         // 각 피처별 온보딩 완료 상태 저장 (false=완료, true=미완료)
