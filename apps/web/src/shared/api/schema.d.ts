@@ -104,6 +104,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/auth/kakao/signup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * 카카오 회원가입
+         * @description 임시 토큰을 이용해 카카오 가입을 완료하고 정식 JWT를 발급한다.
+         */
+        post: operations["kakaoSignup"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/auth/kakao/login": {
         parameters: {
             query?: never;
@@ -114,8 +134,8 @@ export interface paths {
         get?: never;
         put?: never;
         /**
-         * 카카오 로그인
-         * @description 프론트에서 받은 카카오 유저 정보를 통해 로그인을 진행하고 JWT 및 유저 정보를 반환한다.
+         * 카카오 로그인/체크
+         * @description 카카오 토큰으로 기존 유저인지 확인한다. 신규 유저면 newUser: true와 임시 토큰을 반환한다.
          */
         post: operations["kakaoLogin"];
         delete?: never;
@@ -292,26 +312,6 @@ export interface paths {
         patch: operations["updateCategory"];
         trace?: never;
     };
-    "/api/alerts/{alertId}/read": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        /**
-         * 알림 개별 읽음 처리
-         * @description 특정 알림을 읽음 상태로 변경합니다.
-         */
-        patch: operations["markAsRead"];
-        trace?: never;
-    };
     "/api/alerts/settings": {
         parameters: {
             query?: never;
@@ -332,6 +332,26 @@ export interface paths {
         patch: operations["updateAlarmStatus"];
         trace?: never;
     };
+    "/api/alerts/read-all": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * 알림 전체 읽음 처리
+         * @description 읽지 않은 모든 알림을 읽음 상태로 변경합니다.
+         */
+        patch: operations["markAllAsRead"];
+        trace?: never;
+    };
     "/api/alerts/fcm-token": {
         parameters: {
             query?: never;
@@ -350,6 +370,26 @@ export interface paths {
          * @description 로그인 직후 기기의 FCM 토큰을 서버에 등록합니다.
          */
         patch: operations["updateFcmToken"];
+        trace?: never;
+    };
+    "/api/weekly-reports/details": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * 주간 리포트 - 회고별 소비 내역 상세 조회
+         * @description 선택한 마음 항목에 해당하는 지출만 필터링한 뒤, 그 안에서 회고별로 소비 상세 내역을 조회합니다.
+         */
+        get: operations["getWeeklyExpenseDetails"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/api/expense/weekly_detail": {
@@ -712,6 +752,37 @@ export interface components {
             /** @enum {string} */
             icon?: "cook" | "coffee" | "credit" | "book" | "beauty" | "beer" | "shopping" | "camera" | "cup";
         };
+        ApiResponseWeeklyExpenseDetailResponse: {
+            isSuccess?: boolean;
+            code?: string;
+            message?: string;
+            result?: components["schemas"]["WeeklyExpenseDetailResponse"];
+        };
+        EvaluationGroupResponse: {
+            /** Format: int32 */
+            stepNumber?: number;
+            evaluationTitle?: string;
+            /** Format: int32 */
+            groupCount?: number;
+            /** Format: int64 */
+            groupTotalAmount?: number;
+            expenses?: components["schemas"]["ExpenseItemResponse"][];
+        };
+        ExpenseItemResponse: {
+            usageHistory?: string;
+            categoryName?: string;
+            /** Format: int64 */
+            amount?: number;
+        };
+        WeeklyExpenseDetailResponse: {
+            weekRange?: string;
+            emotionTitle?: string;
+            /** Format: int32 */
+            totalCount?: number;
+            /** Format: int64 */
+            totalAmount?: number;
+            evaluationGroups?: components["schemas"]["EvaluationGroupResponse"][];
+        };
         ApiResponseWeeklyDetailReportResponse: {
             isSuccess?: boolean;
             code?: string;
@@ -765,10 +836,11 @@ export interface components {
         };
         SummaryRecordResponse: {
             monthlyReport?: components["schemas"]["MonthlyReportSummaryResponse"];
-            weeklyReport?: components["schemas"]["WeeklyReportResponse"];
+            weeklyReports?: components["schemas"]["WeeklyReportResponse"][];
         };
         WeeklyReportResponse: {
             weekRange?: string;
+            weekPeriod?: string;
             /** Format: int64 */
             weeklyTotalAmount?: number;
             topEmotion?: components["schemas"]["EmotionSummary"];
@@ -1007,6 +1079,32 @@ export interface operations {
             };
         };
     };
+    kakaoSignup: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    [key: string]: Record<string, never>;
+                };
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseAuthResponse"];
+                };
+            };
+        };
+    };
     kakaoLogin: {
         parameters: {
             query?: never;
@@ -1016,11 +1114,6 @@ export interface operations {
         };
         requestBody: {
             content: {
-                /**
-                 * @example {
-                 *       "accessToken": ""
-                 *     }
-                 */
                 "application/json": {
                     [key: string]: Record<string, never>;
                 };
@@ -1249,13 +1342,13 @@ export interface operations {
             };
         };
     };
-    markAsRead: {
+    updateAlarmStatus: {
         parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                alertId: number;
+            query: {
+                isAlarmOn: boolean;
             };
+            header?: never;
+            path?: never;
             cookie?: never;
         };
         requestBody?: never;
@@ -1271,11 +1364,9 @@ export interface operations {
             };
         };
     };
-    updateAlarmStatus: {
+    markAllAsRead: {
         parameters: {
-            query: {
-                isAlarmOn: boolean;
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
@@ -1311,6 +1402,31 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ApiResponseString"];
+                };
+            };
+        };
+    };
+    getWeeklyExpenseDetails: {
+        parameters: {
+            query: {
+                start: string;
+                end: string;
+                weekRange: string;
+                emotionType: "기분전환" | "그냥저냥" | "필수템" | "홀린듯이" | "살기위해";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseWeeklyExpenseDetailResponse"];
                 };
             };
         };

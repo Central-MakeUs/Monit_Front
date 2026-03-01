@@ -1,6 +1,7 @@
-import { queryOptions } from '@tanstack/react-query';
+import { queryOptions, mutationOptions } from '@tanstack/react-query';
 import { getNotifications } from '../api/getNotifications';
 import { getAlertUnreadStatus } from '../api/getAlertUnreadStatus';
+import { patchReadAll } from '../api/patchReadAll';
 
 export const notificationQueries = {
   all: ['notification'] as const,
@@ -14,5 +15,9 @@ export const notificationQueries = {
       queryKey: [...notificationQueries.all, 'unreadStatus'],
       queryFn: getAlertUnreadStatus,
       refetchOnWindowFocus: true,
+    }),
+  readAllMutation: () =>
+    mutationOptions({
+      mutationFn: patchReadAll,
     }),
 };
