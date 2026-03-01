@@ -139,23 +139,30 @@ export const rankCountIcon = style({
   color: vars.color.icon.card,
 });
 
+export const rankDotWrapper = style({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  margin: '0.3rem',
+});
+
+const rankDotBase = {
+  width: '1.4rem',
+  height: '1.4rem',
+  borderRadius: vars.radius.full,
+} as const;
+
 export const rankDot = styleVariants({
   0: {
-    width: '1.4rem',
-    height: '1.4rem',
-    borderRadius: vars.radius.full,
+    ...rankDotBase,
     backgroundColor: vars.color.bg.reportSummary.bar.strong,
   },
   1: {
-    width: '1.4rem',
-    height: '1.4rem',
-    borderRadius: vars.radius.full,
+    ...rankDotBase,
     backgroundColor: vars.color.bg.reportSummary.bar.medium,
   },
   2: {
-    width: '1.4rem',
-    height: '1.4rem',
-    borderRadius: vars.radius.full,
+    ...rankDotBase,
     backgroundColor: vars.color.bg.reportSummary.bar.light,
   },
 });

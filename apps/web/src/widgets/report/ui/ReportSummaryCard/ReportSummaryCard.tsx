@@ -67,7 +67,9 @@ export const ReportSummaryCard = ({
                       {row.index}
                     </Text>
                   </div>
-                  <span className={styles.rankDot[row.dotIndex]} />
+                  <div className={styles.rankDotWrapper}>
+                    <div className={styles.rankDot[row.dotIndex]} />
+                  </div>
                   <div className={styles.rankLabelTextWrapper}>
                     <p className={styles.rankLabelText}>{row.label}</p>
                     <IcClear className={styles.rankCountIcon} aria-hidden />

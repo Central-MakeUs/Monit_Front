@@ -21,7 +21,7 @@ type BannerIconState = 'today' | 'success1' | 'success2' | 'success3' | 'success
 const SUCCESS_TITLES: Record<BannerCompletedRating, string> = {
   1: '별로인 소비였어요',
   2: '조금 아쉬운 소비였어요',
-  3: '그냥 그랬던 소비였어요',
+  3: '그냥 그런 소비였어요',
   4: '대체로 만족한 소비였어요',
   5: '정말 만족한 소비였어요',
 };

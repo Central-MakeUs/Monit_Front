@@ -45,4 +45,6 @@ export const iconWrapper = style({
   alignItems: 'center',
   justifyContent: 'center',
   padding: '0.13rem',
+  width: '1.33rem',
+  height: '1.33rem',
 });
