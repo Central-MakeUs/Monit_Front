@@ -1,5 +1,5 @@
 import { keyframes, style } from '@vanilla-extract/css';
-import { zIndex } from '../../config/zIndex';
+import { zIndex } from '../../../config/zIndex';
 
 const fadeIn = keyframes({
   '0%': { opacity: 0 },

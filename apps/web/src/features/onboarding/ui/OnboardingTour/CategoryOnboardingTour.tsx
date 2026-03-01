@@ -2,9 +2,9 @@
 
 import React from 'react';
 import { createPortal } from 'react-dom';
-import { OnboardingOverlay } from '../OnboardingOverlay/OnboardingOverlay';
-import { OnboardingHighlight } from '../OnboardingHighlight/OnboardingHighlight';
-import { OnboardingTooltip } from '../OnboardingTooltip/OnboardingTooltip';
+import { OnboardingOverlay } from '../shared/OnboardingOverlay/OnboardingOverlay';
+import { OnboardingHighlight } from '../shared/OnboardingHighlight/OnboardingHighlight';
+import { OnboardingTooltip } from '../shared/OnboardingTooltip/OnboardingTooltip';
 import { useCategoryOnboardingTour } from '../../lib/useCategoryOnboardingTour';
 
 export function CategoryOnboardingTour(): React.JSX.Element | null {

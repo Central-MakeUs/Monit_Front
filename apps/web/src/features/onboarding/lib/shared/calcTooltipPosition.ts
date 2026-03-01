@@ -1,4 +1,4 @@
-import { OnboardingStep } from '../config/steps';
+import { OnboardingStep } from '../../config/steps.types';
 
 /**
  * 툴팁의 최종 위치 및 스타일 정보를 담는 인터페이스

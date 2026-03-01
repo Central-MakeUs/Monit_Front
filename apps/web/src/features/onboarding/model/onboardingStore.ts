@@ -7,7 +7,6 @@ interface OnboardingState {
   // 홈 온보딩
   homeCompleted: boolean;
   flow: OnboardingFlow;
-  step: number;
 
   // 리뷰/리마인드 온보딩
   remindCompleted: boolean;
@@ -19,8 +18,6 @@ interface OnboardingState {
 
   // 액션
   startTour: () => void;
-  nextStep: () => void;
-  prevStep: () => void;
   endTour: () => void;
 
   startRemindTour: () => void;
@@ -36,7 +33,6 @@ export const useOnboardingStore = create<OnboardingState>()(
     (set) => ({
       homeCompleted: false,
       flow: 'none',
-      step: 0,
 
       remindCompleted: false,
       remindFlow: 'none',
@@ -56,15 +52,7 @@ export const useOnboardingStore = create<OnboardingState>()(
       },
 
       startTour: () => {
-        set({ flow: 'tour', step: 0 });
-      },
-
-      nextStep: () => {
-        set((state) => ({ step: state.step + 1 }));
-      },
-
-      prevStep: () => {
-        set((state) => ({ step: Math.max(0, state.step - 1) }));
+        set({ flow: 'tour' });
       },
 
       endTour: () => {

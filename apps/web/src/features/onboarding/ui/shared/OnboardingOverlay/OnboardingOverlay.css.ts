@@ -1,5 +1,5 @@
 import { style } from '@vanilla-extract/css';
-import { zIndex } from '../../config/zIndex';
+import { zIndex } from '../../../config/zIndex';
 
 export const overlay = style({
   position: 'fixed',
