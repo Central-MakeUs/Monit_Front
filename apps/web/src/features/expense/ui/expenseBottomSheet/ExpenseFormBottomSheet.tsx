@@ -6,7 +6,7 @@ import {
   EditableTextInput,
   InputField,
   TextInput,
-  CategoryIconType,
+  CategoryItem,
   CategoryGrid,
   DateInfoField,
   Text,
@@ -14,14 +14,11 @@ import {
   Badge,
   Divider,
 } from '@/shared/ui';
+import type { EvaluationType } from '@/shared/types/evaluation.types';
+import { getEvaluationLabel } from '@/features/expense/model/evaluationLabel';
 import { EXPENSE_CONSTANTS, EXPENSE_ERROR_MESSAGES } from '@/entities/expense';
 import { IcTrash } from 'public/icons';
 import { formatDate, formatNumberWithComma } from '@/shared/utils';
-export interface Category {
-  id: string;
-  icon: CategoryIconType;
-  label: string;
-}
 
 export interface ExpenseFormBottomSheetProps {
   /** 소비 금액 */
@@ -37,17 +34,19 @@ export interface ExpenseFormBottomSheetProps {
   /** 날짜 선택 클릭 콜백 */
   onDateClick?: () => void;
   /** 카테고리 목록 */
-  categories?: Category[];
+  categories?: CategoryItem[];
   /** 선택된 카테고리 ID */
   selectedCategoryId?: string | null;
   /** 카테고리 선택 시 콜백 */
-  onCategorySelect?: (category: Category) => void;
+  onCategorySelect?: (category: CategoryItem) => void;
   /** 더보기 버튼 클릭 시 콜백 */
   onMoreCategoryClick?: () => void;
   /** 만족도 라벨 */
-  satisfactionLabel?: string; //TODO: 임시
+  satisfactionLabel?: string;
   /** 만족도 이모지 */
-  satisfactionEmoji?: string; //TODO: 임시
+  satisfactionEmoji?: string;
+  /** 만족도 평가 타입 */
+  satisfactionEvaluationType?: EvaluationType;
   /** 삭제 버튼 클릭 시 콜백 */
   onDelete?: () => void;
   /** 선택 버튼 클릭 시 콜백 */
@@ -77,6 +76,7 @@ export const ExpenseFormBottomSheet = ({
   onCategorySelect,
   onMoreCategoryClick,
   satisfactionLabel,
+  satisfactionEvaluationType,
   onDelete,
   onConfirm,
   onClose,
@@ -86,6 +86,9 @@ export const ExpenseFormBottomSheet = ({
   isUsageError,
 }: ExpenseFormBottomSheetProps) => {
   const formattedAmount = amount !== undefined ? formatNumberWithComma(String(amount)) : '';
+  const evaluationLabel = satisfactionEvaluationType
+    ? getEvaluationLabel(satisfactionEvaluationType)
+    : null;
 
   return (
     <BaseBottomSheetTemplate>
@@ -129,14 +132,15 @@ export const ExpenseFormBottomSheet = ({
         onMoreClick={onMoreCategoryClick}
       />
 
-      {/* 훌린듯이 소비 */}
       <div className={styles.badgeContainer}>
         <Text variant='b2' color={vars.color.text.secondary}>
           소비 상황
         </Text>
         <div className={styles.badgeList}>
           <Badge label={satisfactionLabel ?? '감정 누락'} />
-          {/* <Badge label='정말 만족했어요' size='lg' evaluationType='VERY_SATISFIED' /> */}
+          {satisfactionEvaluationType && evaluationLabel && (
+            <Badge label={evaluationLabel} size='sm' evaluationType={satisfactionEvaluationType} />
+          )}
         </div>
       </div>
 

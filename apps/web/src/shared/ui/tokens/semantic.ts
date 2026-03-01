@@ -46,6 +46,7 @@ export const semanticColors = {
     brand: primitiveColors.primary[500],
     onBrand: primitiveColors.gray[0],
     disabled: primitiveColors.gray[400],
+    card: primitiveColors.gray[600],
   },
   bg: {
     base: primitiveColors.gray[50],
@@ -82,17 +83,29 @@ export const semanticColors = {
     },
     disable: primitiveColors.gray[100],
     accent: {
+      red: {
+        default: primitiveColors.red[400],
+        subtle: primitiveColors.red[50],
+      },
       blue: {
         default: primitiveColors.blue[300],
-        subtle: primitiveColors.blue[200],
+        subtle: primitiveColors.blue[100],
       },
       green: {
         default: primitiveColors.green[300],
-        subtle: primitiveColors.green[100],
+        subtle: primitiveColors.green[50],
       },
       yellow: {
         default: primitiveColors.yellow[300],
         subtle: primitiveColors.yellow[50],
+      },
+    },
+    reportSummary: {
+      bar: {
+        strong: primitiveColors.primary[600],
+        medium: primitiveColors.primary[400],
+        light: primitiveColors.primary[200],
+        subtle: primitiveColors.primary[50],
       },
     },
     status: {

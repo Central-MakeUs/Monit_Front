@@ -15,6 +15,7 @@ export default function HomePage(): React.JSX.Element {
     <>
       <Home
         onSettingsClick={() => router.push(ROUTES.MY)}
+        onNotificationClick={() => router.push(ROUTES.NOTIFICATIONS)}
         renderWeeklyCalendar={(props) => <WeeklyCalendar {...props} />}
         renderMonthlyCalendar={({ renderDateText, ...props }) => (
           <MonthlyCalendar

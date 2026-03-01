@@ -1,23 +1,29 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useShallow } from 'zustand/react/shallow';
 import { DatePickerFeature } from '@/features/datePickerModal';
 import { useClientOnly, useModal } from '@/shared/hooks';
 import { ExpenseEditBottomSheet } from '@/features/expense';
-import { useHomeExpenseData } from '@/features/homeExpenseData';
+import { useDateStore } from '@/entities/date';
+import { useExpenseSummaryData } from '@/features/expense-summary';
+import { useRetrospectBannerProps } from '@/features/retrospectBanner';
 import { type ExpenseListDTO } from '@/entities/expense';
 import type { WeeklyCalendarSlotProps, MonthlyCalendarSlotProps } from '../model/types';
 import { useHomeStore } from '../model/useHomeStore';
 import { HomeHeader } from './HomeHeader';
-import { MonthlyExpenseInfo } from './MonthlyExpenseInfo';
+import { MonthlyExpenseHeader } from './MonthlyExpenseHeader';
 import { CalendarSection } from './CalendarSection';
 import { ExpenseContent } from './ExpenseContent';
 import * as styles from './Home.css';
 import { expenseEditNavigation } from '@/features/expense/lib/expenseEditNavigation';
+import { Banner } from '@/shared/ui/banner';
+import { ROUTES } from '@/shared/constants/routes';
 
 export interface HomeProps {
   onSettingsClick: () => void;
+  onNotificationClick: () => void;
   /** 주간 캘린더 렌더 슬롯 (page에서 widgets/calendar를 주입) */
   renderWeeklyCalendar: (props: WeeklyCalendarSlotProps) => React.ReactNode;
   /** 월간 캘린더 렌더 슬롯 (page에서 widgets/calendar를 주입) */
@@ -26,45 +32,55 @@ export interface HomeProps {
 
 export const Home = ({
   onSettingsClick,
+  onNotificationClick,
   renderWeeklyCalendar,
   renderMonthlyCalendar,
 }: HomeProps) => {
+  const router = useRouter();
   const isMounted = useClientOnly();
   const { isOpen, openModal, closeModal } = useModal();
   const [selectedExpense, setSelectedExpense] = useState<ExpenseListDTO | null>(null);
 
-  const {
-    currentDate,
-    selectedDate,
-    viewMode,
-    setCurrentDate,
-    setSelectedDate,
-    setViewMode,
-    setDateFromPicker,
-  } = useHomeStore(
-    useShallow((state) => ({
-      currentDate: state.currentDate,
-      selectedDate: state.selectedDate,
-      viewMode: state.viewMode,
-      setCurrentDate: state.setCurrentDate,
-      setSelectedDate: state.setSelectedDate,
-      setViewMode: state.setViewMode,
-      setDateFromPicker: state.setDateFromPicker,
-    }))
+  const { currentDate, selectedDate, setCurrentDate, setSelectedDate, setDateFromPicker } =
+    useDateStore(
+      useShallow((state) => ({
+        currentDate: state.currentDate,
+        selectedDate: state.selectedDate,
+        setCurrentDate: state.setCurrentDate,
+        setSelectedDate: state.setSelectedDate,
+        setDateFromPicker: state.setDateFromPicker,
+      }))
+    );
+
+  const { viewMode, setViewMode } = useHomeStore(
+    useShallow((state) => ({ viewMode: state.viewMode, setViewMode: state.setViewMode }))
   );
 
-  // Features 레이어: calendar API로 월별 금액(currentDate 기준), daily API로 일별 내역(selectedDate 기준)
   const {
     monthlyTotalAmount,
     expenses,
+    hasExpenses,
     expenseCount,
     dailyTotalAmount,
     emptyStateType,
     isLoading,
     isFetching,
-  } = useHomeExpenseData(selectedDate, currentDate);
+    bannerMessage,
+    bannerSubMessage,
+    retrospectCompleted,
+    dailyDate,
+  } = useExpenseSummaryData({ monthDate: currentDate, dayDate: selectedDate });
 
-  // 달력에서 달이 바뀌면 보이는 달 = 선택한 달로 맞춰서, useHomeExpenseData의 “선택한 날짜 달 변경” 리페치가 바로 동작하도록 함
+  const bannerProps = useRetrospectBannerProps({
+    selectedDate,
+    dailyDate: dailyDate ?? undefined,
+    hasExpenses,
+    retrospectCompleted,
+    bannerMessage,
+    bannerSubMessage,
+  });
+
+  // 달력에서 달이 바뀌면 보이는 달 = 선택한 달로 맞춰서, useExpenseSummaryData의 “선택한 날짜 달 변경” 리페치가 바로 동작하도록 함
   useEffect(() => {
     const targetId = expenseEditNavigation.consumeTargetExpenseId();
     if (!targetId) return;
@@ -85,6 +101,11 @@ export const Home = ({
     return null;
   }
 
+  const handleClickReview = () => {
+    if (!selectedDate) return;
+    const dateString = selectedDate.toLocaleDateString('en-CA');
+    router.push(ROUTES.REVIEW(dateString));
+  };
   return (
     <div className={styles.container}>
       <DatePickerFeature currentDate={currentDate} onDateConfirm={setDateFromPicker}>
@@ -93,12 +114,13 @@ export const Home = ({
             currentDate={currentDate}
             onDateButtonClick={onOpen}
             onSettingsClick={onSettingsClick}
+            onNotificationClick={onNotificationClick}
           />
         )}
       </DatePickerFeature>
 
       <div className={styles.content}>
-        <MonthlyExpenseInfo
+        <MonthlyExpenseHeader
           viewMode={viewMode}
           onViewModeChange={setViewMode}
           monthlyTotalAmount={monthlyTotalAmount}
@@ -115,7 +137,7 @@ export const Home = ({
           renderWeeklyCalendar={renderWeeklyCalendar}
           renderMonthlyCalendar={renderMonthlyCalendar}
         />
-
+        <Banner {...bannerProps} onClickReview={handleClickReview} data-onboarding-id='banner' />
         <ExpenseContent
           hasExpenses={expenses.length > 0}
           emptyStateType={emptyStateType}

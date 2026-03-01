@@ -2,24 +2,28 @@
 
 import React, { useState } from 'react';
 import * as styles from './Agreement.css';
-import { Button, Text, vars } from '@/shared/ui';
+import { Button, Text, vars, useToast } from '@/shared/ui';
 import { SelectionTile } from '@/shared/ui/selectionTile/SelectionTile';
 import { EXTERNAL_URLS } from '@/shared/constants/urls';
-import { useRouter } from 'next/navigation';
-import { useMutation } from '@tanstack/react-query';
-import { authQueries } from '../../model/authQueries';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useBridge, useNativeAuth } from '@/shared/lib/bridge';
+import { getPlatform } from '@/shared/utils';
 
 export const Agreement = () => {
   const route = useRouter();
+  const searchParams = useSearchParams();
+  const registerToken = searchParams.get('registerToken') ?? '';
+  const provider = searchParams.get('provider') ?? 'apple';
+  const bridge = useBridge();
+  const platform = getPlatform();
+  const toast = useToast();
+  const { syncNativeToken } = useNativeAuth();
+
   const [termsOfService, setTermsOfService] = useState(false);
   const [privacyPolicy, setPrivacyPolicy] = useState(false);
+  const [isPending, setIsPending] = useState(false);
 
   const allAgreed = termsOfService && privacyPolicy;
-
-  const { mutate: agreeTerms, isPending } = useMutation({
-    ...authQueries.termsMutation(),
-    onSuccess: () => route.push('/'),
-  });
 
   const toggleTermsOfService = () => setTermsOfService((prev) => !prev);
   const togglePrivacyPolicy = () => setPrivacyPolicy((prev) => !prev);
@@ -30,8 +34,29 @@ export const Agreement = () => {
     setPrivacyPolicy(next);
   };
 
-  const handleNext = () => {
-    agreeTerms();
+  const handleNext = async () => {
+    if (!bridge || (platform !== 'ios' && platform !== 'android')) return;
+    if (!registerToken) {
+      toast.attention('잘못된 접근입니다. 로그인부터 다시 시도해 주세요.');
+      return;
+    }
+    setIsPending(true);
+    try {
+      const result =
+        provider === 'kakao'
+          ? await bridge.kakaoSignup(registerToken)
+          : await bridge.appleSignup(registerToken);
+      if (!result.success) {
+        toast.attention('회원가입에 실패했습니다. 다시 시도해 주세요.');
+        return;
+      }
+      await syncNativeToken();
+      route.push('/');
+    } catch {
+      toast.attention('회원가입에 실패했습니다. 다시 시도해 주세요.');
+    } finally {
+      setIsPending(false);
+    }
   };
 
   return (

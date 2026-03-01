@@ -4,7 +4,6 @@ export const ENDPOINT = {
     KAKAO_LOGIN: 'api/auth/kakao/login',
     REISSUE: 'api/auth/reissue',
     WITHDRAW: 'api/auth/withdraw',
-    TERMS: 'api/auth/terms',
   },
   // Expense
   EXPENSE: {
@@ -27,4 +26,14 @@ export const ENDPOINT = {
     CATEGORY_UPDATE: 'api/expense/category_update/{categoryId}',
   },
   INQUIRY: { INQUIRY_SEND: 'api/inquiry/send' },
+  ONBOARDING: {
+    REMIND: 'api/onboarding/remind',
+    HOME: 'api/onboarding/home',
+    CATEGORY: 'api/onboarding/category',
+  },
+  ALERT: {
+    ALERT_LIST: 'api/alerts',
+    ALERT_UNREAD_STATUS: 'api/alerts/unread-status',
+    ALERT_READ_ALL: 'api/alerts/read-all',
+  },
 } as const;

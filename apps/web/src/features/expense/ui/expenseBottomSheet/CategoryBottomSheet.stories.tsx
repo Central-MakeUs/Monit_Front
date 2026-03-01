@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 import { useState } from 'react';
 import { BottomSheet } from '@/shared/ui/bottomSheet';
-import { Button } from '@/shared/ui';
-import { CategoryBottomSheetTemplate, Category } from './CategoryBottomSheet';
+import { Button, CategoryItem } from '@/shared/ui';
+import { CategoryBottomSheetTemplate } from './CategoryBottomSheet';
 import { useModal } from '@/shared/hooks';
 import { getFigmaUrl } from '@/shared/config/figma';
 
@@ -84,7 +84,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const mockCategories: Category[] = [
+const mockCategories: CategoryItem[] = [
   { id: '1', icon: 'shopping', label: '간식' },
   { id: '2', icon: 'coin', label: '자기계발비' },
   { id: '3', icon: 'percent', label: '할인' },

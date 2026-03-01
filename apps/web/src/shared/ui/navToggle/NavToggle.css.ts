@@ -6,10 +6,6 @@ export const indicatorXVar = createVar();
 export const indicatorWVar = createVar();
 
 export const container = style({
-  // 1차 배포에선 숨김 처리
-  opacity: 0,
-  pointerEvents: 'none',
-
   display: 'inline-flex',
   alignItems: 'center',
   padding: vars.spacing.xs2,
@@ -18,6 +14,10 @@ export const container = style({
   border: `0.6px solid ${vars.color.bg.neutral}`,
   boxShadow: vars.shadow.shadow1,
   position: 'relative',
+
+  // 2차 배포에선 숨김 처리
+  opacity: 0,
+  pointerEvents: 'none',
 });
 
 export const itemsRow = style({

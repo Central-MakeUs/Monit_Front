@@ -17,7 +17,7 @@ const meta: Meta<typeof Button> = {
     onClick: { action: 'clicked' },
     variant: {
       control: 'select',
-      options: ['primary', 'secondary', 'brand', 'subtle'],
+      options: ['primary', 'secondary', 'brand', 'white'],
       description: '버튼의 스타일 타입',
       table: {
         defaultValue: { summary: 'primary' },
@@ -152,6 +152,31 @@ export const BrandLarge: Story = {
   },
 };
 
+// White Variants (흰색 배경 + 보더)
+export const WhiteSmall: Story = {
+  args: {
+    children: '리포트 보러가기',
+    variant: 'white',
+    size: 'sm',
+  },
+};
+
+export const WhiteMedium: Story = {
+  args: {
+    children: 'Button',
+    variant: 'white',
+    size: 'md',
+  },
+};
+
+export const WhiteLarge: Story = {
+  args: {
+    children: 'Button',
+    variant: 'white',
+    size: 'lg',
+  },
+};
+
 export const AllVariants: Story = {
   args: {
     children: 'Button',
@@ -211,6 +236,23 @@ export const AllVariants: Story = {
 
       <div>
         <h3 style={{ marginBottom: '12px', fontSize: '14px', fontWeight: 600, color: '#666' }}>
+          White
+        </h3>
+        <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+          <Button variant='white' size='sm'>
+            Small
+          </Button>
+          <Button variant='white' size='md'>
+            Medium
+          </Button>
+          <Button variant='white' size='lg'>
+            Large
+          </Button>
+        </div>
+      </div>
+
+      <div>
+        <h3 style={{ marginBottom: '12px', fontSize: '14px', fontWeight: 600, color: '#666' }}>
           Disabled
         </h3>
         <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
@@ -234,16 +276,71 @@ export const SizeComparison: Story = {
     children: 'Button',
   },
   render: () => (
-    <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-      <Button variant='primary' size='sm'>
-        Small
-      </Button>
-      <Button variant='primary' size='md'>
-        Medium
-      </Button>
-      <Button variant='primary' size='lg'>
-        Large
-      </Button>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+      <div>
+        <h3 style={{ marginBottom: '12px', fontSize: '14px', fontWeight: 600, color: '#666' }}>
+          Primary
+        </h3>
+        <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+          <Button variant='primary' size='sm'>
+            Small
+          </Button>
+          <Button variant='primary' size='md'>
+            Medium
+          </Button>
+          <Button variant='primary' size='lg'>
+            Large
+          </Button>
+        </div>
+      </div>
+      <div>
+        <h3 style={{ marginBottom: '12px', fontSize: '14px', fontWeight: 600, color: '#666' }}>
+          Secondary
+        </h3>
+        <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+          <Button variant='secondary' size='sm'>
+            Small
+          </Button>
+          <Button variant='secondary' size='md'>
+            Medium
+          </Button>
+          <Button variant='secondary' size='lg'>
+            Large
+          </Button>
+        </div>
+      </div>
+      <div>
+        <h3 style={{ marginBottom: '12px', fontSize: '14px', fontWeight: 600, color: '#666' }}>
+          Brand
+        </h3>
+        <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+          <Button variant='brand' size='sm'>
+            Small
+          </Button>
+          <Button variant='brand' size='md'>
+            Medium
+          </Button>
+          <Button variant='brand' size='lg'>
+            Large
+          </Button>
+        </div>
+      </div>
+      <div>
+        <h3 style={{ marginBottom: '12px', fontSize: '14px', fontWeight: 600, color: '#666' }}>
+          White
+        </h3>
+        <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+          <Button variant='white' size='sm'>
+            Small
+          </Button>
+          <Button variant='white' size='md'>
+            Medium
+          </Button>
+          <Button variant='white' size='lg'>
+            Large
+          </Button>
+        </div>
+      </div>
     </div>
   ),
 };
@@ -273,6 +370,9 @@ export const FullWidth: Story = {
         </Button>
         <Button variant='brand' size='md'>
           Brand Button
+        </Button>
+        <Button variant='white' size='md'>
+          White Button
         </Button>
         <Button variant='primary' size='md' disabled>
           Disabled Button

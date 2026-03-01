@@ -20,5 +20,5 @@ export const icon = style({
   width: '1.65rem',
   height: '1.725rem',
   display: 'block',
-  color: primitiveColors.gray[600],
+  color: primitiveColors.gray[700],
 });

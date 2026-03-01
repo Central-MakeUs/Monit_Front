@@ -227,6 +227,7 @@ export const ExpenseEditBottomSheet = ({
         onDateClick={() => setIsCalendarOpen(true)}
         onMoreCategoryClick={() => setIsCategorySheetOpen(true)}
         satisfactionLabel={expense?.emotionType ?? '감정 누락'}
+        satisfactionEvaluationType={expense?.evaluationType}
         confirmDisabled={
           amount <= 0 || !usage || usage.trim().length === 0 || !!amountError || isUsageInvalid
         }

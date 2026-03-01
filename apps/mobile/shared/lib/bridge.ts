@@ -2,6 +2,8 @@ import { bridge, createWebView } from '@webview-bridge/react-native';
 import { login, logout } from '@react-native-kakao/user';
 import { canOpenURL, openURL } from 'expo-linking';
 import { postKakaoLogin } from '@/apis/postKakaoLogin';
+import { postKakaoSignup } from '@/apis/postKakaoSignup';
+import { postAppleSignup } from '@/apis/postAppleSignup';
 import { postReissue } from '@/apis/postReissue';
 import { authStorage } from './authStorage';
 import { useAppleLogin } from '@/social/useAppleLogin';
@@ -23,22 +25,54 @@ export const appBridge = bridge({
         const kakaoResult = await login();
         const result = await postKakaoLogin({ accessToken: kakaoResult.accessToken });
 
+        const {
+          isNewUser,
+          hasExpense,
+          registerToken,
+          homeOnboarding,
+          categoryOnboarding,
+          remindOnboarding,
+        } = result.data ?? {};
+
+        // 신규 사용자: 임시 토큰(registerToken) 반환 → 약관 동의 후 웹에서 kakaoSignup(registerToken) 호출
+        if (isNewUser === true) {
+          return {
+            success: true,
+            data: {
+              accessToken: '',
+              refreshToken: '',
+              isNewUser: true,
+              hasExpense: false,
+              registerToken: registerToken ?? '',
+              homeOnboarding: homeOnboarding ?? true,
+              categoryOnboarding: categoryOnboarding ?? true,
+              remindOnboarding: remindOnboarding ?? true,
+            },
+          };
+        }
+
         if (!result.data?.accessToken) {
           throw new Error('백엔드 응답에 accessToken이 없습니다.');
         }
 
         const { accessToken, refreshToken } = result.data;
         await authStorage.setTokens(accessToken, refreshToken ?? '');
-        const { isNewUser, hasExpense, isTermsAgreed } = result.data;
+
+        // 각 피처별 온보딩 완료 상태 저장 (false=완료, true=미완료)
+        if (!homeOnboarding) await onboardingStorage.completeOnboarding('home');
+        if (!categoryOnboarding) await onboardingStorage.completeOnboarding('category');
+        if (!remindOnboarding) await onboardingStorage.completeOnboarding('remind');
 
         return {
           success: true,
           data: {
             accessToken,
             refreshToken: refreshToken ?? '',
-            isNewUser,
-            hasExpense,
-            isTermsAgreed,
+            isNewUser: isNewUser ?? false,
+            hasExpense: hasExpense ?? false,
+            homeOnboarding: homeOnboarding ?? true,
+            categoryOnboarding: categoryOnboarding ?? true,
+            remindOnboarding: remindOnboarding ?? true,
           },
         };
       } else if (type === 'apple') {
@@ -48,14 +82,24 @@ export const appBridge = bridge({
           throw new Error('애플 로그인 응답에 accessToken이 없습니다.');
         }
 
-        const { accessToken, refreshToken } = result.data;
-        const { isNewUser, hasExpense, isTermsAgreed } = result.data;
+        const {
+          accessToken,
+          refreshToken,
+          isNewUser,
+          hasExpense,
+          homeOnboarding,
+          categoryOnboarding,
+          remindOnboarding,
+        } = result.data;
 
-        await authStorage.setTokens(accessToken, refreshToken || '');
+        // 기존 사용자만 토큰 저장 (신규 사용자는 약관 동의 완료 후 appleSignup에서 저장)
+        if (isNewUser === false) {
+          await authStorage.setTokens(accessToken, refreshToken || '');
 
-        // 지출이 있을 경우 온보딩 완료 저장
-        if (hasExpense) {
-          await onboardingStorage.completeOnboarding();
+          // 각 피처별 온보딩 완료 상태 저장 (false=완료, true=미완료)
+          if (!homeOnboarding) await onboardingStorage.completeOnboarding('home');
+          if (!categoryOnboarding) await onboardingStorage.completeOnboarding('category');
+          if (!remindOnboarding) await onboardingStorage.completeOnboarding('remind');
         }
 
         return {
@@ -65,7 +109,9 @@ export const appBridge = bridge({
             refreshToken: refreshToken || '',
             isNewUser,
             hasExpense,
-            isTermsAgreed,
+            homeOnboarding,
+            categoryOnboarding,
+            remindOnboarding,
           },
         };
       }
@@ -78,6 +124,96 @@ export const appBridge = bridge({
       return {
         success: false,
         message: error instanceof Error ? error.message : '로그인에 실패했습니다.',
+      };
+    }
+  },
+
+  /**
+   * Apple 신규 사용자 회원가입
+   * 약관 동의 후 웹에서 호출 → 네이티브가 signup API 호출 → 최종 토큰 SecureStore 저장
+   */
+  async appleSignup(registerToken: string): Promise<ApiResponse<LoginData>> {
+    try {
+      const result = await postAppleSignup({ registerToken });
+
+      if (!result.data?.accessToken) {
+        throw new Error('서버 응답에 accessToken이 없습니다.');
+      }
+
+      const {
+        accessToken,
+        refreshToken,
+        isNewUser,
+        hasExpense,
+        homeOnboarding,
+        categoryOnboarding,
+        remindOnboarding,
+      } = result.data;
+      await authStorage.setTokens(accessToken, refreshToken || '');
+
+      // 각 피처별 온보딩 완료 상태 저장 (false=완료, true=미완료)
+      if (!homeOnboarding) await onboardingStorage.completeOnboarding('home');
+      if (!categoryOnboarding) await onboardingStorage.completeOnboarding('category');
+      if (!remindOnboarding) await onboardingStorage.completeOnboarding('remind');
+
+      return {
+        success: true,
+        data: {
+          accessToken,
+          refreshToken: refreshToken || '',
+          isNewUser,
+          hasExpense,
+          homeOnboarding,
+          categoryOnboarding,
+          remindOnboarding,
+        },
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: error instanceof Error ? error.message : '회원가입에 실패했습니다.',
+      };
+    }
+  },
+
+  /**
+   * 카카오 신규 사용자 회원가입
+   * 약관 동의 후 웹에서 호출 → 네이티브가 임시 토큰으로 /api/auth/kakao/signup 호출 → 정식 JWT 저장
+   */
+  async kakaoSignup(registerToken: string): Promise<ApiResponse<LoginData>> {
+    try {
+      const result = await postKakaoSignup({ registerToken });
+
+      if (!result.data?.accessToken) {
+        throw new Error('서버 응답에 accessToken이 없습니다.');
+      }
+
+      const { accessToken, refreshToken } = result.data;
+      await authStorage.setTokens(accessToken, refreshToken ?? '');
+      const { isNewUser, hasExpense, homeOnboarding, categoryOnboarding, remindOnboarding } =
+        result.data;
+
+      // 각 피처별 온보딩 완료 상태 저장 (false=완료, true=미완료)
+      if (!homeOnboarding) await onboardingStorage.completeOnboarding('home');
+      if (!categoryOnboarding) await onboardingStorage.completeOnboarding('category');
+      if (!remindOnboarding) await onboardingStorage.completeOnboarding('remind');
+
+      return {
+        success: true,
+        data: {
+          accessToken,
+          refreshToken: refreshToken ?? '',
+          isNewUser,
+          hasExpense,
+          homeOnboarding,
+          categoryOnboarding,
+          remindOnboarding,
+        },
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: error instanceof Error ? error.message : '회원가입에 실패했습니다.',
       };
     }
   },
@@ -126,6 +262,12 @@ export const appBridge = bridge({
       // 애플 로그인 사용자는 카카오 세션이 없어 실패할 수 있음 → 무시하고 토큰만 삭제
     }
     await authStorage.clearTokens();
+    await onboardingStorage.clearOnboardingStatus();
+  },
+
+  async requestWithdraw(): Promise<void> {
+    await authStorage.clearTokens();
+    await onboardingStorage.clearOnboardingStatus();
   },
 
   /**
@@ -144,14 +286,14 @@ export const appBridge = bridge({
   },
 
   /**
-   * 온보딩 완료
+   * 피처별 온보딩 완료 저장
    */
-  completeOnboarding: async () => {
-    await onboardingStorage.completeOnboarding();
+  completeOnboarding: async (type: 'home' | 'remind' | 'category') => {
+    await onboardingStorage.completeOnboarding(type);
   },
 
   /**
-   * 온보딩 완료
+   * 온보딩 상태 확인 (피처별)
    */
   onboardingStatus: async () => {
     return await onboardingStorage.onboardingStatus();

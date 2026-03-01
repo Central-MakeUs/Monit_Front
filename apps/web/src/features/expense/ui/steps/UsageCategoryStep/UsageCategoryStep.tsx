@@ -8,8 +8,9 @@ import {
   CategoryGrid,
   BottomFixedArea,
   BottomSheet,
+  type CategoryItem,
 } from '@/shared/ui';
-import { CategoryBottomSheetTemplate, type Category } from '../../expenseBottomSheet';
+import { CategoryBottomSheetTemplate } from '../../expenseBottomSheet';
 import * as styles from './UsageCategoryStep.css';
 import { useModal } from '@/shared/hooks';
 import { useExpenseFormStore } from '@/widgets/expenseRecordFunnel/model/store';
@@ -37,8 +38,8 @@ export const UsageCategoryStep = ({
   const { data: categoryResponse } = useQuery(categoryQueries.listQuery());
   const categories = useMemo(() => categoryResponse?.result ?? [], [categoryResponse?.result]);
 
-  // store 데이터를 Category 타입으로 변환
-  const categoryOptions = useMemo<Category[]>(
+  // store 데이터를 CategoryItem 타입으로 변환
+  const categoryOptions = useMemo<CategoryItem[]>(
     () =>
       categories.map((c) => ({
         id: String(c.id),
@@ -49,14 +50,14 @@ export const UsageCategoryStep = ({
   );
 
   const [usageHistory, setUsageHistory] = useState<string>(defaultUsageHistory ?? '');
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
+  const [selectedCategory, setSelectedCategory] = useState<CategoryItem | null>(
     defaultCategoryId != null
       ? (categoryOptions.find((c) => c.id === String(defaultCategoryId)) ?? null)
       : null
   );
-  const [tempCategory, setTempCategory] = useState<Category | null>(null);
+  const [tempCategory, setTempCategory] = useState<CategoryItem | null>(null);
   // 바텀시트에서 확인된 카테고리 (그리드 선택과 구분하기 위한 상태)
-  const [confirmedCategory, setConfirmedCategory] = useState<Category | null>(null);
+  const [confirmedCategory, setConfirmedCategory] = useState<CategoryItem | null>(null);
 
   const hasValidationError = usageHistory !== '' && !VALID_NAME_REGEX.test(usageHistory);
   const isValid = usageHistory.trim() !== '' && !hasValidationError && selectedCategory !== null;
@@ -95,7 +96,7 @@ export const UsageCategoryStep = ({
   }, [categoryOptions, selectedCategory]);
 
   // 홈에 고정 노출되는 카테고리
-  const pinnedCategories = useMemo<Category[]>(() => {
+  const pinnedCategories = useMemo<CategoryItem[]>(() => {
     const top7 = categoryOptions.slice(0, 7);
     if (!confirmedCategory) return top7;
     // confirmedCategory가 이미 top7에 있으면 맨 앞으로

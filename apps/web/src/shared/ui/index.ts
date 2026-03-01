@@ -52,6 +52,7 @@ export { PageIndicator } from './pageIndicator';
 export type { PageIndicatorProps } from './pageIndicator';
 
 export { CategoryGrid } from './categoryGrid';
+export type { CategoryItem } from './categoryGrid';
 
 export { DateInfoField } from './dateInfoField';
 
@@ -67,3 +68,9 @@ export { Tooltip } from './tooltip/Tooltip';
 export type { TooltipProps } from './tooltip/Tooltip';
 
 export { SelectionTile } from './selectionTile';
+
+export { Card } from './card';
+export type { CardProps } from './card';
+
+export { NotificationCard } from './notificationCard';
+export type { NotificationCardProps } from './notificationCard';

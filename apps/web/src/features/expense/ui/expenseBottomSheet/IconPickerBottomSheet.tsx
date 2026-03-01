@@ -1,21 +1,14 @@
 import React from 'react';
 import * as styles from './CategoryBottomSheet.css';
-import { BaseBottomSheetTemplate, CategoryBtn, CategoryIconType } from '@/shared/ui';
-
-// TODO: 타입 수정
-export interface Category {
-  id: string;
-  icon: CategoryIconType;
-  label: string;
-}
+import { BaseBottomSheetTemplate, CategoryBtn, CategoryItem } from '@/shared/ui';
 
 export interface IconPickerBottomSheetTemplateProps {
   /** 아이콘 목록 */
-  categories: Category[];
+  categories: CategoryItem[];
   /** 선택된 아이콘 ID */
   selectedId?: string | null;
   /** 아이콘 선택 시 콜백 */
-  onSelect?: (category: Category) => void;
+  onSelect?: (category: CategoryItem) => void;
   /** 선택 버튼 클릭 시 콜백 */
   onConfirm?: () => void;
   /** X 버튼 클릭 시 콜백 */

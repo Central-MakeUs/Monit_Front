@@ -9,10 +9,11 @@ import { WEBVIEW_URL } from '@/shared/constants/url';
 import { initializeKakaoSDK } from '@react-native-kakao/core';
 import Constants from 'expo-constants';
 import type { WebViewNavigation } from 'react-native-webview';
+import CustomSplashScreen from '@/components/SplashScreen';
 
 // URL별 배경색 매핑
 const getBackgroundColorForUrl = (url: string): string => {
-  if (url.includes('/login') || url.includes('/auth/agreement')) {
+  if (url.includes('/auth/agreement') || url.includes('/notifications')) {
     return '#FFFFFF';
   } else {
     return '#F6F7F9';
@@ -38,6 +39,7 @@ export default function HomeScreen() {
   const webViewRef = useRef<WebViewType>(null);
   const [initialUrl] = useState<string>(WEBVIEW_URL || '');
   const [currentBackgroundColor, setCurrentBackgroundColor] = useState<string>('#F6F7F9');
+  const [isSplashVisible, setIsSplashVisible] = useState(true);
 
   // 초기 배경색 설정
   useEffect(() => {
@@ -55,48 +57,43 @@ export default function HomeScreen() {
     [currentBackgroundColor]
   );
 
-  // WebView 로드 완료 시 스플래시 화면 숨기기
-  const handleWebViewLoad = useCallback(() => {
-    SplashScreen.hideAsync();
-  }, []);
-
-  if (!initialUrl) {
-    return (
-      <View style={[styles.loadingContainer, { backgroundColor: currentBackgroundColor }]}>
-        <ActivityIndicator size='large' color='#007AFF' />
-      </View>
-    );
-  }
-
   return (
-    <SafeAreaProvider>
-      <SafeAreaView style={[styles.container, { backgroundColor: currentBackgroundColor }]}>
-        <WebView
-          ref={webViewRef}
-          source={{ uri: initialUrl }}
-          style={[styles.webview, { backgroundColor: currentBackgroundColor }]}
-          webviewDebuggingEnabled
-          domStorageEnabled={true}
-          // 모든 URL 허용
-          originWhitelist={['*']}
-          // JavaScript 활성화
-          javaScriptEnabled={true}
-          // 이벤트 핸들러
-          onLoad={handleWebViewLoad}
-          onNavigationStateChange={handleNavigationStateChange}
-          allowsInlineMediaPlayback={true}
-          mediaPlaybackRequiresUserAction={false}
-          // Android 설정
-          allowFileAccess={true}
-          mixedContentMode='always'
-          allowUniversalAccessFromFileURLs={true}
-          allowFileAccessFromFileURLs={true}
-          // 스크롤 설정
-          scrollEnabled={true}
-          bounces={Platform.OS === 'ios'}
-        />
-      </SafeAreaView>
-    </SafeAreaProvider>
+    <>
+      {isSplashVisible && <CustomSplashScreen onFinish={() => setIsSplashVisible(false)} />}
+      <SafeAreaProvider>
+        <SafeAreaView style={[styles.container, { backgroundColor: currentBackgroundColor }]}>
+          {!initialUrl ? (
+            <View style={[styles.loadingContainer, { backgroundColor: currentBackgroundColor }]}>
+              <ActivityIndicator size='large' color='#007AFF' />
+            </View>
+          ) : (
+            <WebView
+              ref={webViewRef}
+              source={{ uri: initialUrl }}
+              style={[styles.webview, { backgroundColor: currentBackgroundColor }]}
+              webviewDebuggingEnabled
+              domStorageEnabled={true}
+              // 모든 URL 허용
+              originWhitelist={['*']}
+              // JavaScript 활성화
+              javaScriptEnabled={true}
+              // 이벤트 핸들러
+              onNavigationStateChange={handleNavigationStateChange}
+              allowsInlineMediaPlayback={true}
+              mediaPlaybackRequiresUserAction={false}
+              // Android 설정
+              allowFileAccess={true}
+              mixedContentMode='always'
+              allowUniversalAccessFromFileURLs={true}
+              allowFileAccessFromFileURLs={true}
+              // 스크롤 설정
+              scrollEnabled={true}
+              bounces={Platform.OS === 'ios'}
+            />
+          )}
+        </SafeAreaView>
+      </SafeAreaProvider>
+    </>
   );
 }
 

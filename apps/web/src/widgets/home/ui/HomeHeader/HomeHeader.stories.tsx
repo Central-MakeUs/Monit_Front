@@ -11,10 +11,12 @@ const meta = {
   argTypes: {
     onDateButtonClick: { action: 'dateButtonClicked' },
     onSettingsClick: { action: 'settingsClicked' },
+    onNotificationClick: { action: 'notificationClicked' },
   },
   args: {
     onDateButtonClick: () => {},
     onSettingsClick: () => {},
+    onNotificationClick: () => {},
   },
 } satisfies Meta<typeof HomeHeader>;
 

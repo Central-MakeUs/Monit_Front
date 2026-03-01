@@ -20,24 +20,17 @@ export const slide = style({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
-  gap: '32px',
-  paddingTop: '80px',
+  gap: '0.8rem',
 });
 
 export const textWrapper = style({
   display: 'flex',
   flexDirection: 'column',
-  gap: '12px',
+  gap: '1.4rem',
   textAlign: 'center',
-  paddingInline: '20px',
-});
-
-export const onboardingImage = style({
-  objectFit: 'contain',
 });
 
 export const indicatorWrapper = style({
   display: 'flex',
   justifyContent: 'center',
-  paddingBlock: '24px',
 });

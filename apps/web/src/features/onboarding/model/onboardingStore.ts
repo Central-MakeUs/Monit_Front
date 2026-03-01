@@ -4,48 +4,71 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 type OnboardingFlow = 'none' | 'welcome' | 'tour';
 
 interface OnboardingState {
-  isOnboardingCompleted: boolean;
+  // 홈 온보딩
+  homeCompleted: boolean;
   flow: OnboardingFlow;
-  step: number;
+
+  // 리뷰/리마인드 온보딩
+  remindCompleted: boolean;
+  remindFlow: OnboardingFlow;
+
+  // 카테고리 온보딩
+  categoryCompleted: boolean;
+  categoryFlow: OnboardingFlow;
 
   // 액션
   startTour: () => void;
-  nextStep: () => void;
-  prevStep: () => void;
   endTour: () => void;
-  hydrateFromServer: (completed: boolean) => void;
+
+  startRemindTour: () => void;
+  endRemindTour: () => void;
+
+  endCategoryTour: () => void;
+
+  hydrateFromServer: (flags: { home: boolean; remind: boolean; category: boolean }) => void;
 }
 
 export const useOnboardingStore = create<OnboardingState>()(
   persist(
     (set) => ({
-      isOnboardingCompleted: false,
+      homeCompleted: false,
       flow: 'none',
-      step: 0,
 
-      hydrateFromServer: (completed: boolean) => {
-        if (!completed) {
-          set({ flow: 'welcome', step: 0, isOnboardingCompleted: false });
-        } else {
-          set({ flow: 'none', isOnboardingCompleted: true });
-        }
+      remindCompleted: false,
+      remindFlow: 'none',
+
+      categoryCompleted: false,
+      categoryFlow: 'none',
+
+      hydrateFromServer: (flags) => {
+        set((state) => ({
+          homeCompleted: flags.home,
+          flow: flags.home ? 'none' : state.flow === 'none' ? 'welcome' : state.flow,
+          remindCompleted: flags.remind,
+          remindFlow: flags.remind ? 'none' : 'tour',
+          categoryCompleted: flags.category,
+          categoryFlow: flags.category ? 'none' : 'tour',
+        }));
       },
 
       startTour: () => {
-        set({ flow: 'tour', step: 0 });
-      },
-
-      nextStep: () => {
-        set((state) => ({ step: state.step + 1 }));
-      },
-
-      prevStep: () => {
-        set((state) => ({ step: Math.max(0, state.step - 1) }));
+        set({ flow: 'tour' });
       },
 
       endTour: () => {
-        set({ flow: 'none', isOnboardingCompleted: true });
-        // TODO: 여기서 서버에 PATCH /users/me/onboarding 호출 (body: { onboardingCompleted: true })
+        set({ flow: 'none', homeCompleted: true });
+      },
+
+      startRemindTour: () => {
+        set({ remindFlow: 'tour' });
+      },
+
+      endRemindTour: () => {
+        set({ remindFlow: 'none', remindCompleted: true });
+      },
+
+      endCategoryTour: () => {
+        set({ categoryFlow: 'none', categoryCompleted: true });
       },
     }),
     {
@@ -61,8 +84,8 @@ export const useOnboardingStore = create<OnboardingState>()(
         return localStorage;
       }),
       onRehydrateStorage: () => (state) => {
-        // 로컬 스토리지에 값이 없거나 false인 경우 Welcome 모드로
-        if (state && !state.isOnboardingCompleted) {
+        // 로컬 스토리지에 홈 온보딩이 완료되지 않은 경우 Welcome 모드로
+        if (state && !state.homeCompleted) {
           if (state.flow === 'none') {
             state.flow = 'welcome';
           }

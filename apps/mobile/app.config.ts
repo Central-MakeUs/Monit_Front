@@ -4,7 +4,7 @@ module.exports = {
   expo: {
     name: '모닛',
     slug: 'monit',
-    version: '1.0.0',
+    version: '1.0.1',
     orientation: 'portrait',
     icon: './assets/images/icon.png',
     scheme: process.env.EXPO_PUBLIC_KAKAO_NATIVE_APP_KEY
@@ -28,7 +28,7 @@ module.exports = {
         backgroundImage: './assets/images/android-icon-background.png',
         monochromeImage: './assets/images/android-icon-monochrome.png',
       },
-      package: 'com.nitrogen18.store',
+      package: 'com.monit.app',
       edgeToEdgeEnabled: true,
       predictiveBackGestureEnabled: false,
       intentFilters: [
@@ -60,18 +60,6 @@ module.exports = {
           },
           ios: {
             handleKakaoOpenUrl: true,
-          },
-        },
-      ],
-      [
-        'expo-splash-screen',
-        {
-          image: './assets/images/splash-icon.png',
-          imageWidth: 140,
-          resizeMode: 'contain',
-          backgroundColor: '#FF604B',
-          dark: {
-            backgroundColor: '#FF604B',
           },
         },
       ],

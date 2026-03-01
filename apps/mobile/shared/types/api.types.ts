@@ -21,5 +21,8 @@ export interface AuthTokens {
 export interface LoginData extends AuthTokens {
   isNewUser: boolean;
   hasExpense: boolean;
-  isTermsAgreed: boolean;
+  homeOnboarding: boolean;
+  categoryOnboarding: boolean;
+  remindOnboarding: boolean;
+  registerToken?: string;
 }
