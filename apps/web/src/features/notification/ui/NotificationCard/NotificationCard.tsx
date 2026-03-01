@@ -19,17 +19,15 @@ export const NotificationCard = ({ notification }: NotificationCardProps) => {
   const actionLabel = alertType ? CATEGORY_LABEL[alertType] : '';
 
   return (
-    <div onClick={() => {}}>
-      <NotificationCardUI
-        key={alertId}
-        state={state}
-        icon={icon}
-        title={title ?? ''}
-        message={message ?? ''}
-        date={formatDateToMonthDay(createdAt)}
-        actionLabel={actionLabel}
-        url={redirectUrl}
-      />
-    </div>
+    <NotificationCardUI
+      key={alertId}
+      state={state}
+      icon={icon}
+      title={title ?? ''}
+      message={message ?? ''}
+      date={formatDateToMonthDay(createdAt)}
+      actionLabel={actionLabel}
+      url={redirectUrl}
+    />
   );
 };
