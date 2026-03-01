@@ -4,19 +4,22 @@ import React from 'react';
 import { koFormatter } from '@/shared/ui/datePicker/config/formatters';
 import { TopBar } from '@/shared/ui/topBar';
 import { Text } from '@/shared/ui/text';
-import { IcBell, IcRightChevron, IcSetting } from 'public/icons';
+import { IcRightChevron, IcSetting } from 'public/icons';
+import { NotificationBell } from '@/features/notification';
 import * as styles from './HomeHeader.css';
 
 export interface HomeHeaderProps {
   currentDate: Date;
   onDateButtonClick: () => void;
   onSettingsClick: () => void;
+  onNotificationClick: () => void;
 }
 
 export const HomeHeader = ({
   currentDate,
   onDateButtonClick,
   onSettingsClick,
+  onNotificationClick,
 }: HomeHeaderProps): React.JSX.Element => {
   const formatDateHeader = (date: Date) => {
     return `${koFormatter.year(date.getFullYear())} ${koFormatter.month(date.getMonth() + 1)}`;
@@ -40,8 +43,8 @@ export const HomeHeader = ({
       }
       right={
         <div className={styles.headerActions}>
-          <button className={styles.iconButton} aria-label='알림'>
-            <IcBell />
+          <button className={styles.iconButton} aria-label='알림' onClick={onNotificationClick}>
+            <NotificationBell />
           </button>
           <button className={styles.iconButton} aria-label='설정' onClick={onSettingsClick}>
             <IcSetting className={styles.settingIc} />

@@ -26,4 +26,9 @@ export const ENDPOINT = {
     CATEGORY_UPDATE: 'api/expense/category_update/{categoryId}',
   },
   INQUIRY: { INQUIRY_SEND: 'api/inquiry/send' },
+  ALERT: {
+    ALERT_LIST: 'api/alerts',
+    ALERT_UNREAD_STATUS: 'api/alerts/unread-status',
+    ALERT_READ_ALL: 'api/alerts/read-all',
+  },
 } as const;

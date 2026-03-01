@@ -44,3 +44,6 @@ export { default as IcCamera } from './ic-camera.svg';
 export { default as IcCup } from './ic-cup.svg';
 export { default as IcAppLogo } from './ic-app-logo.svg';
 export { default as IcBigGrayLogo } from './ic-big-gray-logo.svg';
+export { default as IcNotice } from './ic-notice.svg';
+export { default as IcAlertReport } from './ic-alert-report.svg';
+export { default as IcNoticeDisable } from './ic-notice-disable.svg';

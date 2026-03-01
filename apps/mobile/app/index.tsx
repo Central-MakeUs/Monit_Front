@@ -13,7 +13,7 @@ import CustomSplashScreen from '@/components/SplashScreen';
 
 // URL별 배경색 매핑
 const getBackgroundColorForUrl = (url: string): string => {
-  if (url.includes('/auth/agreement')) {
+  if (url.includes('/auth/agreement') || url.includes('/notifications')) {
     return '#FFFFFF';
   } else {
     return '#F6F7F9';
