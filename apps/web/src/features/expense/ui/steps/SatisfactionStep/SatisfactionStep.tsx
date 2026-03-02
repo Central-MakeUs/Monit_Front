@@ -35,7 +35,7 @@ export const SatisfactionStep = ({
 
   const handleNext = () => {
     if (!selectedEmotion) return;
-    onNext(selectedEmotion.label.replace(/\s/g, '') as EmotionType);
+    onNext(selectedEmotion.label as EmotionType);
   };
 
   return (
