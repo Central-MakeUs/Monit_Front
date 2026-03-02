@@ -15,7 +15,7 @@ import {
   Divider,
 } from '@/shared/ui';
 import type { EvaluationType } from '@/shared/types/evaluation.types';
-import { getEvaluationLabel } from '@/features/expense/model/evaluationLabel';
+import { getEvaluationLabel } from '@/shared/lib/evaluationLabel';
 import { EXPENSE_CONSTANTS, EXPENSE_ERROR_MESSAGES } from '@/entities/expense';
 import { IcTrash } from 'public/icons';
 import { formatDate, formatNumberWithComma } from '@/shared/utils';
@@ -85,10 +85,16 @@ export const ExpenseFormBottomSheet = ({
   isAmountError,
   isUsageError,
 }: ExpenseFormBottomSheetProps) => {
+  const [isAmountFocused, setIsAmountFocused] = React.useState(false);
+  const [isUsageFocused, setIsUsageFocused] = React.useState(false);
+
   const formattedAmount = amount !== undefined ? formatNumberWithComma(String(amount)) : '';
   const evaluationLabel = satisfactionEvaluationType
     ? getEvaluationLabel(satisfactionEvaluationType)
     : null;
+
+  const showAmountError = !!isAmountError && !isAmountFocused;
+  const showUsageError = !!isUsageError && !isUsageFocused;
 
   return (
     <BaseBottomSheetTemplate>
@@ -100,8 +106,10 @@ export const ExpenseFormBottomSheet = ({
           value={formattedAmount}
           onValueChange={onAmountChange}
           fieldType='number'
-          errorMessage={amountErrorMessage}
-          error={isAmountError}
+          errorMessage={showAmountError ? amountErrorMessage : undefined}
+          error={showAmountError}
+          onFocus={() => setIsAmountFocused(true)}
+          onBlur={() => setIsAmountFocused(false)}
         />
       </InputField>
 
@@ -112,9 +120,11 @@ export const ExpenseFormBottomSheet = ({
             placeholder='사용처를 입력해주세요'
             value={usage}
             onValueChange={onUsageChange}
-            errorMessage={EXPENSE_ERROR_MESSAGES.INVALID_USAGE}
-            error={isUsageError}
+            errorMessage={showUsageError ? EXPENSE_ERROR_MESSAGES.INVALID_USAGE : undefined}
+            error={showUsageError}
             maxLength={EXPENSE_CONSTANTS.MAX_USAGE_LENGTH}
+            onFocus={() => setIsUsageFocused(true)}
+            onBlur={() => setIsUsageFocused(false)}
           />
         </InputField>
       </div>

@@ -4,6 +4,7 @@ import React, { HTMLAttributes } from 'react';
 import * as styles from './Banner.css';
 import { Text } from '../text';
 import { vars } from '../theme.css';
+import { blinkingText } from '../animations/loading.css';
 import {
   IcRightChevron,
   IcGrayNormal,
@@ -53,6 +54,8 @@ export interface BannerProps extends Omit<HTMLAttributes<HTMLDivElement>, 'class
   dateLabel?: string;
   /** 돌아보기 버튼 클릭 핸들러 */
   onClickReview?: () => void;
+  /** 배너 내용 로딩 상태 여부 (텍스트 깜빡임 애니메이션 표시) */
+  isLoading?: boolean;
 }
 
 const NO_SPENDING_SUBTEXT = '소비를 기록한 뒤 만족도를 남겨보세요';
@@ -66,6 +69,7 @@ export const Banner = ({
   subText: subTextProp,
   dateLabel,
   onClickReview,
+  isLoading,
   ...props
 }: BannerProps) => {
   const isSuccess = completedRating != null && completedRating >= 1 && completedRating <= 5;
@@ -75,7 +79,12 @@ export const Banner = ({
   let iconWrapperState: BannerIconState = 'today';
   let buttonVariant: 'disabled' | 'active' | 'hidden';
 
-  if (isSuccess) {
+  if (isLoading) {
+    title = titleProp ?? '소비 데이터를 불러오는 중이에요';
+    subText = subTextProp ?? '잠시만 기다려주세요';
+    iconWrapperState = 'today';
+    buttonVariant = 'disabled';
+  } else if (isSuccess) {
     title = SUCCESS_TITLES[completedRating!];
     subText = SUCCESS_SUBTEXT;
     iconWrapperState = `success${completedRating}` as BannerIconState;
@@ -107,10 +116,16 @@ export const Banner = ({
           <EmojiIcon className={styles.emojiIcon} />
         </div>
         <div className={styles.textWrapper}>
-          <Text variant='b3' color={vars.color.text.primary}>
+          <Text
+            variant='b3'
+            color={vars.color.text.primary}
+            className={isLoading ? blinkingText : undefined}>
             {title}
           </Text>
-          <Text variant='b1' color={vars.color.text.tertiary}>
+          <Text
+            variant='b1'
+            color={vars.color.text.tertiary}
+            className={isLoading ? blinkingText : undefined}>
             {subText}
           </Text>
         </div>

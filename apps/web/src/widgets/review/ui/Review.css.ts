@@ -64,3 +64,7 @@ export const carouselSlide = style({
   marginTop: '1.25rem',
   boxSizing: 'border-box',
 });
+
+export const alertModal = style({
+  paddingBottom: '30%',
+});

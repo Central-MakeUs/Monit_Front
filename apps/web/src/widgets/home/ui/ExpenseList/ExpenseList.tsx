@@ -20,6 +20,7 @@ export const ExpenseList = ({ expenses = [], onExpenseClick }: ExpenseListProps)
           category={expense.categoryIconType ?? 'coin'}
           price={expense.amount ?? 0}
           categoryName={expense.categoryName ?? ''}
+          evaluationType={expense.evaluationType ?? null}
           onClick={() => onExpenseClick?.(expense)}
         />
       ))}

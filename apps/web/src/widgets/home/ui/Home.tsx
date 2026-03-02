@@ -63,8 +63,10 @@ export const Home = ({
     expenseCount,
     dailyTotalAmount,
     emptyStateType,
-    isLoading,
-    isFetching,
+    isMonthlyLoading,
+    isMonthlyFetching,
+    isDailyLoading,
+    isDailyFetching,
     bannerMessage,
     bannerSubMessage,
     retrospectCompleted,
@@ -124,8 +126,8 @@ export const Home = ({
           viewMode={viewMode}
           onViewModeChange={setViewMode}
           monthlyTotalAmount={monthlyTotalAmount}
-          isLoading={isLoading}
-          isFetching={isFetching}
+          isLoading={isMonthlyLoading}
+          isFetching={isMonthlyFetching}
         />
 
         <CalendarSection
@@ -137,7 +139,12 @@ export const Home = ({
           renderWeeklyCalendar={renderWeeklyCalendar}
           renderMonthlyCalendar={renderMonthlyCalendar}
         />
-        <Banner {...bannerProps} onClickReview={handleClickReview} data-onboarding-id='banner' />
+        <Banner
+          {...bannerProps}
+          isLoading={isDailyLoading || isDailyFetching}
+          onClickReview={handleClickReview}
+          data-onboarding-id='banner'
+        />
         <ExpenseContent
           hasExpenses={expenses.length > 0}
           emptyStateType={emptyStateType}
@@ -145,8 +152,8 @@ export const Home = ({
           totalExpenseAmount={dailyTotalAmount}
           expenses={expenses}
           onExpenseClick={handleExpenseClick}
-          isLoading={isLoading}
-          isFetching={isFetching}
+          isLoading={isDailyLoading}
+          isFetching={isDailyFetching}
         />
       </div>
 

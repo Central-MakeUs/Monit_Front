@@ -23,6 +23,15 @@ export const slide = style({
   gap: '0.8rem',
 });
 
+export const largeGapSlide = style({
+  minWidth: '100%',
+  height: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  gap: '3.57rem',
+});
+
 export const textWrapper = style({
   display: 'flex',
   flexDirection: 'column',

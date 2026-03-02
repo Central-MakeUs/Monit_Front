@@ -7,11 +7,17 @@ import { Onboarding1, Onboarding2, Onboarding3 } from 'public/images';
 import { FC, SVGProps } from 'react';
 import { useOnboardingSlider } from '../model/useOnboardingSlider';
 
-const SLIDES: { label: string; title: string; Image: FC<SVGProps<SVGElement>> }[] = [
+const SLIDES: {
+  label: string;
+  title: string;
+  Image: FC<SVGProps<SVGElement>>;
+  largeGap?: boolean;
+}[] = [
   {
     label: '소비 기록',
     title: '소비와 그때의 마음을\n함께 기록해요',
     Image: Onboarding1,
+    largeGap: true,
   },
   {
     label: '소비 돌아보기',
@@ -22,6 +28,7 @@ const SLIDES: { label: string; title: string; Image: FC<SVGProps<SVGElement>> }[
     label: '소비 리포트',
     title: '기록을 정리해\n리포트로 보여드려요',
     Image: Onboarding3,
+    largeGap: true,
   },
 ];
 
@@ -48,7 +55,7 @@ export const OnboardingSlider = ({ onLastSlide, onPageChange }: OnboardingSlider
         onTouchEnd={handleTouchEnd}
         style={{ transform: `translateX(-${currentPage * 100}%)` }}>
         {SLIDES.map((slide, index) => (
-          <div key={index} className={styles.slide}>
+          <div key={index} className={slide.largeGap ? styles.largeGapSlide : styles.slide}>
             <div className={styles.textWrapper}>
               <Text variant='h3' color={vars.color.text.secondary}>
                 {slide.label}
