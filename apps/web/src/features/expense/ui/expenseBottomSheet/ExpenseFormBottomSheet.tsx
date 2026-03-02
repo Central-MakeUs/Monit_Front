@@ -15,7 +15,7 @@ import {
   Divider,
 } from '@/shared/ui';
 import type { EvaluationType } from '@/shared/types/evaluation.types';
-import { getEvaluationLabel } from '@/features/expense/model/evaluationLabel';
+import { getEvaluationLabel } from '@/shared/lib/evaluationLabel';
 import { EXPENSE_CONSTANTS, EXPENSE_ERROR_MESSAGES } from '@/entities/expense';
 import { IcTrash } from 'public/icons';
 import { formatDate, formatNumberWithComma } from '@/shared/utils';
