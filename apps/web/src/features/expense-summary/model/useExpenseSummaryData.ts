@@ -41,17 +41,31 @@ export const useExpenseSummaryData = ({ monthDate, dayDate }: UseExpenseSummaryD
     const total = expenses.reduce((sum: number, exp: ExpenseListDTO) => sum + (exp.amount ?? 0), 0);
     const count = expenses.length;
 
+    /**
+     * hasExpenses(일별 API 플래그)와 월별 총액을 함께 사용해서
+     * 한 번이라도 지출한 적이 있으면 'never'(첫 소비) 상태가 나오지 않도록 보정
+     */
+    const hasEverExpenses = hasExpenses || monthlyTotalAmount > 0;
+
     const getEmptyStateType = (): EmptyStateType => {
-      if (!hasExpenses) return 'never';
+      const today = new Date();
+      const selected = stableDayDate;
+      const isToday =
+        selected.getFullYear() === today.getFullYear() &&
+        selected.getMonth() === today.getMonth() &&
+        selected.getDate() === today.getDate();
+
+      // 아직까지 단 한 번도 지출 내역이 없을 때만,
+      // 오늘 날짜에서 '첫 소비' 문구를 노출하고
+      // 과거/미래 날짜에서는 일반 빈 상태 문구를 노출
+      if (!hasEverExpenses) {
+        return isToday ? 'never' : 'date';
+      }
+
       if (expenses.length === 0) {
-        const today = new Date();
-        const selected = stableDayDate;
-        const isToday =
-          selected.getFullYear() === today.getFullYear() &&
-          selected.getMonth() === today.getMonth() &&
-          selected.getDate() === today.getDate();
         return isToday ? 'today' : 'date';
       }
+
       return 'date';
     };
 
@@ -60,7 +74,7 @@ export const useExpenseSummaryData = ({ monthDate, dayDate }: UseExpenseSummaryD
       expenseCount: count,
       emptyStateType: getEmptyStateType(),
     };
-  }, [expenses, hasExpenses, stableDayDate]);
+  }, [expenses, hasExpenses, stableDayDate, monthlyTotalAmount]);
 
   return {
     monthlyTotalAmount,
