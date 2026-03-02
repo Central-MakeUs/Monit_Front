@@ -32,6 +32,8 @@ export interface AlertDialogProps {
   isConfirmDisabled?: boolean;
   /** 인라인 모드 (overlay 없이 다이얼로그만 렌더링, Storybook 미리보기용) */
   inline?: boolean;
+  /** overlay 클래스 커스터마이징 (위치 조정 등) */
+  overlayClassName?: string;
 }
 
 // 다이얼로그 콘텐츠 영역 컴포넌트
@@ -109,6 +111,7 @@ export const AlertDialog = ({
   onCancel,
   isConfirmDisabled = false,
   inline = false,
+  overlayClassName,
 }: AlertDialogProps): React.JSX.Element | null => {
   if (!isOpen) return null;
 
@@ -156,7 +159,9 @@ export const AlertDialog = ({
   }
 
   return createPortal(
-    <div className={styles.overlay} onClick={handleOverlayClick}>
+    <div
+      className={`${styles.overlay}${overlayClassName ? ` ${overlayClassName}` : ''}`}
+      onClick={handleOverlayClick}>
       {dialogContent}
     </div>,
     document.body
