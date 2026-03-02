@@ -57,6 +57,7 @@ export const ExpenseEditBottomSheet = ({
   const [amountError, setAmountError] = useState<string | undefined>(undefined);
 
   const isValidNameRegex = /^[가-힣a-zA-Z0-9\s]*$/;
+  const isUsageEmpty = usage.trim().length === 0;
   const isUsageInvalid = usage !== '' && !isValidNameRegex.test(usage);
 
   // 카테고리 목록 조회
@@ -228,12 +229,10 @@ export const ExpenseEditBottomSheet = ({
         onMoreCategoryClick={() => setIsCategorySheetOpen(true)}
         satisfactionLabel={expense?.emotionType ?? '감정 누락'}
         satisfactionEvaluationType={expense?.evaluationType}
-        confirmDisabled={
-          amount <= 0 || !usage || usage.trim().length === 0 || !!amountError || isUsageInvalid
-        }
+        confirmDisabled={amount <= 0 || isUsageEmpty || !!amountError || isUsageInvalid}
         amountErrorMessage={amountError}
         isAmountError={!!amountError}
-        isUsageError={isUsageInvalid}
+        isUsageError={isUsageEmpty || isUsageInvalid}
       />
       <AlertDialog
         isOpen={isDeleteDialogOpen}
