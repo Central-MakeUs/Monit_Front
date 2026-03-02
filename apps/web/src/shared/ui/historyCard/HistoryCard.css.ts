@@ -31,3 +31,8 @@ export const labelWrapper = style({
   alignItems: 'flex-start',
   gap: spacing.sm,
 });
+
+// Figma: Home 소비 기록 카드 내 만족도 뱃지(node-id 5068-83692) 위치/간격을 맞추기 위한 래퍼
+export const badgeWrapper = style({
+  marginTop: spacing.xs2,
+});

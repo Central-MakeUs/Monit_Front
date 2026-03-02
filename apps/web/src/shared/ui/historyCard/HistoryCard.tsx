@@ -4,8 +4,10 @@ import React, { HTMLAttributes } from 'react';
 import * as styles from './HistoryCard.css';
 import { CategoryBtn, CategoryIconType } from '../categoryBtn';
 import { Text } from '../text';
-// import { Badge } from '../badge';
+import { Badge } from '../badge';
 import { vars } from '../theme.css';
+import type { EvaluationType } from '@/shared/types/evaluation.types';
+import { getEvaluationLabel } from '@/shared/lib/evaluationLabel';
 
 export interface HistoryCardProps extends Omit<HTMLAttributes<HTMLDivElement>, 'className'> {
   /** 소비처 제목 */
@@ -16,6 +18,8 @@ export interface HistoryCardProps extends Omit<HTMLAttributes<HTMLDivElement>, '
   price: number;
   /** 카테고리 이름 (예: 식비) */
   categoryName?: string;
+  /** 소비 만족도 평가 타입 */
+  evaluationType?: EvaluationType | null;
   disabled?: boolean;
 }
 
@@ -24,10 +28,13 @@ export const HistoryCard = ({
   category,
   price,
   categoryName,
+  evaluationType,
   onClick,
   disabled = false,
   ...props
 }: HistoryCardProps) => {
+  const evaluationLabel = evaluationType ? getEvaluationLabel(evaluationType) : null;
+
   return (
     <div
       className={styles.historyCardWrapper}
@@ -49,6 +56,11 @@ export const HistoryCard = ({
               </Text>
             )}
           </div>
+          {evaluationType && evaluationLabel && (
+            <div className={styles.badgeWrapper}>
+              <Badge label={evaluationLabel} size='xs' evaluationType={evaluationType} />
+            </div>
+          )}
         </div>
       </div>
       <Text variant='b4' color={vars.color.text.primary} align='center' as='div'>
