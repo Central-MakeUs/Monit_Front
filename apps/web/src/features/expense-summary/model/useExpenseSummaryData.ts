@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { expenseQueries } from '@/entities/expense';
 import type { ExpenseListDTO, DailyExpenseResponseDTO, EmptyStateType } from '@/entities/expense';
@@ -18,8 +18,42 @@ export const useExpenseSummaryData = ({ monthDate, dayDate }: UseExpenseSummaryD
   const year = monthDate.getFullYear();
   const month = monthDate.getMonth() + 1;
 
-  /** 쿼리 키/캐시 안정화: dayDate가 없을 때 매 렌더 new Date() 대신 monthDate 사용 */
-  const stableDayDate = dayDate ?? monthDate;
+  /**
+   * 쿼리 키/캐시 안정화 + 월 전환 중 깜빡임 방지
+   *
+   * - dayDate를 명시적으로 쓰지 않는 경우(undefined): 항상 monthDate 기준으로 동기화
+   * - dayDate를 쓰는 경우:
+   *   - 일자가 선택되어 있을 때(Date): 해당 날짜로 고정
+   *   - 월 스와이프 중 잠시 null이 되는 구간: 직전 선택 날짜를 그대로 유지해서
+   *     "이번 달 1일"로 잠깐 갔다 오는 중간 쿼리가 일어나지 않도록 함
+   */
+  const [stableDayDate, setStableDayDate] = useState<Date>(() => dayDate ?? monthDate);
+  const hasEverNonNullDayDateRef = useRef(false);
+
+  useEffect(() => {
+    if (dayDate && !hasEverNonNullDayDateRef.current) {
+      hasEverNonNullDayDateRef.current = true;
+    }
+
+    // dayDate를 사용하지 않는 호출(useExpenseSummaryData({ monthDate }))은 항상 monthDate를 따름
+    if (dayDate === undefined) {
+      setStableDayDate(monthDate);
+      return;
+    }
+
+    // 명시적으로 선택된 날짜가 있을 때는 해당 날짜로 고정
+    if (dayDate) {
+      setStableDayDate(dayDate);
+      return;
+    }
+
+    // dayDate가 null인 경우:
+    // - 한 번도 날짜 선택이 없었다면(month-only 사용 패턴) monthDate 기준으로 따라가고
+    // - 한 번이라도 날짜 선택이 있었다면(달력 스와이프 중) 직전 stableDayDate를 유지
+    if (!hasEverNonNullDayDateRef.current) {
+      setStableDayDate(monthDate);
+    }
+  }, [dayDate, monthDate]);
 
   const calendarQuery = useQuery(expenseQueries.calendarExpense(year, month));
   const dailyQuery = useQuery(expenseQueries.dailyExpense(stableDayDate));
@@ -76,6 +110,11 @@ export const useExpenseSummaryData = ({ monthDate, dayDate }: UseExpenseSummaryD
     };
   }, [expenses, hasExpenses, stableDayDate, monthlyTotalAmount]);
 
+  const isMonthlyLoading = calendarQuery.isLoading;
+  const isMonthlyFetching = calendarQuery.isFetching;
+  const isDailyLoading = dailyQuery.isLoading;
+  const isDailyFetching = dailyQuery.isFetching;
+
   return {
     monthlyTotalAmount,
     expenses,
@@ -83,8 +122,14 @@ export const useExpenseSummaryData = ({ monthDate, dayDate }: UseExpenseSummaryD
     expenseCount,
     dailyTotalAmount,
     emptyStateType,
-    isLoading: calendarQuery.isLoading || dailyQuery.isLoading,
-    isFetching: calendarQuery.isFetching || dailyQuery.isFetching,
+    // 일별 영역 전용 로딩 플래그 (리스트/배너 등)
+    isLoading: isDailyLoading,
+    isFetching: isDailyFetching,
+    // 월별 영역 전용 로딩 플래그 (헤더/리포트 등)
+    isMonthlyLoading,
+    isMonthlyFetching,
+    isDailyLoading,
+    isDailyFetching,
     error: calendarQuery.error || dailyQuery.error,
     bannerMessage,
     bannerSubMessage,
