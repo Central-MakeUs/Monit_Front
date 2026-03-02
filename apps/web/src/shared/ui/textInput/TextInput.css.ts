@@ -158,6 +158,14 @@ export const clearButton = style({
   border: 'none',
   cursor: 'pointer',
   color: vars.color.primitive.static.white,
+  position: 'relative',
+  selectors: {
+    '&::after': {
+      content: '""',
+      position: 'absolute',
+      inset: '-0.6rem',
+    },
+  },
 });
 
 export const clearIcon = style({
