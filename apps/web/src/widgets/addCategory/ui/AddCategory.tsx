@@ -74,6 +74,7 @@ export const AddCategory = () => {
     ...categoryQueries.updateMutation(queryClient),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: categoryQueries.all });
+      await queryClient.invalidateQueries({ queryKey: ['expense'] });
       toast.success('수정한 내용이 저장되었어요!');
       router.back();
     },

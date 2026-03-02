@@ -90,6 +90,7 @@ export const Review = ({ date }: SpendingReviewProps) => {
         cancelText='나중에 하기'
         onConfirm={closeModal}
         onCancel={handleSave}
+        overlayClassName={styles.alertModal}
       />
       {showButton && (
         <BottomFixedArea zIndex={1}>

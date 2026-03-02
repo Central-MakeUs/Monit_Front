@@ -60,7 +60,8 @@ export const SelectionTile = ({
         {href && !disabled ? (
           <button
             className={styles.chevronIcon()}
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               handleExternalUrl(href);
             }}>
             <IcRightChevron />

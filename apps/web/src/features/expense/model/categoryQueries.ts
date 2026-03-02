@@ -3,6 +3,7 @@ import { getCategoryList } from '../api/getCategoryList';
 import { postCategoryCreate } from '../api/postCategoryCreate';
 import { patchCategoryUpdate } from '../api/patchCategoryUpdate';
 import type { CategoryDetailsDTO } from './types';
+import { expenseQueries } from '@/entities/expense/model/queries';
 
 export const categoryQueries = {
   all: ['category'] as const,
@@ -24,6 +25,7 @@ export const categoryQueries = {
         patchCategoryUpdate(categoryId, data),
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: categoryQueries.all });
+        queryClient.invalidateQueries({ queryKey: expenseQueries.all });
       },
     }),
 };

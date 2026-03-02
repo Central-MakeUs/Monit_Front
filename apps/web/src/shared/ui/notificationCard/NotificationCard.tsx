@@ -29,7 +29,7 @@ export const NotificationCard = ({
   actionLabel,
   url,
 }: NotificationCardProps) => {
-  return (
+  const CardContent = (
     <div className={styles.cardVariants[state]}>
       <div className={styles.icon}>{icon}</div>
       <div className={styles.content}>
@@ -44,14 +44,18 @@ export const NotificationCard = ({
         <Text variant='b3' color={vars.color.text.secondary}>
           {message}
         </Text>
-        {actionLabel && url && (
-          <Link href={url}>
-            <Text variant='h1' color={vars.color.bg.brand.default}>
-              {actionLabel}
-            </Text>
-          </Link>
+        {actionLabel && (
+          <Text variant='h1' color={vars.color.bg.brand.default}>
+            {actionLabel}
+          </Text>
         )}
       </div>
     </div>
   );
+
+  if (url) {
+    return <Link href={url}>{CardContent}</Link>;
+  }
+
+  return CardContent;
 };
