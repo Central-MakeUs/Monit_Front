@@ -1,6 +1,7 @@
 import type { Preview } from '@storybook/react';
 import './fonts.css.ts';
 import '../src/shared/styles/global.css.ts';
+import './storybook-override.css';
 
 const preview: Preview = {
   parameters: {
