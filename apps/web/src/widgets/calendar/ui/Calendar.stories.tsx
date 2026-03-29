@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 import { Calendar } from './Calendar';
 import { getFigmaUrl } from '@/shared/config/figma';
-import { fn } from '@storybook/test';
+import { fn } from 'storybook/test';
 
 const meta: Meta<typeof Calendar> = {
   title: 'Components/Calendar',
