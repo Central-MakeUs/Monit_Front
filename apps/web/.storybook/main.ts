@@ -1,7 +1,6 @@
 import type { StorybookConfig } from '@storybook/nextjs';
-import path from 'path';
+import path, { dirname } from 'path';
 import { fileURLToPath } from 'node:url';
-import { dirname } from 'path';
 import { VanillaExtractPlugin } from '@vanilla-extract/webpack-plugin';
 import type { RuleSetRule } from 'webpack';
 
@@ -11,14 +10,13 @@ const __dirname = dirname(__filename);
 const config: StorybookConfig = {
   stories: ['../src/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
   addons: [
-    '@storybook/addon-essentials',
-    '@storybook/addon-links',
-    '@storybook/addon-designs',
-    '@storybook/addon-a11y',
-    '@storybook/addon-docs',
+    getAbsolutePath('@storybook/addon-links'),
+    getAbsolutePath('@storybook/addon-designs'),
+    getAbsolutePath('@storybook/addon-a11y'),
+    getAbsolutePath('@storybook/addon-docs'),
   ],
   framework: {
-    name: '@storybook/nextjs',
+    name: getAbsolutePath('@storybook/nextjs'),
     options: {},
   },
   staticDirs: ['../public'],
@@ -59,3 +57,7 @@ const config: StorybookConfig = {
 };
 
 export default config;
+
+function getAbsolutePath(value: string): string {
+  return dirname(fileURLToPath(import.meta.resolve(`${value}/package.json`)));
+}

@@ -1,4 +1,4 @@
-import type { Preview } from '@storybook/react';
+import type { Preview } from '@storybook/nextjs';
 import './fonts.css.ts';
 import '../src/shared/styles/global.css.ts';
 import './storybook-override.css';
