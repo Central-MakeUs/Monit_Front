@@ -123,6 +123,8 @@ export const Default: Story = {
             justifyContent: 'center',
             alignItems: 'center',
             height: '100vh',
+            maxWidth: '430px',
+            margin: '0 auto',
           }}>
           <Button variant='brand' onClick={openModal}>
             카테고리 선택 열기
