@@ -12,6 +12,7 @@ export default function ReportPage() {
     <Report
       onSettingsClick={() => router.push(ROUTES.MY)}
       onNotificationClick={() => router.push(ROUTES.NOTIFICATIONS)}
+      onViewReport={() => router.push(ROUTES.REPORT_DETAIL)}
     />
   );
 }

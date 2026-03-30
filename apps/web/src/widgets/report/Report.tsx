@@ -13,9 +13,10 @@ import * as styles from './Report.css';
 export interface ReportProps {
   onSettingsClick: () => void;
   onNotificationClick: () => void;
+  onViewReport: () => void;
 }
 
-export const Report = ({ onSettingsClick, onNotificationClick }: ReportProps) => {
+export const Report = ({ onSettingsClick, onNotificationClick, onViewReport }: ReportProps) => {
   const { currentDate } = useDateStore(useShallow((state) => ({ currentDate: state.currentDate })));
 
   const { monthlyTotalAmount, isLoading, isFetching } = useExpenseSummaryData({
@@ -34,12 +35,7 @@ export const Report = ({ onSettingsClick, onNotificationClick }: ReportProps) =>
         />
         <div className={styles.cardSection}>
           <ReportOverviewCard />
-          <ReportSummaryCard
-            vm={MOCK_REPORT_SUMMARY}
-            onViewReport={() => {
-              alert('리포트 확인하기 클릭!');
-            }}
-          />
+          <ReportSummaryCard vm={MOCK_REPORT_SUMMARY} onViewReport={onViewReport} />
         </div>
       </div>
     </div>
