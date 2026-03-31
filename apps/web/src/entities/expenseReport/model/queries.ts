@@ -1,5 +1,6 @@
 import { queryOptions } from '@tanstack/react-query';
 import { getSummaryRecord } from '../api/getSummaryRecord';
+import { getMonthlyReportList } from '../api/getMonthlyReportList';
 
 /**
  * 요약/리포트 쿼리 키 설계
@@ -12,5 +13,10 @@ export const expenseReportQueries = {
     queryOptions({
       queryKey: [...expenseReportQueries.all, 'summary'],
       queryFn: () => getSummaryRecord(),
+    }),
+  monthlyListQuery: () =>
+    queryOptions({
+      queryKey: [...expenseReportQueries.all, 'monthlyList'],
+      queryFn: () => getMonthlyReportList(),
     }),
 };

@@ -14,9 +14,15 @@ export interface ReportProps {
   onSettingsClick: () => void;
   onNotificationClick: () => void;
   onViewReport: () => void;
+  onViewReportList: () => void;
 }
 
-export const Report = ({ onSettingsClick, onNotificationClick, onViewReport }: ReportProps) => {
+export const Report = ({
+  onSettingsClick,
+  onNotificationClick,
+  onViewReport,
+  onViewReportList,
+}: ReportProps) => {
   const { currentDate } = useDateStore(useShallow((state) => ({ currentDate: state.currentDate })));
 
   const { monthlyTotalAmount, isLoading, isFetching } = useExpenseSummaryData({
@@ -34,7 +40,7 @@ export const Report = ({ onSettingsClick, onNotificationClick, onViewReport }: R
           standalone
         />
         <div className={styles.cardSection}>
-          <ReportOverviewCard />
+          <ReportOverviewCard onClick={onViewReportList} />
           <ReportSummaryCard vm={MOCK_REPORT_SUMMARY} onViewReport={onViewReport} />
         </div>
       </div>
