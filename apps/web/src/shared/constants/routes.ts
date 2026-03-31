@@ -8,5 +8,6 @@ export const ROUTES = {
   EXPENSE_CATEGORY: '/expense/category',
   AGREEMENT: 'auth/agreement',
   REVIEW: (date: string) => `/review/${date}`,
+  REPORT_CATEGORY_DETAIL: '/report/category-detail',
   NOTIFICATIONS: '/notifications',
 } as const;
