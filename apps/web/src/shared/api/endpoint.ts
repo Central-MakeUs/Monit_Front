@@ -19,6 +19,7 @@ export const ENDPOINT = {
     WEEKLY_DETAIL: 'api/expense/weekly_detail',
     SUMMARY_RECORD: 'api/expense/summary_record',
     DAILY_SATISFACTION: 'api/expense/daily_satisfaction',
+    MONTHLY_TOTALS: 'api/expense/monthly_totals',
   },
   CATEGORY: {
     CATEGORY_LIST: 'api/expense/category_list',

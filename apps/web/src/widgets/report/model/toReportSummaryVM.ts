@@ -16,8 +16,6 @@ export function toReportSummaryVM(params: {
     subtitleLines = ['홀린 듯한 상태에서', '가장 많은 소비를 했어요'],
   } = params;
 
-  const totalCount = rankItems.reduce((sum, item) => sum + item.count, 0);
-
   // 금액(amount) 내림차순 정렬 (동률이면 count로 정렬)
   const sortedByAmount = [...rankItems].sort((a, b) => {
     if (b.amount !== a.amount) return b.amount - a.amount;
@@ -27,18 +25,20 @@ export function toReportSummaryVM(params: {
   const barItems = sortedByAmount.slice(0, 4);
   const listItems = sortedByAmount.slice(0, 3);
 
+  const totalItemAmount = rankItems.reduce((sum, item) => sum + item.amount, 0);
+
   return {
     title,
     subtitleLines,
     periodLabel,
     totalAmountText: formatCurrency(totalAmount),
 
-    // 막대 너비: 월 전체 count 대비 해당 라벨의 count 비율
+    // 막대 너비: 전체 amount 합계 대비 해당 라벨의 amount 비율
     barSegments:
-      totalCount > 0
+      totalItemAmount > 0
         ? barItems.map((item, idx) => ({
             key: item.label,
-            flex: item.count / totalCount,
+            flex: Math.min(Math.max(item.amount / totalItemAmount, 0), 1),
             colorIndex: idx as 0 | 1 | 2 | 3,
           }))
         : [],

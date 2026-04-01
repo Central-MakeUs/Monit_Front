@@ -5,3 +5,4 @@ export { EditCategoryBtn } from './EditCategoryBtn';
 export type { EditCategoryBtnProps } from './EditCategoryBtn';
 
 export type { CategoryIconType } from './categoryIcons';
+export { CATEGORY_ICON_MAP } from './categoryIcons';
