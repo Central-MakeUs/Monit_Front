@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { Divider } from '@/shared/ui';
 import { primitiveColors } from '@/shared/ui/theme.css';
 import { IcRightChevron } from 'public/icons';
-import { CATEGORY_ICON_MAP } from '@/shared/ui/categoryBtn/categoryIcons';
+import { CATEGORY_ICON_MAP } from '@/shared/ui/categoryBtn';
 import { formatCurrency } from '@/shared/lib/formatCurrency';
 import type {
   CategoryDetailGroupVM,
