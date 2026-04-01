@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ReportDetailPage } from '@/widgets/report';
 import { ROUTES } from '@/shared/constants';
@@ -18,7 +18,7 @@ function buildPeriodLabel(month: string | null, week: string | null): string | u
   return `${y}년 ${m}월`;
 }
 
-export default function ReportDetailRoutePage() {
+function ReportDetailRouteContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const periodLabel = buildPeriodLabel(searchParams.get('month'), searchParams.get('week'));
@@ -31,5 +31,13 @@ export default function ReportDetailRoutePage() {
       }
       periodLabel={periodLabel}
     />
+  );
+}
+
+export default function ReportDetailRoutePage() {
+  return (
+    <Suspense>
+      <ReportDetailRouteContent />
+    </Suspense>
   );
 }
