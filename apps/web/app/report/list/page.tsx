@@ -11,11 +11,15 @@ export default function ReportListRoutePage() {
   return (
     <ReportListPage
       onBack={() => router.push(ROUTES.REPORT)}
-      onViewWeeklyReport={(month, week) =>
-        router.push(`${ROUTES.REPORT_DETAIL}?month=${encodeURIComponent(month)}&week=${week}`)
+      onViewWeeklyReport={(year, month, week) =>
+        router.push(
+          `${ROUTES.REPORT_DETAIL}?month=${encodeURIComponent(`${year}-${String(month).padStart(2, '0')}`)}&week=${week}`
+        )
       }
-      onViewMonthlyReport={(month) =>
-        router.push(`${ROUTES.REPORT_DETAIL}?month=${encodeURIComponent(month)}`)
+      onViewMonthlyReport={(year, month) =>
+        router.push(
+          `${ROUTES.REPORT_DETAIL}?month=${encodeURIComponent(`${year}-${String(month).padStart(2, '0')}`)}`
+        )
       }
     />
   );

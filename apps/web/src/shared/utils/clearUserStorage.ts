@@ -7,6 +7,7 @@ export const USER_STORAGE_KEYS = [
   'expense-form-storage',
   'category-storage',
   'category-management-onboarding-completed',
+  'report-arrival/status',
 ] as const;
 
 /**

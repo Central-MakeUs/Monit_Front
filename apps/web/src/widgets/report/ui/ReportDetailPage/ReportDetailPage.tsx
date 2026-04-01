@@ -11,10 +11,16 @@ import * as styles from './ReportDetailPage.css';
 export interface ReportDetailPageProps {
   onBack: () => void;
   onViewCategoryDetail?: (categoryId: string) => void;
+  /** URL 파라미터에서 계산된 기간 레이블 (예: "2026년 1월", "2026년 1월 2주차") */
+  periodLabel?: string;
 }
 
-export const ReportDetailPage = ({ onBack, onViewCategoryDetail }: ReportDetailPageProps) => {
-  const vm = MOCK_REPORT_DETAIL;
+export const ReportDetailPage = ({
+  onBack,
+  onViewCategoryDetail,
+  periodLabel,
+}: ReportDetailPageProps) => {
+  const vm = { ...MOCK_REPORT_DETAIL, periodLabel: periodLabel ?? MOCK_REPORT_DETAIL.periodLabel };
 
   return (
     <div className={styles.container}>

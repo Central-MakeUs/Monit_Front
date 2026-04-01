@@ -6,6 +6,7 @@ export const container = style({
   flexDirection: 'column',
   minHeight: '100vh',
   backgroundColor: vars.color.bg.base,
+  paddingBottom: '10rem',
 });
 
 export const content = style({

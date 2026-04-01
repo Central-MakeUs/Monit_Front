@@ -829,10 +829,13 @@ export interface components {
             result?: components["schemas"]["SummaryRecordResponse"];
         };
         MonthlyReportSummaryResponse: {
-            month?: string;
+            /** Format: int32 */
+            year?: number;
+            /** Format: int32 */
+            month?: number;
             /** Format: int64 */
             totalAmount?: number;
-            isOpened?: boolean;
+            isChecked?: boolean;
         };
         SummaryRecordResponse: {
             monthlyReport?: components["schemas"]["MonthlyReportSummaryResponse"];
