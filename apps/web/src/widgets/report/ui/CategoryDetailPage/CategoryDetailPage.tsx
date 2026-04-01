@@ -37,7 +37,6 @@ export const CategoryDetailPage = ({ onBack }: CategoryDetailPageProps) => {
       />
 
       <div className={styles.scrollArea}>
-        {/* Period badge + category title */}
         <div className={styles.summarySection}>
           <div className={styles.labelWrapper}>
             <Text className={styles.label} variant='b3'>
@@ -47,7 +46,6 @@ export const CategoryDetailPage = ({ onBack }: CategoryDetailPageProps) => {
           <p className={styles.titleText}>{vm.categoryName}</p>
         </div>
 
-        {/* Total summary bar */}
         <div className={styles.totalBar}>
           <span className={styles.totalBarText}>총 소비 {vm.totalCount}건</span>
           <div className={styles.totalBarAmountWrapper}>
@@ -56,7 +54,6 @@ export const CategoryDetailPage = ({ onBack }: CategoryDetailPageProps) => {
           </div>
         </div>
 
-        {/* Grouped satisfaction sections */}
         <div className={styles.groupList}>
           {vm.groups.map((group) => (
             <SatisfactionGroupCard key={group.level} vm={group} />
