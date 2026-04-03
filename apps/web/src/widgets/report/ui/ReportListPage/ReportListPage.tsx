@@ -46,14 +46,14 @@ export const ReportListPage = ({
   const sorted = [...reports]
     .filter((r) => r.year != null && r.month != null)
     .sort((a, b) => {
-      const ay = a.year ?? 0,
-        by = b.year ?? 0;
+      const ay = Number(a.year ?? 0),
+        by = Number(b.year ?? 0);
       if (ay !== by) return by - ay;
-      return (b.month ?? 0) - (a.month ?? 0);
+      return Number(b.month ?? 0) - Number(a.month ?? 0);
     });
 
   const grouped = sorted.reduce<Record<number, typeof sorted>>((acc, report) => {
-    const y = report.year as number;
+    const y = Number(report.year);
     if (!acc[y]) acc[y] = [];
     (acc[y] as typeof sorted).push(report);
     return acc;
@@ -89,8 +89,8 @@ export const ReportListPage = ({
               {year}년
             </Text>
             {(grouped[year] ?? []).map((report) => {
-              const y = report.year as number;
-              const m = report.month as number;
+              const y = Number(report.year);
+              const m = Number(report.month);
               const weekCount = getWeeksInMonth(y, m);
               const weeklyItems = Array.from({ length: weekCount }, (_, i) => ({
                 label: `${m}월 ${i + 1}주차 리포트`,

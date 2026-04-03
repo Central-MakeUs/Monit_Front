@@ -37,10 +37,6 @@ export const Report = ({
   const reportArrival = useReportArrivalCard();
 
   const handleArrivalConfirm = () => {
-    // TODO: API 연동 시 아래 주석 해제
-    // POST /api/expense/report_arrivals/{year}/{month}/check
-    // 유저가 특정 월의 분석 리포트를 확인했음을 기록
-    // await checkMonthlyReport(reportArrival.year, reportArrival.month);
     reportArrival.onConfirm();
     const month = `${reportArrival.year}-${String(reportArrival.month).padStart(2, '0')}`;
     router.push(`${ROUTES.REPORT_DETAIL}?month=${encodeURIComponent(month)}`);

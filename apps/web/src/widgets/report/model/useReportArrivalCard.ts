@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { expenseReportQueries } from '@/entities/expenseReport';
+import { patchCheckReportArrival } from '@/features/report/api';
 import { useReportArrivalStore } from './reportArrivalStore';
 
 /**
@@ -12,10 +13,10 @@ import { useReportArrivalStore } from './reportArrivalStore';
  * 새로운 리포트가 발행되면 dismiss된 이전 키와 달라 자동으로 재노출됨
  */
 export function useReportArrivalCard() {
-  const { data: reports = [] } = useQuery(expenseReportQueries.monthlyListQuery());
+  const { data: arrivals = [] } = useQuery(expenseReportQueries.reportArrivalsQuery());
   const { dismissedKey, dismiss } = useReportArrivalStore();
 
-  const latest = reports.reduce<(typeof reports)[0] | null>((best, r) => {
+  const latest = arrivals.reduce<(typeof arrivals)[0] | null>((best, r) => {
     if (!best) return r;
     if ((r.year ?? 0) > (best.year ?? 0)) return r;
     if (r.year === best.year && (r.month ?? 0) > (best.month ?? 0)) return r;
@@ -36,6 +37,7 @@ export function useReportArrivalCard() {
     },
     onConfirm: () => {
       if (latest?.year != null && latest?.month != null) {
+        patchCheckReportArrival(latest.year, latest.month).catch(() => {});
         dismiss(latest.year, latest.month);
       }
     },
