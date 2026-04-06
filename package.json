@@ -14,7 +14,8 @@
     "build:mobile": "turbo build --filter=mobile",
     "storybook": "pnpm --filter=web storybook",
     "build-storybook": "pnpm --filter=web build-storybook",
-    "svgr": "cd apps/web && pnpm dlx @svgr/cli public/icons --out-dir src/assets/icons --ext tsx --typescript --no-prettier && pnpm exec prettier --write \"src/assets/**/*.tsx\""
+    "svgr": "cd apps/web && pnpm dlx @svgr/cli public/icons --out-dir src/assets/icons --ext tsx --typescript --no-prettier && pnpm exec prettier --write \"src/assets/**/*.tsx\"",
+    "schema:lint": "pnpx tsx scripts/schema-lint/index.ts"
   },
   "devDependencies": {
     "lefthook": "^2.0.13",
