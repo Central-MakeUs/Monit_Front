@@ -432,6 +432,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/expense/total_open_status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * 월 + 주차별 open 상태 통합 조회
+         * @description 특정 월의 총 지출액, 주차별 리포트 오픈 여부, 월간 리포트 오픈 여부를 한 번에 조회합니다.
+         */
+        get: operations["getTotalOpenStatus"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/expense/summary_record": {
         parameters: {
             query?: never;
@@ -844,6 +864,7 @@ export interface components {
             totalAmount?: number;
             /** Format: int64 */
             count?: number;
+            feedbackMessage?: string;
         };
         EvaluationSummary: {
             /** @enum {string} */
@@ -860,9 +881,11 @@ export interface components {
         };
         WeeklyDetailReportResponse: {
             weekRange?: string;
+            emotionFeedbackMessage?: string;
             topEmotion?: components["schemas"]["EmotionSummary"];
-            inAvarageEvaluation?: string;
+            evaluationFeedbackMessage?: string;
             evaluationSummaries?: components["schemas"]["EvaluationSummary"][];
+            emotionDetails?: components["schemas"]["EmotionSummary"][];
             top3Expenses?: components["schemas"]["ExpenseSimpleResponse"][];
             /** Format: int64 */
             emotionTotalAmount?: number;
@@ -870,6 +893,27 @@ export interface components {
             weeklyTotalCount?: number;
             /** Format: int64 */
             weeklyTotalAmount?: number;
+        };
+        ApiResponseTotalOpenStatusResponse: {
+            isSuccess?: boolean;
+            code?: string;
+            message?: string;
+            result?: components["schemas"]["TotalOpenStatusResponse"];
+        };
+        TotalOpenStatusResponse: {
+            /** Format: int32 */
+            year?: number;
+            /** Format: int32 */
+            month?: number;
+            /** Format: int64 */
+            totalAmount?: number;
+            weeklyReports?: components["schemas"]["WeeklyOpenStatus"][];
+            monthlyIsOpened?: boolean;
+        };
+        WeeklyOpenStatus: {
+            /** Format: int32 */
+            week?: number;
+            isOpened?: boolean;
         };
         ApiResponseSummaryRecordResponse: {
             isSuccess?: boolean;
@@ -1497,7 +1541,6 @@ export interface operations {
             query: {
                 start: string;
                 end: string;
-                weekRange: string;
                 emotionType: "기분 전환" | "그냥저냥" | "필수템" | "홀린 듯이" | "살기 위해";
             };
             header?: never;
@@ -1535,6 +1578,29 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ApiResponseWeeklyDetailReportResponse"];
+                };
+            };
+        };
+    };
+    getTotalOpenStatus: {
+        parameters: {
+            query: {
+                year: number;
+                month: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTotalOpenStatusResponse"];
                 };
             };
         };
