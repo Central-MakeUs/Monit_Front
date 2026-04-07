@@ -20,6 +20,7 @@ export const ENDPOINT = {
     SUMMARY_RECORD: 'api/expense/summary_record',
     DAILY_SATISFACTION: 'api/expense/daily_satisfaction',
     MONTHLY_TOTALS: 'api/expense/monthly_totals',
+    TOTAL_OPEN_STATUS: 'api/expense/total_open_status',
     REPORT_ARRIVALS: 'api/expense/report_arrivals',
     CHECK_REPORT_ARRIVAL: 'api/expense/report_arrivals/{year}/{month}/check',
   },

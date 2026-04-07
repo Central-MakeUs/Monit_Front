@@ -16,14 +16,23 @@ export interface MonthlyReportCardProps {
   /** 포맷된 금액 문자열 (예: "240,000원") */
   amountText: string;
   reportItems: ReportItem[];
+  /** 펼침 상태 변경 콜백 (지연 페칭용) */
+  onExpandedChange?: (expanded: boolean) => void;
 }
 
 export const MonthlyReportCard = ({
   monthLabel,
   amountText,
   reportItems,
+  onExpandedChange,
 }: MonthlyReportCardProps): React.JSX.Element => {
   const [isExpanded, setIsExpanded] = useState(false);
+
+  const handleToggle = () => {
+    const next = !isExpanded;
+    setIsExpanded(next);
+    onExpandedChange?.(next);
+  };
 
   return (
     <div className={styles.card}>
@@ -59,7 +68,7 @@ export const MonthlyReportCard = ({
       <button
         type='button'
         className={styles.ctaButton}
-        onClick={() => setIsExpanded((prev) => !prev)}
+        onClick={handleToggle}
         aria-expanded={isExpanded}
         aria-label={`${monthLabel} 리포트 ${isExpanded ? '닫기' : '전체보기'}`}>
         <Text variant='b2' color={vars.color.text.secondary}>

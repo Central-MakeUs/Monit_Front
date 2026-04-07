@@ -6,3 +6,6 @@ export type WeeklyReportResponse = components['schemas']['WeeklyReportResponse']
 export type EmotionSummary = components['schemas']['EmotionSummary'];
 
 export type MonthlyReportArrivalResponse = components['schemas']['MonthlyReportArrivalResponse'];
+
+export type TotalOpenStatusResponse = components['schemas']['TotalOpenStatusResponse'];
+export type WeeklyOpenStatus = components['schemas']['WeeklyOpenStatus'];

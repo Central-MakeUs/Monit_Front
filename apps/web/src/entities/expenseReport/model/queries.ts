@@ -2,6 +2,7 @@ import { queryOptions } from '@tanstack/react-query';
 import { getSummaryRecord } from '../api/getSummaryRecord';
 import { getMonthlyReportList } from '../api/getMonthlyReportList';
 import { getReportArrivals } from '../api/getReportArrivals';
+import { getTotalOpenStatus } from '../api/getTotalOpenStatus';
 
 /**
  * 요약/리포트 쿼리 키 설계
@@ -24,5 +25,10 @@ export const expenseReportQueries = {
     queryOptions({
       queryKey: [...expenseReportQueries.all, 'reportArrivals'],
       queryFn: () => getReportArrivals(),
+    }),
+  totalOpenStatusQuery: (year: number, month: number) =>
+    queryOptions({
+      queryKey: [...expenseReportQueries.all, 'totalOpenStatus', year, month],
+      queryFn: () => getTotalOpenStatus(year, month),
     }),
 };
