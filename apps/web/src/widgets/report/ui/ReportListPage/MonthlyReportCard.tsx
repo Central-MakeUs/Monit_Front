@@ -50,20 +50,28 @@ export const MonthlyReportCard = ({
         </div>
       </div>
 
-      {isExpanded && (
-        <ul className={styles.listContainer}>
-          {reportItems.map((item) => (
-            <li key={item.label}>
-              <button type='button' className={styles.listItem} onClick={item.onClick}>
-                <Text variant='b2' color={vars.color.text.secondary}>
-                  {item.label}
-                </Text>
-                <IcRightChevron className={styles.listItemChevron} aria-hidden />
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
+      <div
+        className={`${styles.listCollapser} ${isExpanded ? styles.listCollapserExpanded : ''}`}
+        aria-hidden={!isExpanded}>
+        <div className={styles.listInner}>
+          <ul className={styles.listContainer}>
+            {reportItems.map((item) => (
+              <li key={item.label}>
+                <button
+                  type='button'
+                  className={styles.listItem}
+                  onClick={item.onClick}
+                  tabIndex={isExpanded ? 0 : -1}>
+                  <Text variant='b2' color={vars.color.text.secondary}>
+                    {item.label}
+                  </Text>
+                  <IcRightChevron className={styles.listItemChevron} aria-hidden />
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
 
       <button
         type='button'
@@ -75,7 +83,7 @@ export const MonthlyReportCard = ({
           {isExpanded ? '리포트 닫기' : '리포트 전체보기'}
         </Text>
         <IcRightChevron
-          className={isExpanded ? styles.chevronUp : styles.chevronDown}
+          className={`${styles.chevron} ${isExpanded ? styles.chevronExpanded : ''}`}
           aria-hidden
         />
       </button>
