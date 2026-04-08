@@ -1,9 +1,7 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import { useShallow } from 'zustand/react/shallow';
-import { useDateStore } from '@/entities/date';
 import { useExpenseSummaryData, MonthlyExpenseInfo } from '@/features/expense-summary';
 import { ROUTES } from '@/shared/constants/routes';
 import { ReportHeader } from './ui/ReportHeader/ReportHeader';
@@ -28,10 +26,10 @@ export const Report = ({
   onViewReportList,
 }: ReportProps) => {
   const router = useRouter();
-  const { currentDate } = useDateStore(useShallow((state) => ({ currentDate: state.currentDate })));
+  const today = useMemo(() => new Date(), []);
 
   const { monthlyTotalAmount, isLoading, isFetching } = useExpenseSummaryData({
-    monthDate: currentDate,
+    monthDate: today,
   });
 
   const reportArrival = useReportArrivalCard();
