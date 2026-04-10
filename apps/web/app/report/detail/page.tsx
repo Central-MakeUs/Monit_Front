@@ -21,7 +21,13 @@ function buildPeriodLabel(month: string | null, week: string | null): string | u
 function ReportDetailRouteContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const periodLabel = buildPeriodLabel(searchParams.get('month'), searchParams.get('week'));
+  const monthParam = searchParams.get('month');
+  const weekParam = searchParams.get('week');
+
+  const periodLabel = buildPeriodLabel(monthParam, weekParam);
+
+  const year = monthParam ? parseInt(monthParam.split('-')[0] ?? '0', 10) : undefined;
+  const month = monthParam ? parseInt(monthParam.split('-')[1] ?? '1', 10) : undefined;
 
   return (
     <ReportDetailPage
@@ -30,6 +36,9 @@ function ReportDetailRouteContent() {
         router.push(`${ROUTES.REPORT_CATEGORY_DETAIL}?categoryId=${categoryId}`)
       }
       periodLabel={periodLabel}
+      year={year}
+      month={month}
+      week={weekParam ? parseInt(weekParam, 10) : undefined}
     />
   );
 }
