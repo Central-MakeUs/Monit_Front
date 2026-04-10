@@ -3,6 +3,11 @@ import { getSummaryRecord } from '../api/getSummaryRecord';
 import { getMonthlyReportList } from '../api/getMonthlyReportList';
 import { getReportArrivals } from '../api/getReportArrivals';
 import { getTotalOpenStatus } from '../api/getTotalOpenStatus';
+import { getWeeklyDetail } from '../api/getWeeklyDetail';
+import {
+  getWeeklyExpenseDetails,
+  type GetWeeklyExpenseDetailsParams,
+} from '../api/getWeeklyExpenseDetails';
 
 /**
  * 요약/리포트 쿼리 키 설계
@@ -30,5 +35,22 @@ export const expenseReportQueries = {
     queryOptions({
       queryKey: [...expenseReportQueries.all, 'totalOpenStatus', year, month],
       queryFn: () => getTotalOpenStatus(year, month),
+    }),
+  weeklyDetailQuery: (year: number, month: number) =>
+    queryOptions({
+      queryKey: [...expenseReportQueries.all, 'weeklyDetail', year, month],
+      queryFn: () => getWeeklyDetail(year, month),
+    }),
+  weeklyExpenseDetailsQuery: (params: GetWeeklyExpenseDetailsParams) =>
+    queryOptions({
+      queryKey: [
+        ...expenseReportQueries.all,
+        'weeklyExpenseDetails',
+        params.start,
+        params.end,
+        params.emotionType,
+      ],
+      queryFn: () => getWeeklyExpenseDetails(params),
+      enabled: !!params.start && !!params.end && !!params.emotionType,
     }),
 };

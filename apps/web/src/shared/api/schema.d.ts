@@ -421,7 +421,7 @@ export interface paths {
         };
         /**
          * 주간 분석 상세 리포트 조회
-         * @description 특정 주차의 감정 분석, 만족도 통계, TOP 3 지출 내역 등 상세 데이터를 조회합니다.
+         * @description 해당 월의 열람 가능한 모든 주차에 대한 상세 리포트를 리스트로 조회합니다.
          */
         get: operations["getWeeklyDetailReport"];
         put?: never;
@@ -852,11 +852,20 @@ export interface components {
             totalAmount?: number;
             evaluationGroups?: components["schemas"]["EvaluationGroupResponse"][];
         };
-        ApiResponseWeeklyDetailReportResponse: {
+        ApiResponseListWeeklyDetailReportResponse: {
             isSuccess?: boolean;
             code?: string;
             message?: string;
-            result?: components["schemas"]["WeeklyDetailReportResponse"];
+            result?: components["schemas"]["WeeklyDetailReportResponse"][];
+        };
+        EmotionDetailSummary: {
+            emotionDescription?: string;
+            /** Format: int64 */
+            totalAmount?: number;
+            /** Format: int64 */
+            count?: number;
+            feedbackMessage?: string;
+            evaluationSummaries?: components["schemas"]["EvaluationSummary"][];
         };
         EmotionSummary: {
             emotionDescription?: string;
@@ -881,11 +890,13 @@ export interface components {
         };
         WeeklyDetailReportResponse: {
             weekRange?: string;
+            weekStartDate?: string;
+            weekEndDate?: string;
             emotionFeedbackMessage?: string;
             topEmotion?: components["schemas"]["EmotionSummary"];
             evaluationFeedbackMessage?: string;
             evaluationSummaries?: components["schemas"]["EvaluationSummary"][];
-            emotionDetails?: components["schemas"]["EmotionSummary"][];
+            emotionDetails?: components["schemas"]["EmotionDetailSummary"][];
             top3Expenses?: components["schemas"]["ExpenseSimpleResponse"][];
             /** Format: int64 */
             emotionTotalAmount?: number;
@@ -1563,7 +1574,8 @@ export interface operations {
     getWeeklyDetailReport: {
         parameters: {
             query: {
-                date: string;
+                year: number;
+                month: number;
             };
             header?: never;
             path?: never;
@@ -1577,7 +1589,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ApiResponseWeeklyDetailReportResponse"];
+                    "*/*": components["schemas"]["ApiResponseListWeeklyDetailReportResponse"];
                 };
             };
         };

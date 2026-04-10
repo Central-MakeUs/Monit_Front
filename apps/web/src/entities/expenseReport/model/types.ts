@@ -9,3 +9,10 @@ export type MonthlyReportArrivalResponse = components['schemas']['MonthlyReportA
 
 export type TotalOpenStatusResponse = components['schemas']['TotalOpenStatusResponse'];
 export type WeeklyOpenStatus = components['schemas']['WeeklyOpenStatus'];
+
+export type WeeklyDetailReportResponse = components['schemas']['WeeklyDetailReportResponse'];
+
+export type WeeklyExpenseDetailResponse = components['schemas']['WeeklyExpenseDetailResponse'];
+export type WeeklyExpenseEmotionType = NonNullable<
+  import('@/shared/api/schema').operations['getWeeklyExpenseDetails']['parameters']['query']
+>['emotionType'];
