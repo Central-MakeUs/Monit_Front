@@ -1,21 +1,55 @@
 'use client';
 
 import React from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Text, TopBar, vars } from '@/shared/ui';
 import { IcLeftChevron } from 'public/icons';
 import { formatCurrency } from '@/shared/lib/formatCurrency';
+import { expenseReportQueries, type WeeklyExpenseEmotionType } from '@/entities/expenseReport';
+import { categoryQueries } from '@/features/expense/model/categoryQueries';
+import { toCategoryDetailVM } from '../../model/toCategoryDetailVM';
 import { MOCK_CATEGORY_DETAIL } from '../../model/mockCategoryDetail';
 import { SatisfactionGroupCard } from './SatisfactionGroupCard';
 import * as styles from './CategoryDetailPage.css';
 
 export interface CategoryDetailPageProps {
   onBack: () => void;
-  /** 추후 API 연동 시 카테고리별 데이터 로딩에 사용 */
-  categoryId?: string;
+  /** 감정 타입 (예: "홀린 듯이") */
+  emotionType?: string;
+  /** 조회 시작일 (YYYY-MM-DD) */
+  start?: string;
+  /** 조회 종료일 (YYYY-MM-DD) */
+  end?: string;
 }
 
-export const CategoryDetailPage = ({ onBack }: CategoryDetailPageProps) => {
-  const vm = MOCK_CATEGORY_DETAIL;
+export const CategoryDetailPage = ({
+  onBack,
+  emotionType,
+  start,
+  end,
+}: CategoryDetailPageProps) => {
+  const hasParams = !!emotionType && !!start && !!end;
+
+  const { data: raw } = useQuery({
+    ...expenseReportQueries.weeklyExpenseDetailsQuery({
+      start: start ?? '',
+      end: end ?? '',
+      emotionType: (emotionType ?? '') as WeeklyExpenseEmotionType,
+    }),
+    enabled: hasParams,
+  });
+
+  const { data: categoryList } = useQuery(categoryQueries.listQuery());
+
+  const categoryIconMap = React.useMemo(() => {
+    const map = new Map<string, string>();
+    for (const c of categoryList?.result ?? []) {
+      if (c.name && c.icon) map.set(c.name, c.icon);
+    }
+    return map;
+  }, [categoryList]);
+
+  const vm = raw ? toCategoryDetailVM(raw, categoryIconMap) : MOCK_CATEGORY_DETAIL;
 
   return (
     <div className={styles.container}>

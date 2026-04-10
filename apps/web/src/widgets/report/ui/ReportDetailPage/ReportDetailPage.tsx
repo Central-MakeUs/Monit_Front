@@ -13,7 +13,7 @@ import * as styles from './ReportDetailPage.css';
 
 export interface ReportDetailPageProps {
   onBack: () => void;
-  onViewCategoryDetail?: (categoryId: string) => void;
+  onViewCategoryDetail?: (emotionType: string, start: string, end: string) => void;
   /** URL 파라미터에서 계산된 기간 레이블 (예: "2026년 1월", "2026년 1월 2주차") */
   periodLabel?: string;
   /** 주간 상세 조회 연도. month와 함께 존재하면 weekly 모드로 API 조회 */
@@ -81,7 +81,20 @@ export const ReportDetailPage = ({
 
         <div className={styles.cardList}>
           {vm.categories.map((category) => (
-            <CategoryCard key={category.id} vm={category} onViewDetail={onViewCategoryDetail} />
+            <CategoryCard
+              key={category.id}
+              vm={category}
+              onViewDetail={
+                onViewCategoryDetail && weeklyRaw
+                  ? (emotionType) =>
+                      onViewCategoryDetail(
+                        emotionType,
+                        weeklyRaw.weekStartDate ?? '',
+                        weeklyRaw.weekEndDate ?? ''
+                      )
+                  : undefined
+              }
+            />
           ))}
         </div>
 

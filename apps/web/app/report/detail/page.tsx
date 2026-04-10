@@ -32,9 +32,14 @@ function ReportDetailRouteContent() {
   return (
     <ReportDetailPage
       onBack={() => router.back()}
-      onViewCategoryDetail={(categoryId) =>
-        router.push(`${ROUTES.REPORT_CATEGORY_DETAIL}?categoryId=${categoryId}`)
-      }
+      onViewCategoryDetail={(emotionType, start, end) => {
+        const params = new URLSearchParams({
+          emotionType,
+          start: start.replaceAll('.', '-'),
+          end: end.replaceAll('.', '-'),
+        });
+        router.push(`${ROUTES.REPORT_CATEGORY_DETAIL}?${params.toString()}`);
+      }}
       periodLabel={periodLabel}
       year={year}
       month={month}
