@@ -2,14 +2,16 @@
 
 import React, { useMemo } from 'react';
 import { useRouter } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
 import { useExpenseSummaryData, MonthlyExpenseInfo } from '@/features/expense-summary';
+import { expenseReportQueries } from '@/entities/expenseReport';
 import { ROUTES } from '@/shared/constants/routes';
 import { ReportHeader } from './ui/ReportHeader/ReportHeader';
 import { ReportOverviewCard } from './ui/ReportOverviewCard/ReportOverviewCard';
 import { ReportSummaryCard } from './ui/ReportSummaryCard/ReportSummaryCard';
 import { ReportArrivalCard } from './ui/ReportArrivalCard/ReportArrivalCard';
 import { useReportArrivalCard } from './model/useReportArrivalCard';
-import { MOCK_REPORT_SUMMARY } from './model/mockReportSummary';
+import { toReportSummaryFromApi } from './model/toReportSummaryFromApi';
 import * as styles from './Report.css';
 
 export interface ReportProps {
@@ -31,6 +33,12 @@ export const Report = ({
   const { monthlyTotalAmount, isLoading, isFetching } = useExpenseSummaryData({
     monthDate: today,
   });
+
+  const { data: summaryRes } = useQuery(expenseReportQueries.summaryQuery());
+  const summaryVM = useMemo(() => {
+    const weekly = summaryRes?.result?.weeklyReports?.[0];
+    return weekly ? toReportSummaryFromApi(weekly) : null;
+  }, [summaryRes]);
 
   const reportArrival = useReportArrivalCard();
 
@@ -62,7 +70,7 @@ export const Report = ({
         )}
         <div className={styles.cardSection}>
           <ReportOverviewCard onClick={onViewReportList} />
-          <ReportSummaryCard vm={MOCK_REPORT_SUMMARY} onViewReport={onViewReport} />
+          {summaryVM && <ReportSummaryCard vm={summaryVM} onViewReport={onViewReport} />}
         </div>
       </div>
     </div>
