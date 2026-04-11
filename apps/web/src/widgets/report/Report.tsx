@@ -27,11 +27,20 @@ const parseWeekRange = (
   if (!weekRange) return null;
   const match = weekRange.match(/(\d{4})년\s*(\d{1,2})월\s*(\d+)주차/);
   if (!match) return null;
-  return {
-    year: parseInt(match[1] ?? '', 10),
-    month: parseInt(match[2] ?? '', 10),
-    week: parseInt(match[3] ?? '', 10),
-  };
+  const year = Number.parseInt(match[1] ?? '', 10);
+  const month = Number.parseInt(match[2] ?? '', 10);
+  const week = Number.parseInt(match[3] ?? '', 10);
+  if (
+    !Number.isFinite(year) ||
+    !Number.isFinite(month) ||
+    !Number.isFinite(week) ||
+    month < 1 ||
+    month > 12 ||
+    week < 1
+  ) {
+    return null;
+  }
+  return { year, month, week };
 };
 
 export const Report = ({ onSettingsClick, onNotificationClick, onViewReportList }: ReportProps) => {
@@ -47,13 +56,18 @@ export const Report = ({ onSettingsClick, onNotificationClick, onViewReportList 
   );
   // API는 오래된 주차 → 최신 주차 오름차순으로 내려주는데,
   // 화면에선 최신 주차가 가장 위에 오도록 역순으로 그린다.
+  // weekRange 라벨에서 year/month/week를 미리 파싱해 두고, 파싱 실패한 카드는
+  // 라우팅에 필요한 정보가 없으므로 클릭을 막는다.
   const summaryCards = useMemo(
     () =>
-      [...(summaryRes?.result?.weeklyReports ?? [])].reverse().map((weekly) => ({
-        key: weekly.weekRange ?? `${weekly.weekPeriod ?? ''}`,
-        weekRange: weekly.weekRange,
-        vm: toReportSummaryFromApi(weekly),
-      })),
+      [...(summaryRes?.result?.weeklyReports ?? [])].reverse().map((weekly) => {
+        const period = parseWeekRange(weekly.weekRange);
+        return {
+          key: weekly.weekRange ?? `${weekly.weekPeriod ?? ''}`,
+          period,
+          vm: toReportSummaryFromApi(weekly),
+        };
+      }),
     [summaryRes]
   );
 
@@ -65,15 +79,10 @@ export const Report = ({ onSettingsClick, onNotificationClick, onViewReportList 
     router.push(`${ROUTES.REPORT_DETAIL}?month=${encodeURIComponent(month)}`);
   };
 
-  const handleViewReport = (weekRange: string | undefined) => {
-    const parsed = parseWeekRange(weekRange);
-    if (!parsed) {
-      router.push(ROUTES.REPORT_DETAIL);
-      return;
-    }
-    const monthParam = `${parsed.year}-${String(parsed.month).padStart(2, '0')}`;
+  const handleViewReport = (period: { year: number; month: number; week: number }) => {
+    const monthParam = `${period.year}-${String(period.month).padStart(2, '0')}`;
     router.push(
-      `${ROUTES.REPORT_DETAIL}?month=${encodeURIComponent(monthParam)}&week=${parsed.week}`
+      `${ROUTES.REPORT_DETAIL}?month=${encodeURIComponent(monthParam)}&week=${period.week}`
     );
   };
 
@@ -107,7 +116,7 @@ export const Report = ({ onSettingsClick, onNotificationClick, onViewReportList 
                 <ReportSummaryCard
                   key={card.key}
                   vm={card.vm}
-                  onViewReport={() => handleViewReport(card.weekRange)}
+                  onViewReport={card.period ? () => handleViewReport(card.period!) : undefined}
                 />
               ))}
             </>

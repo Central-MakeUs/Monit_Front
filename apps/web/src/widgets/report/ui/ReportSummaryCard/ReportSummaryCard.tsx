@@ -8,7 +8,8 @@ import * as styles from './ReportSummaryCard.css';
 
 export interface ReportSummaryCardProps {
   vm: ReportSummaryVM;
-  onViewReport: () => void;
+  /** 라우팅에 필요한 정보가 없는 경우 미지정. 미지정 시 버튼이 비활성화된다. */
+  onViewReport?: () => void;
 }
 
 export const ReportSummaryCard = ({
@@ -87,9 +88,10 @@ export const ReportSummaryCard = ({
         <Button
           size='md'
           variant='white'
+          disabled={!onViewReport}
           onClick={(e) => {
             e.stopPropagation();
-            onViewReport();
+            onViewReport?.();
           }}>
           리포트 확인하기
         </Button>
