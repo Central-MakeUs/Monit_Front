@@ -1,7 +1,13 @@
-import type { WeeklyExpenseDetailResponse } from '@/entities/expenseReport';
+import type {
+  MonthlyExpenseDetailResponse,
+  WeeklyExpenseDetailResponse,
+} from '@/entities/expenseReport';
 import type { CategoryIconType } from '@/shared/ui/categoryBtn';
 import type { SatisfactionLevel } from './reportDetailTypes';
 import type { CategoryDetailVM, CategoryDetailGroupVM } from './categoryDetailTypes';
+
+/** 주간/월간 회고별 소비 상세 응답 공통 타입 */
+export type CategoryDetailLikeResponse = WeeklyExpenseDetailResponse | MonthlyExpenseDetailResponse;
 
 /** API 원본 감정 표현 → 화면 표시용 관형형 */
 const EMOTION_TO_DISPLAY: Record<string, string> = {
@@ -29,13 +35,21 @@ const STEP_TO_LEVEL: Record<number, SatisfactionLevel> = {
 };
 
 /**
- * @param data API 응답
+ * @param data API 응답 (주간 또는 월간)
  * @param categoryIconMap 카테고리 이름 → 아이콘 매핑 (카테고리 목록 API에서 조회)
+ * @param fallbackPeriodLabel 응답의 periodLabel이 없을 때 사용할 기본값
+ *
+ * 주간 응답은 periodLabel로 weekRange, 월간 응답은 monthTitle을 사용한다.
  */
 export function toCategoryDetailVM(
-  data: WeeklyExpenseDetailResponse,
-  categoryIconMap?: Map<string, string>
+  data: CategoryDetailLikeResponse,
+  categoryIconMap?: Map<string, string>,
+  fallbackPeriodLabel?: string
 ): CategoryDetailVM {
+  const weeklyLike = data as WeeklyExpenseDetailResponse;
+  const monthlyLike = data as MonthlyExpenseDetailResponse;
+  const periodLabel = weeklyLike.weekRange ?? monthlyLike.monthTitle ?? fallbackPeriodLabel ?? '';
+
   const groups: CategoryDetailGroupVM[] = (data.evaluationGroups ?? []).map((g) => ({
     level: (STEP_TO_LEVEL[g.stepNumber ?? 1] ?? 3) as SatisfactionLevel,
     label: g.evaluationTitle ?? '',
@@ -52,7 +66,7 @@ export function toCategoryDetailVM(
   }));
 
   return {
-    periodLabel: data.weekRange ?? '',
+    periodLabel,
     categoryName: convertEmotionTitle(data.emotionTitle ?? ''),
     totalCount: data.totalCount ?? 0,
     totalAmount: data.totalAmount ?? 0,

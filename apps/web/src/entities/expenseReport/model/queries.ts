@@ -8,6 +8,11 @@ import {
   getWeeklyExpenseDetails,
   type GetWeeklyExpenseDetailsParams,
 } from '../api/getWeeklyExpenseDetails';
+import { getMonthlyDetail } from '../api/getMonthlyDetail';
+import {
+  getMonthlyExpenseDetails,
+  type GetMonthlyExpenseDetailsParams,
+} from '../api/getMonthlyExpenseDetails';
 
 /**
  * 요약/리포트 쿼리 키 설계
@@ -52,5 +57,22 @@ export const expenseReportQueries = {
       ],
       queryFn: () => getWeeklyExpenseDetails(params),
       enabled: !!params.start && !!params.end && !!params.emotionType,
+    }),
+  monthlyDetailQuery: (year: number, month: number) =>
+    queryOptions({
+      queryKey: [...expenseReportQueries.all, 'monthlyDetail', year, month],
+      queryFn: () => getMonthlyDetail(year, month),
+    }),
+  monthlyExpenseDetailsQuery: (params: GetMonthlyExpenseDetailsParams) =>
+    queryOptions({
+      queryKey: [
+        ...expenseReportQueries.all,
+        'monthlyExpenseDetails',
+        params.year,
+        params.month,
+        params.emotionType,
+      ],
+      queryFn: () => getMonthlyExpenseDetails(params),
+      enabled: !!params.year && !!params.month && !!params.emotionType,
     }),
 };

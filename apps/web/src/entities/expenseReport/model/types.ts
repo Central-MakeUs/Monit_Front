@@ -16,3 +16,9 @@ export type WeeklyExpenseDetailResponse = components['schemas']['WeeklyExpenseDe
 export type WeeklyExpenseEmotionType = NonNullable<
   import('@/shared/api/schema').operations['getWeeklyExpenseDetails']['parameters']['query']
 >['emotionType'];
+
+export type MonthlyDetailReportResponse = components['schemas']['MonthlyDetailReportResponse'];
+export type MonthlyExpenseDetailResponse = components['schemas']['MonthlyExpenseDetailResponse'];
+export type MonthlyExpenseEmotionType = NonNullable<
+  import('@/shared/api/schema').operations['getMonthlyExpenseDetails']['parameters']['query']
+>['emotionType'];

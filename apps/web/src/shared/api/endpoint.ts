@@ -18,6 +18,8 @@ export const ENDPOINT = {
   EXPENSE_REPORT: {
     WEEKLY_DETAIL: 'api/expense/weekly_detail',
     WEEKLY_EXPENSE_DETAILS: 'api/weekly-reports/details',
+    MONTHLY_DETAIL: 'api/expense/monthly_detail',
+    MONTHLY_EXPENSE_DETAILS: 'api/monthly-reports/details',
     SUMMARY_RECORD: 'api/expense/summary_record',
     DAILY_SATISFACTION: 'api/expense/daily_satisfaction',
     MONTHLY_TOTALS: 'api/expense/monthly_totals',

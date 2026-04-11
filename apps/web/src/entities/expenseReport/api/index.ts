@@ -6,3 +6,6 @@ export { getTotalOpenStatus } from './getTotalOpenStatus';
 export { getWeeklyDetail } from './getWeeklyDetail';
 export { getWeeklyExpenseDetails } from './getWeeklyExpenseDetails';
 export type { GetWeeklyExpenseDetailsParams } from './getWeeklyExpenseDetails';
+export { getMonthlyDetail } from './getMonthlyDetail';
+export { getMonthlyExpenseDetails } from './getMonthlyExpenseDetails';
+export type { GetMonthlyExpenseDetailsParams } from './getMonthlyExpenseDetails';

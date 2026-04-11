@@ -1,4 +1,7 @@
-import type { WeeklyDetailReportResponse } from '@/entities/expenseReport';
+import type {
+  MonthlyDetailReportResponse,
+  WeeklyDetailReportResponse,
+} from '@/entities/expenseReport';
 import type { components } from '@/shared/api/schema';
 import {
   EVALUATION_TYPE_TO_LEVEL,
@@ -13,6 +16,9 @@ import type {
 } from './reportDetailTypes';
 
 type EmotionDetailSummary = components['schemas']['EmotionDetailSummary'];
+
+/** 주간/월간 상세 리포트 응답 공통 타입 (필드명만 다른 구조를 union으로 흡수) */
+export type ReportDetailLikeResponse = WeeklyDetailReportResponse | MonthlyDetailReportResponse;
 
 /** API emotionDescription → 화면 표시용 카테고리명 */
 const EMOTION_DESCRIPTION_TO_NAME: Record<string, string> = {
@@ -45,7 +51,7 @@ const toCategoryName = (emotionDescription: string): string =>
   EMOTION_DESCRIPTION_TO_NAME[emotionDescription] ?? `${emotionDescription} 소비`;
 
 const toSatisfactionRows = (
-  summaries: WeeklyDetailReportResponse['evaluationSummaries']
+  summaries: ReportDetailLikeResponse['evaluationSummaries']
 ): SatisfactionRow[] => {
   const summaryMap = new Map((summaries ?? []).map((s) => [s.evaluationType, s]));
   return EVALUATION_TYPE_ORDER.map((type) => {
@@ -60,18 +66,32 @@ const toSatisfactionRows = (
 };
 
 /**
- * GET /api/expense/weekly_detail 응답 → ReportDetailVM
+ * GET /api/expense/weekly_detail / GET /api/expense/monthly_detail 응답 → ReportDetailVM
  *
  * - topEmotion → 1위 카드 (expanded, evaluationSummaries 만족도 행 포함)
  * - emotionDetails → 2위 이하 카드 (collapsed, count=0이면 disabled)
- * - weeklyTotalCount/Amount → totalBar
+ * - weeklyTotalCount/Amount (주간) 또는 monthlyTotalCount/Amount (월간) → totalBar
  * - evaluationFeedbackMessage → avgCard
+ *
+ * 월간/주간 응답은 필드명 3쌍을 제외하면 구조가 동일해 같은 어댑터로 흡수한다:
+ *   weekRange ↔ monthTitle
+ *   weekStartDate/weekEndDate ↔ monthStartDate/monthEndDate
+ *   weeklyTotalCount/Amount ↔ monthlyTotalCount/Amount
  */
 export function toWeeklyReportDetailVM(
-  data: WeeklyDetailReportResponse,
+  data: ReportDetailLikeResponse,
   fallbackPeriodLabel?: string
 ): ReportDetailVM {
+  const weeklyLike = data as WeeklyDetailReportResponse;
+  const monthlyLike = data as MonthlyDetailReportResponse;
+  const periodLabel = weeklyLike.weekRange ?? monthlyLike.monthTitle ?? fallbackPeriodLabel ?? '';
+  const totalCount = weeklyLike.weeklyTotalCount ?? monthlyLike.monthlyTotalCount ?? 0;
+  const totalAmount = weeklyLike.weeklyTotalAmount ?? monthlyLike.monthlyTotalAmount ?? 0;
   const topDescription = data.topEmotion?.emotionDescription ?? '';
+
+  // 1위 감정의 만족도 breakdown은 emotionDetails[0].evaluationSummaries를 쓴다.
+  // data.evaluationSummaries는 기간 전체 합계라 타 감정까지 섞여 있어 1위 카드에 쓰면 안 된다.
+  const topEmotionDetail = data.emotionDetails?.[0];
 
   const topCategory: ReportCategoryVM | null = topDescription
     ? {
@@ -80,16 +100,14 @@ export function toWeeklyReportDetailVM(
         name: toCategoryName(topDescription),
         state: 'expanded',
         description: data.topEmotion?.feedbackMessage ?? '',
-        satisfactionRows: toSatisfactionRows(data.evaluationSummaries),
+        satisfactionRows: toSatisfactionRows(topEmotionDetail?.evaluationSummaries),
         totalCount: data.topEmotion?.count ?? 0,
         totalAmount: data.emotionTotalAmount ?? data.topEmotion?.totalAmount ?? 0,
       }
     : null;
 
-  // emotionDetails엔 topEmotion이 중복으로 들어오므로 제외
-  const restDetails = (data.emotionDetails ?? []).filter(
-    (e: EmotionDetailSummary) => e.emotionDescription !== topDescription
-  );
+  // emotionDetails[0]은 topEmotion과 동일하므로 제외하고 2위 이하만 rest로 사용
+  const restDetails = (data.emotionDetails ?? []).slice(1);
 
   // 응답에 없는 감정은 disabled 카드로 채워서 항상 5개가 보이도록
   const usedDescriptions = new Set<string>([
@@ -121,14 +139,14 @@ export function toWeeklyReportDetailVM(
   });
 
   return {
-    periodLabel: data.weekRange ?? fallbackPeriodLabel ?? '',
+    periodLabel,
     subtitleLine: topDescription
       ? `${EMOTION_DESCRIPTION_TO_PHRASE[topDescription] ?? topDescription} 소비에서 가장 많이 소비했고,`
       : '',
     titleLine: data.emotionFeedbackMessage ?? '',
     categories: topCategory ? [topCategory, ...restCategories] : restCategories,
-    totalCount: data.weeklyTotalCount ?? 0,
-    totalAmount: data.weeklyTotalAmount ?? 0,
+    totalCount,
+    totalAmount,
     avgSatisfactionComment: data.evaluationFeedbackMessage ?? '',
   };
 }

@@ -12,16 +12,21 @@ import { ReportDetailLoadingSkeleton } from '../ReportDetailLoadingSkeleton';
 import { CategoryCard } from './CategoryCard';
 import * as styles from './ReportDetailPage.css';
 
+/** 카테고리 상세 화면으로 넘어갈 때 전달되는 파라미터 (주간/월간 모드 구분) */
+export type ViewCategoryDetailArgs =
+  | { mode: 'weekly'; emotionType: string; start: string; end: string }
+  | { mode: 'monthly'; emotionType: string; year: number; month: number };
+
 export interface ReportDetailPageProps {
   onBack: () => void;
-  onViewCategoryDetail?: (emotionType: string, start: string, end: string) => void;
+  onViewCategoryDetail?: (args: ViewCategoryDetailArgs) => void;
   /** URL 파라미터에서 계산된 기간 레이블 (예: "2026년 1월", "2026년 1월 2주차") */
   periodLabel?: string;
-  /** 주간 상세 조회 연도. month와 함께 존재하면 weekly 모드로 API 조회 */
+  /** 조회 연도. month와 함께 존재할 때 API 조회. week가 함께 있으면 weekly, 없으면 monthly */
   year?: number;
-  /** 주간 상세 조회 월 */
+  /** 조회 월 */
   month?: number;
-  /** 주차 (1-based). 배열 응답에서 해당 주차 선택 */
+  /** 주차 (1-based). 존재 시 주간 모드. 배열 응답에서 해당 주차 선택 */
   week?: number;
 }
 
@@ -33,15 +38,23 @@ export const ReportDetailPage = ({
   month,
   week,
 }: ReportDetailPageProps) => {
-  const isWeekly = year != null && month != null;
+  const hasPeriod = year != null && month != null;
+  const isWeekly = hasPeriod && week != null;
+  const isMonthly = hasPeriod && week == null;
 
   const { data: weeklyList, isLoading: isWeeklyLoading } = useQuery({
     ...expenseReportQueries.weeklyDetailQuery(year ?? 0, month ?? 0),
     enabled: isWeekly,
   });
 
-  const weeklyRaw = weeklyList && week != null ? weeklyList[week - 1] : weeklyList?.[0];
-  const showSkeleton = isWeekly && isWeeklyLoading;
+  const { data: monthlyRaw, isLoading: isMonthlyLoading } = useQuery({
+    ...expenseReportQueries.monthlyDetailQuery(year ?? 0, month ?? 0),
+    enabled: isMonthly,
+  });
+
+  const weeklyRaw = weeklyList && week != null ? weeklyList[week - 1] : undefined;
+  // 현재 모드에 해당하는 API 응답을 기다리는 동안 스켈레톤 표시.
+  const showSkeleton = (isWeekly && isWeeklyLoading) || (isMonthly && isMonthlyLoading);
 
   const vm = isWeekly
     ? weeklyRaw
@@ -51,7 +64,34 @@ export const ReportDetailPage = ({
           periodLabel: periodLabel ?? MOCK_REPORT_DETAIL.periodLabel,
           categories: [],
         }
-    : { ...MOCK_REPORT_DETAIL, periodLabel: periodLabel ?? MOCK_REPORT_DETAIL.periodLabel };
+    : isMonthly
+      ? monthlyRaw
+        ? toWeeklyReportDetailVM(monthlyRaw, periodLabel)
+        : {
+            ...MOCK_REPORT_DETAIL,
+            periodLabel: periodLabel ?? MOCK_REPORT_DETAIL.periodLabel,
+            categories: [],
+          }
+      : { ...MOCK_REPORT_DETAIL, periodLabel: periodLabel ?? MOCK_REPORT_DETAIL.periodLabel };
+
+  const handleViewCategoryDetail = (emotionType: string) => {
+    if (!onViewCategoryDetail) return;
+    if (isWeekly && weeklyRaw) {
+      onViewCategoryDetail({
+        mode: 'weekly',
+        emotionType,
+        start: weeklyRaw.weekStartDate ?? '',
+        end: weeklyRaw.weekEndDate ?? '',
+      });
+      return;
+    }
+    if (isMonthly && year != null && month != null) {
+      onViewCategoryDetail({ mode: 'monthly', emotionType, year, month });
+    }
+  };
+
+  const canViewCategoryDetail =
+    !!onViewCategoryDetail && ((isWeekly && !!weeklyRaw) || (isMonthly && !!monthlyRaw));
 
   return (
     <div className={styles.container}>
@@ -90,16 +130,7 @@ export const ReportDetailPage = ({
                 <CategoryCard
                   key={category.id}
                   vm={category}
-                  onViewDetail={
-                    onViewCategoryDetail && weeklyRaw
-                      ? (emotionType) =>
-                          onViewCategoryDetail(
-                            emotionType,
-                            weeklyRaw.weekStartDate ?? '',
-                            weeklyRaw.weekEndDate ?? ''
-                          )
-                      : undefined
-                  }
+                  onViewDetail={canViewCategoryDetail ? handleViewCategoryDetail : undefined}
                 />
               ))}
             </div>

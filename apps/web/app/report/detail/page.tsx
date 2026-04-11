@@ -32,12 +32,15 @@ function ReportDetailRouteContent() {
   return (
     <ReportDetailPage
       onBack={() => router.back()}
-      onViewCategoryDetail={(emotionType, start, end) => {
-        const params = new URLSearchParams({
-          emotionType,
-          start: start.replaceAll('.', '-'),
-          end: end.replaceAll('.', '-'),
-        });
+      onViewCategoryDetail={(args) => {
+        const params = new URLSearchParams({ emotionType: args.emotionType });
+        if (args.mode === 'weekly') {
+          params.set('start', args.start.replaceAll('.', '-'));
+          params.set('end', args.end.replaceAll('.', '-'));
+        } else {
+          params.set('year', String(args.year));
+          params.set('month', String(args.month));
+        }
         router.push(`${ROUTES.REPORT_CATEGORY_DETAIL}?${params.toString()}`);
       }}
       periodLabel={periodLabel}

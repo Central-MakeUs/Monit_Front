@@ -5,7 +5,11 @@ import { useQuery } from '@tanstack/react-query';
 import { Text, TopBar, vars } from '@/shared/ui';
 import { IcLeftChevron } from 'public/icons';
 import { formatCurrency } from '@/shared/lib/formatCurrency';
-import { expenseReportQueries, type WeeklyExpenseEmotionType } from '@/entities/expenseReport';
+import {
+  expenseReportQueries,
+  type MonthlyExpenseEmotionType,
+  type WeeklyExpenseEmotionType,
+} from '@/entities/expenseReport';
 import { categoryQueries } from '@/features/expense/model/categoryQueries';
 import { toCategoryDetailVM } from '../../model/toCategoryDetailVM';
 import { MOCK_CATEGORY_DETAIL } from '../../model/mockCategoryDetail';
@@ -16,10 +20,16 @@ export interface CategoryDetailPageProps {
   onBack: () => void;
   /** 감정 타입 (예: "홀린 듯이") */
   emotionType?: string;
-  /** 조회 시작일 (YYYY-MM-DD) */
+  /** (주간) 조회 시작일 (YYYY-MM-DD) */
   start?: string;
-  /** 조회 종료일 (YYYY-MM-DD) */
+  /** (주간) 조회 종료일 (YYYY-MM-DD) */
   end?: string;
+  /** (월간) 조회 연도. month와 함께 있을 때 월간 모드로 조회 */
+  year?: number;
+  /** (월간) 조회 월 */
+  month?: number;
+  /** 기간 레이블 fallback (응답에 없을 때 표시) */
+  periodLabel?: string;
 }
 
 export const CategoryDetailPage = ({
@@ -27,16 +37,29 @@ export const CategoryDetailPage = ({
   emotionType,
   start,
   end,
+  year,
+  month,
+  periodLabel,
 }: CategoryDetailPageProps) => {
-  const hasParams = !!emotionType && !!start && !!end;
+  const isMonthly = year != null && month != null;
+  const isWeekly = !isMonthly && !!start && !!end;
 
-  const { data: raw } = useQuery({
+  const { data: weeklyRaw } = useQuery({
     ...expenseReportQueries.weeklyExpenseDetailsQuery({
       start: start ?? '',
       end: end ?? '',
       emotionType: (emotionType ?? '') as WeeklyExpenseEmotionType,
     }),
-    enabled: hasParams,
+    enabled: !!emotionType && isWeekly,
+  });
+
+  const { data: monthlyRaw } = useQuery({
+    ...expenseReportQueries.monthlyExpenseDetailsQuery({
+      year: year ?? 0,
+      month: month ?? 0,
+      emotionType: (emotionType ?? '') as MonthlyExpenseEmotionType,
+    }),
+    enabled: !!emotionType && isMonthly,
   });
 
   const { data: categoryList } = useQuery(categoryQueries.listQuery());
@@ -49,7 +72,8 @@ export const CategoryDetailPage = ({
     return map;
   }, [categoryList]);
 
-  const vm = raw ? toCategoryDetailVM(raw, categoryIconMap) : MOCK_CATEGORY_DETAIL;
+  const raw = isMonthly ? monthlyRaw : weeklyRaw;
+  const vm = raw ? toCategoryDetailVM(raw, categoryIconMap, periodLabel) : MOCK_CATEGORY_DETAIL;
 
   return (
     <div className={styles.container}>
