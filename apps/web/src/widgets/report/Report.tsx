@@ -51,9 +51,12 @@ export const Report = ({ onSettingsClick, onNotificationClick, onViewReportList 
     monthDate: today,
   });
 
-  const { data: summaryRes, isLoading: isSummaryLoading } = useQuery(
-    expenseReportQueries.summaryQuery()
-  );
+  const {
+    data: summaryRes,
+    isLoading: isSummaryLoading,
+    isError: isSummaryError,
+    refetch: refetchSummary,
+  } = useQuery(expenseReportQueries.summaryQuery());
   // API는 오래된 주차 → 최신 주차 오름차순으로 내려주는데,
   // 화면에선 최신 주차가 가장 위에 오도록 역순으로 그린다.
   // weekRange 라벨에서 year/month/week를 미리 파싱해 두고, 파싱 실패한 카드는
@@ -109,6 +112,20 @@ export const Report = ({ onSettingsClick, onNotificationClick, onViewReportList 
         <div className={styles.cardSection}>
           {isSummaryLoading ? (
             <ReportLoadingSkeleton />
+          ) : isSummaryError ? (
+            // 요약 조회가 실패한 경우 "빈 상태"가 아니라 명시적인 에러/재시도 UI를 보여준다.
+            // (빈 배열 응답과 네트워크 오류를 사용자가 구분할 수 있어야 한다.)
+            <div className={styles.errorState} role='alert'>
+              주간 리포트를 불러오지 못했어요.
+              <button
+                type='button'
+                className={styles.retryButton}
+                onClick={() => {
+                  void refetchSummary();
+                }}>
+                다시 시도
+              </button>
+            </div>
           ) : (
             <>
               <ReportOverviewCard onClick={onViewReportList} />
