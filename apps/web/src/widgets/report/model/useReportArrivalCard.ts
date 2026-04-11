@@ -37,8 +37,16 @@ export function useReportArrivalCard() {
     },
     onConfirm: () => {
       if (latest?.year != null && latest?.month != null) {
-        patchCheckReportArrival(latest.year, latest.month).catch(() => {});
-        dismiss(latest.year, latest.month);
+        const { year, month } = latest;
+        // 서버 확인 처리가 성공한 뒤에만 로컬 dismiss를 적용해
+        // 실패 시 카드가 다시 노출되어 재시도할 수 있게 한다.
+        patchCheckReportArrival(year, month)
+          .then(() => {
+            dismiss(year, month);
+          })
+          .catch((error) => {
+            console.error('월간 리포트 확인 처리 실패:', error);
+          });
       }
     },
   };
