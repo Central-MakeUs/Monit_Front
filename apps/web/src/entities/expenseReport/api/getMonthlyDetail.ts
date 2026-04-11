@@ -10,6 +10,9 @@ export const getMonthlyDetail = async (
   year: number,
   month: number
 ): Promise<MonthlyDetailReportResponse> => {
+  if (!Number.isInteger(year) || !Number.isInteger(month) || month < 1 || month > 12) {
+    throw new Error(`getMonthlyDetail: invalid year/month (year=${year}, month=${month})`);
+  }
   const res = await authApi.get<MonthlyDetailReportResponse>(
     ENDPOINT.EXPENSE_REPORT.MONTHLY_DETAIL,
     {
