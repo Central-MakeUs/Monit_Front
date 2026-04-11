@@ -6,7 +6,6 @@ import { Badge, Text, TopBar, vars } from '@/shared/ui';
 import { IcLeftChevron } from 'public/icons';
 import { formatCurrency } from '@/shared/lib/formatCurrency';
 import { expenseReportQueries } from '@/entities/expenseReport';
-import { MOCK_REPORT_DETAIL } from '../../model/mockReportDetail';
 import { toWeeklyReportDetailVM } from '../../model/toWeeklyReportDetailVM';
 import { ReportDetailLoadingSkeleton } from '../ReportDetailLoadingSkeleton';
 import { CategoryCard } from './CategoryCard';
@@ -38,16 +37,32 @@ export const ReportDetailPage = ({
   month,
   week,
 }: ReportDetailPageProps) => {
-  const hasPeriod = year != null && month != null;
-  const isWeekly = hasPeriod && week != null;
-  const isMonthly = hasPeriod && week == null;
+  // year/month는 NaN/0 같은 값이 흘러 들어와도 잘못된 API 요청을 보내지 않도록
+  // 유한한 정수 + month 1~12 범위까지 검증한 뒤에만 모드를 활성화한다.
+  const hasValidPeriod =
+    year != null &&
+    month != null &&
+    Number.isFinite(year) &&
+    Number.isFinite(month) &&
+    month >= 1 &&
+    month <= 12;
+  const isWeekly = hasValidPeriod && week != null && Number.isFinite(week) && week >= 1;
+  const isMonthly = hasValidPeriod && week == null;
 
-  const { data: weeklyList, isLoading: isWeeklyLoading } = useQuery({
+  const {
+    data: weeklyList,
+    isLoading: isWeeklyLoading,
+    isError: isWeeklyError,
+  } = useQuery({
     ...expenseReportQueries.weeklyDetailQuery(year ?? 0, month ?? 0),
     enabled: isWeekly,
   });
 
-  const { data: monthlyRaw, isLoading: isMonthlyLoading } = useQuery({
+  const {
+    data: monthlyRaw,
+    isLoading: isMonthlyLoading,
+    isError: isMonthlyError,
+  } = useQuery({
     ...expenseReportQueries.monthlyDetailQuery(year ?? 0, month ?? 0),
     enabled: isMonthly,
   });
@@ -55,33 +70,27 @@ export const ReportDetailPage = ({
   const weeklyRaw = weeklyList && week != null ? weeklyList[week - 1] : undefined;
   // 현재 모드에 해당하는 API 응답을 기다리는 동안 스켈레톤 표시.
   const showSkeleton = (isWeekly && isWeeklyLoading) || (isMonthly && isMonthlyLoading);
+  const showError = (isWeekly && isWeeklyError) || (isMonthly && isMonthlyError);
+  const isInvalidParams = !isWeekly && !isMonthly;
+  // 주간 모드는 weeklyList에 해당 주차 인덱스가 없을 수 있으므로 별도 체크.
+  const isWeeklyMissing = isWeekly && !!weeklyList && !weeklyRaw;
+  const isMonthlyMissing = isMonthly && monthlyRaw == null && !isMonthlyLoading;
 
-  const vm = isWeekly
-    ? weeklyRaw
+  const vm =
+    isWeekly && weeklyRaw
       ? toWeeklyReportDetailVM(weeklyRaw, periodLabel)
-      : {
-          ...MOCK_REPORT_DETAIL,
-          periodLabel: periodLabel ?? MOCK_REPORT_DETAIL.periodLabel,
-          categories: [],
-        }
-    : isMonthly
-      ? monthlyRaw
+      : isMonthly && monthlyRaw
         ? toWeeklyReportDetailVM(monthlyRaw, periodLabel)
-        : {
-            ...MOCK_REPORT_DETAIL,
-            periodLabel: periodLabel ?? MOCK_REPORT_DETAIL.periodLabel,
-            categories: [],
-          }
-      : { ...MOCK_REPORT_DETAIL, periodLabel: periodLabel ?? MOCK_REPORT_DETAIL.periodLabel };
+        : null;
 
   const handleViewCategoryDetail = (emotionType: string) => {
     if (!onViewCategoryDetail) return;
-    if (isWeekly && weeklyRaw) {
+    if (isWeekly && weeklyRaw?.weekStartDate && weeklyRaw?.weekEndDate) {
       onViewCategoryDetail({
         mode: 'weekly',
         emotionType,
-        start: weeklyRaw.weekStartDate ?? '',
-        end: weeklyRaw.weekEndDate ?? '',
+        start: weeklyRaw.weekStartDate,
+        end: weeklyRaw.weekEndDate,
       });
       return;
     }
@@ -91,7 +100,9 @@ export const ReportDetailPage = ({
   };
 
   const canViewCategoryDetail =
-    !!onViewCategoryDetail && ((isWeekly && !!weeklyRaw) || (isMonthly && !!monthlyRaw));
+    !!onViewCategoryDetail &&
+    ((isWeekly && !!weeklyRaw?.weekStartDate && !!weeklyRaw?.weekEndDate) ||
+      (isMonthly && !!monthlyRaw));
 
   return (
     <div className={styles.container}>
@@ -113,8 +124,20 @@ export const ReportDetailPage = ({
       />
 
       <div className={styles.scrollArea}>
-        {showSkeleton ? (
+        {isInvalidParams ? (
+          <div className={styles.emptyState} role='status'>
+            잘못된 접근이에요. 이전 화면에서 다시 시도해 주세요.
+          </div>
+        ) : showSkeleton ? (
           <ReportDetailLoadingSkeleton />
+        ) : showError ? (
+          <div className={styles.emptyState} role='alert'>
+            리포트를 불러오지 못했어요. 잠시 후 다시 시도해 주세요.
+          </div>
+        ) : isWeeklyMissing || isMonthlyMissing || !vm ? (
+          <div className={styles.emptyState} role='status'>
+            아직 표시할 리포트가 없어요.
+          </div>
         ) : (
           <>
             <div className={styles.summarySection}>

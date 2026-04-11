@@ -12,7 +12,6 @@ import {
 } from '@/entities/expenseReport';
 import { categoryQueries } from '@/features/expense/model/categoryQueries';
 import { toCategoryDetailVM } from '../../model/toCategoryDetailVM';
-import { MOCK_CATEGORY_DETAIL } from '../../model/mockCategoryDetail';
 import { SatisfactionGroupCard } from './SatisfactionGroupCard';
 import * as styles from './CategoryDetailPage.css';
 
@@ -41,10 +40,22 @@ export const CategoryDetailPage = ({
   month,
   periodLabel,
 }: CategoryDetailPageProps) => {
-  const isMonthly = year != null && month != null;
+  // 월간 모드는 year/month가 모두 유한한 정수이고 month가 1~12 범위일 때만 활성화한다.
+  // (NaN/0 등이 흘러 들어와 잘못된 API 요청이나 라벨이 만들어지는 것을 막는다.)
+  const isMonthly =
+    year != null &&
+    month != null &&
+    Number.isFinite(year) &&
+    Number.isFinite(month) &&
+    month >= 1 &&
+    month <= 12;
   const isWeekly = !isMonthly && !!start && !!end;
 
-  const { data: weeklyRaw } = useQuery({
+  const {
+    data: weeklyRaw,
+    isLoading: isWeeklyLoading,
+    isError: isWeeklyError,
+  } = useQuery({
     ...expenseReportQueries.weeklyExpenseDetailsQuery({
       start: start ?? '',
       end: end ?? '',
@@ -53,7 +64,11 @@ export const CategoryDetailPage = ({
     enabled: !!emotionType && isWeekly,
   });
 
-  const { data: monthlyRaw } = useQuery({
+  const {
+    data: monthlyRaw,
+    isLoading: isMonthlyLoading,
+    isError: isMonthlyError,
+  } = useQuery({
     ...expenseReportQueries.monthlyExpenseDetailsQuery({
       year: year ?? 0,
       month: month ?? 0,
@@ -72,8 +87,14 @@ export const CategoryDetailPage = ({
     return map;
   }, [categoryList]);
 
-  const raw = isMonthly ? monthlyRaw : weeklyRaw;
-  const vm = raw ? toCategoryDetailVM(raw, categoryIconMap, periodLabel) : MOCK_CATEGORY_DETAIL;
+  const raw = isMonthly ? monthlyRaw : isWeekly ? weeklyRaw : undefined;
+  const vm = raw ? toCategoryDetailVM(raw, categoryIconMap, periodLabel) : null;
+  const isLoading =
+    (isWeekly && isWeeklyLoading && !!emotionType) ||
+    (isMonthly && isMonthlyLoading && !!emotionType);
+  const isError = (isWeekly && isWeeklyError) || (isMonthly && isMonthlyError);
+  // emotionType이나 모드 식별 정보 자체가 없으면 잘못된 진입이다.
+  const isInvalidParams = !emotionType || (!isWeekly && !isMonthly);
 
   return (
     <div className={styles.container}>
@@ -95,28 +116,48 @@ export const CategoryDetailPage = ({
       />
 
       <div className={styles.scrollArea}>
-        <div className={styles.summarySection}>
-          <div className={styles.labelWrapper}>
-            <Text className={styles.label} variant='b3'>
-              {vm.periodLabel}
-            </Text>
+        {isInvalidParams ? (
+          <div className={styles.emptyState} role='status'>
+            잘못된 접근이에요. 이전 화면에서 다시 시도해 주세요.
           </div>
-          <p className={styles.titleText}>{vm.categoryName}</p>
-        </div>
-
-        <div className={styles.totalBar}>
-          <span className={styles.totalBarText}>총 소비 {vm.totalCount}건</span>
-          <div className={styles.totalBarAmountWrapper}>
-            <span className={styles.totalBarAmountText}>총</span>
-            <span className={styles.totalBarAmountText}>{formatCurrency(vm.totalAmount)}</span>
+        ) : isLoading ? (
+          <div className={styles.emptyState} aria-busy='true' aria-live='polite'>
+            소비 내역을 불러오고 있어요…
           </div>
-        </div>
+        ) : isError ? (
+          <div className={styles.emptyState} role='alert'>
+            소비 내역을 불러오지 못했어요. 잠시 후 다시 시도해 주세요.
+          </div>
+        ) : !vm ? (
+          <div className={styles.emptyState} role='status'>
+            표시할 소비 내역이 없어요.
+          </div>
+        ) : (
+          <>
+            <div className={styles.summarySection}>
+              <div className={styles.labelWrapper}>
+                <Text className={styles.label} variant='b3'>
+                  {vm.periodLabel}
+                </Text>
+              </div>
+              <p className={styles.titleText}>{vm.categoryName}</p>
+            </div>
 
-        <div className={styles.groupList}>
-          {vm.groups.map((group) => (
-            <SatisfactionGroupCard key={group.level} vm={group} />
-          ))}
-        </div>
+            <div className={styles.totalBar}>
+              <span className={styles.totalBarText}>총 소비 {vm.totalCount}건</span>
+              <div className={styles.totalBarAmountWrapper}>
+                <span className={styles.totalBarAmountText}>총</span>
+                <span className={styles.totalBarAmountText}>{formatCurrency(vm.totalAmount)}</span>
+              </div>
+            </div>
+
+            <div className={styles.groupList}>
+              {vm.groups.map((group) => (
+                <SatisfactionGroupCard key={group.level} vm={group} />
+              ))}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

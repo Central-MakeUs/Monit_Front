@@ -105,6 +105,18 @@ export const avgComment = style({
   lineHeight: '1.4',
 });
 
+export const emptyState = style({
+  flex: 1,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: vars.spacing.xl,
+  fontSize: vars.font.size.b2,
+  color: vars.color.text.secondary,
+  textAlign: 'center',
+  whiteSpace: 'pre-wrap',
+});
+
 export const iconButton = style({
   width: '3.2rem',
   height: '3.2rem',
