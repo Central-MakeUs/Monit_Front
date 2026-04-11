@@ -8,6 +8,7 @@ import { formatCurrency } from '@/shared/lib/formatCurrency';
 import { expenseReportQueries } from '@/entities/expenseReport';
 import { MOCK_REPORT_DETAIL } from '../../model/mockReportDetail';
 import { toWeeklyReportDetailVM } from '../../model/toWeeklyReportDetailVM';
+import { ReportDetailLoadingSkeleton } from '../ReportDetailLoadingSkeleton';
 import { CategoryCard } from './CategoryCard';
 import * as styles from './ReportDetailPage.css';
 
@@ -34,12 +35,13 @@ export const ReportDetailPage = ({
 }: ReportDetailPageProps) => {
   const isWeekly = year != null && month != null;
 
-  const { data: weeklyList } = useQuery({
+  const { data: weeklyList, isLoading: isWeeklyLoading } = useQuery({
     ...expenseReportQueries.weeklyDetailQuery(year ?? 0, month ?? 0),
     enabled: isWeekly,
   });
 
   const weeklyRaw = weeklyList && week != null ? weeklyList[week - 1] : weeklyList?.[0];
+  const showSkeleton = isWeekly && isWeeklyLoading;
 
   const vm = isWeekly
     ? weeklyRaw
@@ -71,45 +73,51 @@ export const ReportDetailPage = ({
       />
 
       <div className={styles.scrollArea}>
-        <div className={styles.summarySection}>
-          <div className={styles.badgeWrapper}>
-            <Badge label={vm.periodLabel} size='xs' />
-          </div>
-          <p className={styles.subtitleText}>{vm.subtitleLine}</p>
-          <p className={styles.titleText}>{vm.titleLine}</p>
-        </div>
+        {showSkeleton ? (
+          <ReportDetailLoadingSkeleton />
+        ) : (
+          <>
+            <div className={styles.summarySection}>
+              <div className={styles.badgeWrapper}>
+                <Badge label={vm.periodLabel} size='xs' />
+              </div>
+              <p className={styles.subtitleText}>{vm.subtitleLine}</p>
+              <p className={styles.titleText}>{vm.titleLine}</p>
+            </div>
 
-        <div className={styles.cardList}>
-          {vm.categories.map((category) => (
-            <CategoryCard
-              key={category.id}
-              vm={category}
-              onViewDetail={
-                onViewCategoryDetail && weeklyRaw
-                  ? (emotionType) =>
-                      onViewCategoryDetail(
-                        emotionType,
-                        weeklyRaw.weekStartDate ?? '',
-                        weeklyRaw.weekEndDate ?? ''
-                      )
-                  : undefined
-              }
-            />
-          ))}
-        </div>
+            <div className={styles.cardList}>
+              {vm.categories.map((category) => (
+                <CategoryCard
+                  key={category.id}
+                  vm={category}
+                  onViewDetail={
+                    onViewCategoryDetail && weeklyRaw
+                      ? (emotionType) =>
+                          onViewCategoryDetail(
+                            emotionType,
+                            weeklyRaw.weekStartDate ?? '',
+                            weeklyRaw.weekEndDate ?? ''
+                          )
+                      : undefined
+                  }
+                />
+              ))}
+            </div>
 
-        <div className={styles.totalBar}>
-          <span className={styles.totalBarText}>총 소비 {vm.totalCount}건</span>
-          <div className={styles.totalBarAmountWrapper}>
-            <span className={styles.totalBarAmountText}>총</span>
-            <span className={styles.totalBarAmountText}>{formatCurrency(vm.totalAmount)}</span>
-          </div>
-        </div>
+            <div className={styles.totalBar}>
+              <span className={styles.totalBarText}>총 소비 {vm.totalCount}건</span>
+              <div className={styles.totalBarAmountWrapper}>
+                <span className={styles.totalBarAmountText}>총</span>
+                <span className={styles.totalBarAmountText}>{formatCurrency(vm.totalAmount)}</span>
+              </div>
+            </div>
 
-        <div className={styles.avgCard}>
-          <span className={styles.avgLabel}>평균 만족도</span>
-          <span className={styles.avgComment}>{vm.avgSatisfactionComment}</span>
-        </div>
+            <div className={styles.avgCard}>
+              <span className={styles.avgLabel}>평균 만족도</span>
+              <span className={styles.avgComment}>{vm.avgSatisfactionComment}</span>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
