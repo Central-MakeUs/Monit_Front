@@ -1,13 +1,17 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { TopBar, Text, vars } from '@/shared/ui';
 import { IcLeftChevron } from 'public/icons';
 import { formatCurrency } from '@/shared/lib/formatCurrency';
 import { expenseReportQueries, type MonthlyReportSummaryResponse } from '@/entities/expenseReport';
 import { MonthlyReportCard } from './MonthlyReportCard';
+import { ReportListLoadingSkeleton } from '../ReportListLoadingSkeleton';
+import { useReportListCacheStore } from '../../model/reportListCacheStore';
 import * as styles from './ReportListPage.css';
+
+const DEFAULT_SKELETON_COUNT = 3;
 
 export interface ReportListPageProps {
   onBack: () => void;
@@ -83,7 +87,10 @@ export const ReportListPage = ({
   onViewWeeklyReport,
   onViewMonthlyReport,
 }: ReportListPageProps): React.JSX.Element => {
-  const { data: reports = [] } = useQuery(expenseReportQueries.monthlyListQuery());
+  const { data: reports = [], isLoading } = useQuery(expenseReportQueries.monthlyListQuery());
+
+  const lastSeenCount = useReportListCacheStore((s) => s.lastSeenCount);
+  const setLastSeenCount = useReportListCacheStore((s) => s.setLastSeenCount);
 
   // year가 "26" / "2026" 양쪽으로 올 수 있어 4자리로 정규화
   const normalizeYear = (y: string | number | undefined): number => {
@@ -111,6 +118,14 @@ export const ReportListPage = ({
     .map(Number)
     .sort((a, b) => b - a);
 
+  useEffect(() => {
+    if (!isLoading && sorted.length > 0 && sorted.length !== lastSeenCount) {
+      setLastSeenCount(sorted.length);
+    }
+  }, [isLoading, sorted.length, lastSeenCount, setLastSeenCount]);
+
+  const skeletonCount = lastSeenCount ?? DEFAULT_SKELETON_COUNT;
+
   return (
     <div className={styles.container}>
       <TopBar
@@ -131,21 +146,25 @@ export const ReportListPage = ({
       />
 
       <div className={styles.scrollArea}>
-        {years.map((year) => (
-          <section key={year} className={styles.yearGroup}>
-            <Text variant='b2' color={vars.color.text.secondary} className={styles.yearLabel}>
-              {year}년
-            </Text>
-            {(grouped[year] ?? []).map((report) => (
-              <MonthlyReportCardItem
-                key={`${report.year}-${report.month}`}
-                report={report}
-                onViewWeeklyReport={onViewWeeklyReport}
-                onViewMonthlyReport={onViewMonthlyReport}
-              />
-            ))}
-          </section>
-        ))}
+        {isLoading ? (
+          <ReportListLoadingSkeleton count={skeletonCount} />
+        ) : (
+          years.map((year) => (
+            <section key={year} className={styles.yearGroup}>
+              <Text variant='b2' color={vars.color.text.secondary} className={styles.yearLabel}>
+                {year}년
+              </Text>
+              {(grouped[year] ?? []).map((report) => (
+                <MonthlyReportCardItem
+                  key={`${report.year}-${report.month}`}
+                  report={report}
+                  onViewWeeklyReport={onViewWeeklyReport}
+                  onViewMonthlyReport={onViewMonthlyReport}
+                />
+              ))}
+            </section>
+          ))
+        )}
       </div>
     </div>
   );
