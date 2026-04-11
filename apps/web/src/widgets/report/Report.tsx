@@ -10,6 +10,7 @@ import { ReportHeader } from './ui/ReportHeader/ReportHeader';
 import { ReportOverviewCard } from './ui/ReportOverviewCard/ReportOverviewCard';
 import { ReportSummaryCard } from './ui/ReportSummaryCard/ReportSummaryCard';
 import { ReportArrivalCard } from './ui/ReportArrivalCard/ReportArrivalCard';
+import { ReportLoadingSkeleton } from './ui/ReportLoadingSkeleton';
 import { useReportArrivalCard } from './model/useReportArrivalCard';
 import { toReportSummaryFromApi } from './model/toReportSummaryFromApi';
 import * as styles from './Report.css';
@@ -20,10 +21,6 @@ export interface ReportProps {
   onViewReportList: () => void;
 }
 
-/**
- * "YYYY년 M월 N주차" → { year, month, week }
- * 형식이 깨져 있으면 null 반환.
- */
 const parseWeekRange = (
   weekRange: string | undefined
 ): { year: number; month: number; week: number } | null => {
@@ -45,7 +42,9 @@ export const Report = ({ onSettingsClick, onNotificationClick, onViewReportList 
     monthDate: today,
   });
 
-  const { data: summaryRes } = useQuery(expenseReportQueries.summaryQuery());
+  const { data: summaryRes, isLoading: isSummaryLoading } = useQuery(
+    expenseReportQueries.summaryQuery()
+  );
   // API는 오래된 주차 → 최신 주차 오름차순으로 내려주는데,
   // 화면에선 최신 주차가 가장 위에 오도록 역순으로 그린다.
   const summaryCards = useMemo(
@@ -99,14 +98,20 @@ export const Report = ({ onSettingsClick, onNotificationClick, onViewReportList 
           </div>
         )}
         <div className={styles.cardSection}>
-          <ReportOverviewCard onClick={onViewReportList} />
-          {summaryCards.map((card) => (
-            <ReportSummaryCard
-              key={card.key}
-              vm={card.vm}
-              onViewReport={() => handleViewReport(card.weekRange)}
-            />
-          ))}
+          {isSummaryLoading ? (
+            <ReportLoadingSkeleton />
+          ) : (
+            <>
+              <ReportOverviewCard onClick={onViewReportList} />
+              {summaryCards.map((card) => (
+                <ReportSummaryCard
+                  key={card.key}
+                  vm={card.vm}
+                  onViewReport={() => handleViewReport(card.weekRange)}
+                />
+              ))}
+            </>
+          )}
         </div>
       </div>
     </div>
