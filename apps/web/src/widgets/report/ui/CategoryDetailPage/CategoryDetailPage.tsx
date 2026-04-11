@@ -5,11 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Text, TopBar, vars } from '@/shared/ui';
 import { IcLeftChevron } from 'public/icons';
 import { formatCurrency } from '@/shared/lib/formatCurrency';
-import {
-  expenseReportQueries,
-  type MonthlyExpenseEmotionType,
-  type WeeklyExpenseEmotionType,
-} from '@/entities/expenseReport';
+import { expenseReportQueries, type ExpenseEmotionType } from '@/entities/expenseReport';
 import { categoryQueries } from '@/features/expense/model/categoryQueries';
 import { toCategoryDetailVM } from '../../model/toCategoryDetailVM';
 import { SatisfactionGroupCard } from './SatisfactionGroupCard';
@@ -17,8 +13,12 @@ import * as styles from './CategoryDetailPage.css';
 
 export interface CategoryDetailPageProps {
   onBack: () => void;
-  /** 감정 타입 (예: "홀린 듯이") */
-  emotionType?: string;
+  /**
+   * 감정 타입. API가 허용하는 화이트리스트 값만 받는다.
+   * 외부(쿼리스트링 등)에서 온 값은 호출부(route)에서 `isExpenseEmotionType`으로
+   * 검증한 뒤 넘겨야 한다. 유효하지 않다면 undefined로 전달해 "잘못된 접근" 분기로 빠지게 한다.
+   */
+  emotionType?: ExpenseEmotionType;
   /** (주간) 조회 시작일 (YYYY-MM-DD) */
   start?: string;
   /** (주간) 조회 종료일 (YYYY-MM-DD) */
@@ -41,14 +41,10 @@ export const CategoryDetailPage = ({
   periodLabel,
 }: CategoryDetailPageProps) => {
   // 월간 모드는 year/month가 모두 유한한 정수이고 month가 1~12 범위일 때만 활성화한다.
-  // (NaN/0 등이 흘러 들어와 잘못된 API 요청이나 라벨이 만들어지는 것을 막는다.)
+  // (NaN/소수/0 등이 흘러 들어와 잘못된 API 요청이나 라벨이 만들어지는 것을 막는다.)
+  // Number.isInteger는 NaN/Infinity/소수를 모두 걸러준다.
   const isMonthly =
-    year != null &&
-    month != null &&
-    Number.isFinite(year) &&
-    Number.isFinite(month) &&
-    month >= 1 &&
-    month <= 12;
+    Number.isInteger(year) && Number.isInteger(month) && month! >= 1 && month! <= 12;
   const isWeekly = !isMonthly && !!start && !!end;
 
   const {
@@ -59,7 +55,7 @@ export const CategoryDetailPage = ({
     ...expenseReportQueries.weeklyExpenseDetailsQuery({
       start: start ?? '',
       end: end ?? '',
-      emotionType: (emotionType ?? '') as WeeklyExpenseEmotionType,
+      emotionType: emotionType!,
     }),
     enabled: !!emotionType && isWeekly,
   });
@@ -72,7 +68,7 @@ export const CategoryDetailPage = ({
     ...expenseReportQueries.monthlyExpenseDetailsQuery({
       year: year ?? 0,
       month: month ?? 0,
-      emotionType: (emotionType ?? '') as MonthlyExpenseEmotionType,
+      emotionType: emotionType!,
     }),
     enabled: !!emotionType && isMonthly,
   });
