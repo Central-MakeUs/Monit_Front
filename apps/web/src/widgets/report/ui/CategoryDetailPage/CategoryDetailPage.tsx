@@ -45,7 +45,9 @@ export const CategoryDetailPage = ({
   // Number.isInteger는 NaN/Infinity/소수를 모두 걸러준다.
   const isMonthly =
     Number.isInteger(year) && Number.isInteger(month) && month! >= 1 && month! <= 12;
-  const isWeekly = !isMonthly && !!start && !!end;
+  const isValidDate = (v: string | undefined): boolean =>
+    typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v) && !Number.isNaN(Date.parse(v));
+  const isWeekly = !isMonthly && isValidDate(start) && isValidDate(end);
 
   const {
     data: weeklyRaw,

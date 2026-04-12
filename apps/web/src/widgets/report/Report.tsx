@@ -112,7 +112,7 @@ export const Report = ({ onSettingsClick, onNotificationClick, onViewReportList 
         <div className={styles.cardSection}>
           {isSummaryLoading ? (
             <ReportLoadingSkeleton />
-          ) : isSummaryError ? (
+          ) : isSummaryError && !summaryRes ? (
             // 요약 조회가 실패한 경우 "빈 상태"가 아니라 명시적인 에러/재시도 UI를 보여준다.
             // (빈 배열 응답과 네트워크 오류를 사용자가 구분할 수 있어야 한다.)
             <div className={styles.errorState} role='alert'>
