@@ -1,11 +1,16 @@
 # 💸 MONIT (모닛) - 소비의 맥락과 효용을 기록하는 가계부 서비스
 
-<div>
-<img src="https://img.shields.io/badge/docs-Wiki-0969DA?style=flat-square&logo=github&logoColor=white" />
-<img src="https://img.shields.io/badge/iOS-App%20Store-black?style=flat-square&logo=apple&logoColor=white" />
-<img src="https://img.shields.io/badge/Android-Google%20Play-34A853?style=flat-square&logo=googleplay&logoColor=white" />
+<div align="center">
+  <a href="https://github.com/Central-MakeUs/Monit_Front/wiki" target="_blank">
+    <img src="https://img.shields.io/badge/docs-Wiki-0969DA?style=flat-square&logo=github&logoColor=white" alt="Wiki" />
+  </a>
+  <a href="https://apps.apple.com/kr/app/%EB%AA%A8%EB%8B%9B/id6759133655" target="_blank">
+    <img src="https://img.shields.io/badge/iOS-App%20Store-black?style=flat-square&logo=apple&logoColor=white" alt="App Store" />
+  </a>
+  <a href="https://play.google.com/store/apps/details?id=com.monit.app&pcampaignid=web_share" target="_blank">
+    <img src="https://img.shields.io/badge/Android-Google%20Play-34A853?style=flat-square&logo=googleplay&logoColor=white" alt="Google Play" />
+  </a>
 </div>
-
 <br />
 
 <a href="https://github.com/user-attachments/assets/7cd2b223-d9fa-4515-984e-b58a13b3375b">
