@@ -272,6 +272,26 @@ export interface paths {
         patch: operations["updateExpense"];
         trace?: never;
     };
+    "/api/expense/report_arrivals/{year}/{month}/check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * 월별 분석 리포트 확인 처리
+         * @description 유저가 특정 월의 분석 리포트를 확인했음을 기록합니다.
+         */
+        patch: operations["checkReport"];
+        trace?: never;
+    };
     "/api/expense/remind": {
         parameters: {
             query?: never;
@@ -392,6 +412,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/monthly-reports/details": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * 월간 리포트 - 회고별 소비 내역 상세 조회
+         * @description 선택한 마음 항목에 해당하는 지출만 필터링한 뒤, 그 안에서 회고별로 소비 상세 내역을 조회합니다.
+         */
+        get: operations["getMonthlyExpenseDetails"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/expense/weekly_detail": {
         parameters: {
             query?: never;
@@ -401,9 +441,29 @@ export interface paths {
         };
         /**
          * 주간 분석 상세 리포트 조회
-         * @description 특정 주차의 감정 분석, 만족도 통계, TOP 3 지출 내역 등 상세 데이터를 조회합니다.
+         * @description 해당 월의 열람 가능한 모든 주차에 대한 상세 리포트를 리스트로 조회합니다.
          */
         get: operations["getWeeklyDetailReport"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/expense/total_open_status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * 월 + 주차별 open 상태 통합 조회
+         * @description 특정 월의 총 지출액, 주차별 리포트 오픈 여부, 월간 리포트 오픈 여부를 한 번에 조회합니다.
+         */
+        get: operations["getTotalOpenStatus"];
         put?: never;
         post?: never;
         delete?: never;
@@ -452,6 +512,27 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/expense/report_arrivals": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * 분석 리포트 도착 알림 카드 조회
+         * @description 생성한 월별 분석 리포트 알림 카드 목록을 반환합니다. 확인한 리포트는 isChecked=true로
+         *       표시됩니다. 이전 달 미확인과 무관하게 최신 리포트도 노출됩니다.
+         */
+        get: operations["getReportArrivals"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/expense/monthly_totals": {
         parameters: {
             query?: never;
@@ -464,6 +545,26 @@ export interface paths {
          * @description 소비 기록이 존재하는 모든 달의 지출 총액 목록을 최신순으로 조회합니다.
          */
         get: operations["getMonthlyTotalList"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/expense/monthly_detail": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * 월간 분석 상세 리포트 조회
+         * @description 해당 월의 월간 분석 상세 리포트를 조회합니다. 다음 달 1일 오전 8시 이후에 열람 가능합니다.
+         */
+        get: operations["getMonthlyDetailReport"];
         put?: never;
         post?: never;
         delete?: never;
@@ -655,7 +756,7 @@ export interface components {
             categoryId: number;
             usageHistory: string;
             /** @enum {string} */
-            emotionType: "기분전환" | "그냥저냥" | "필수템" | "홀린듯이" | "살기위해";
+            emotionType: "기분 전환" | "그냥저냥" | "필수템" | "홀린 듯이" | "살기 위해";
         };
         ApiResponseIdResponse: {
             isSuccess?: boolean;
@@ -735,6 +836,14 @@ export interface components {
             isNewUser?: boolean;
             hasExpense?: boolean;
         };
+        ApiResponseMapStringBoolean: {
+            isSuccess?: boolean;
+            code?: string;
+            message?: string;
+            result?: {
+                [key: string]: boolean;
+            };
+        };
         ExpenseRemindRequestDTO: {
             /** Format: int64 */
             expenseId?: number;
@@ -783,11 +892,35 @@ export interface components {
             totalAmount?: number;
             evaluationGroups?: components["schemas"]["EvaluationGroupResponse"][];
         };
-        ApiResponseWeeklyDetailReportResponse: {
+        ApiResponseMonthlyExpenseDetailResponse: {
             isSuccess?: boolean;
             code?: string;
             message?: string;
-            result?: components["schemas"]["WeeklyDetailReportResponse"];
+            result?: components["schemas"]["MonthlyExpenseDetailResponse"];
+        };
+        MonthlyExpenseDetailResponse: {
+            monthTitle?: string;
+            emotionTitle?: string;
+            /** Format: int32 */
+            totalCount?: number;
+            /** Format: int64 */
+            totalAmount?: number;
+            evaluationGroups?: components["schemas"]["EvaluationGroupResponse"][];
+        };
+        ApiResponseListWeeklyDetailReportResponse: {
+            isSuccess?: boolean;
+            code?: string;
+            message?: string;
+            result?: components["schemas"]["WeeklyDetailReportResponse"][];
+        };
+        EmotionDetailSummary: {
+            emotionDescription?: string;
+            /** Format: int64 */
+            totalAmount?: number;
+            /** Format: int64 */
+            count?: number;
+            feedbackMessage?: string;
+            evaluationSummaries?: components["schemas"]["EvaluationSummary"][];
         };
         EmotionSummary: {
             emotionDescription?: string;
@@ -795,6 +928,7 @@ export interface components {
             totalAmount?: number;
             /** Format: int64 */
             count?: number;
+            feedbackMessage?: string;
         };
         EvaluationSummary: {
             /** @enum {string} */
@@ -811,9 +945,13 @@ export interface components {
         };
         WeeklyDetailReportResponse: {
             weekRange?: string;
+            weekStartDate?: string;
+            weekEndDate?: string;
+            emotionFeedbackMessage?: string;
             topEmotion?: components["schemas"]["EmotionSummary"];
-            inAvarageEvaluation?: string;
+            evaluationFeedbackMessage?: string;
             evaluationSummaries?: components["schemas"]["EvaluationSummary"][];
+            emotionDetails?: components["schemas"]["EmotionDetailSummary"][];
             top3Expenses?: components["schemas"]["ExpenseSimpleResponse"][];
             /** Format: int64 */
             emotionTotalAmount?: number;
@@ -822,6 +960,27 @@ export interface components {
             /** Format: int64 */
             weeklyTotalAmount?: number;
         };
+        ApiResponseTotalOpenStatusResponse: {
+            isSuccess?: boolean;
+            code?: string;
+            message?: string;
+            result?: components["schemas"]["TotalOpenStatusResponse"];
+        };
+        TotalOpenStatusResponse: {
+            /** Format: int32 */
+            year?: number;
+            /** Format: int32 */
+            month?: number;
+            /** Format: int64 */
+            totalAmount?: number;
+            weeklyReports?: components["schemas"]["WeeklyOpenStatus"][];
+            monthlyIsOpened?: boolean;
+        };
+        WeeklyOpenStatus: {
+            /** Format: int32 */
+            week?: number;
+            isOpened?: boolean;
+        };
         ApiResponseSummaryRecordResponse: {
             isSuccess?: boolean;
             code?: string;
@@ -829,6 +988,7 @@ export interface components {
             result?: components["schemas"]["SummaryRecordResponse"];
         };
         MonthlyReportSummaryResponse: {
+            year?: string;
             month?: string;
             /** Format: int64 */
             totalAmount?: number;
@@ -865,11 +1025,47 @@ export interface components {
             amount?: number;
             emotionType?: string;
         };
+        ApiResponseListMonthlyReportArrivalResponse: {
+            isSuccess?: boolean;
+            code?: string;
+            message?: string;
+            result?: components["schemas"]["MonthlyReportArrivalResponse"][];
+        };
+        MonthlyReportArrivalResponse: {
+            /** Format: int32 */
+            year?: number;
+            /** Format: int32 */
+            month?: number;
+            isChecked?: boolean;
+        };
         ApiResponseListMonthlyReportSummaryResponse: {
             isSuccess?: boolean;
             code?: string;
             message?: string;
             result?: components["schemas"]["MonthlyReportSummaryResponse"][];
+        };
+        ApiResponseMonthlyDetailReportResponse: {
+            isSuccess?: boolean;
+            code?: string;
+            message?: string;
+            result?: components["schemas"]["MonthlyDetailReportResponse"];
+        };
+        MonthlyDetailReportResponse: {
+            monthTitle?: string;
+            monthStartDate?: string;
+            monthEndDate?: string;
+            emotionFeedbackMessage?: string;
+            topEmotion?: components["schemas"]["EmotionSummary"];
+            evaluationFeedbackMessage?: string;
+            evaluationSummaries?: components["schemas"]["EvaluationSummary"][];
+            emotionDetails?: components["schemas"]["EmotionDetailSummary"][];
+            top3Expenses?: components["schemas"]["ExpenseSimpleResponse"][];
+            /** Format: int64 */
+            emotionTotalAmount?: number;
+            /** Format: int64 */
+            monthlyTotalCount?: number;
+            /** Format: int64 */
+            monthlyTotalAmount?: number;
         };
         ApiResponseDailyExpenseResponseDTO: {
             isSuccess?: boolean;
@@ -898,7 +1094,7 @@ export interface components {
             /** @enum {string} */
             categoryIconType?: "cook" | "coffee" | "credit" | "book" | "beauty" | "beer" | "shopping" | "camera" | "cup";
             /** @enum {string} */
-            emotionType?: "기분전환" | "그냥저냥" | "필수템" | "홀린듯이" | "살기위해";
+            emotionType?: "기분 전환" | "그냥저냥" | "필수템" | "홀린 듯이" | "살기 위해";
             /** @enum {string} */
             evaluationType?: "VERY_SATISFIED" | "SATISFIED" | "NORMAL" | "DISAPPOINTED" | "VERY_DISAPPOINTED";
         };
@@ -1292,6 +1488,29 @@ export interface operations {
             };
         };
     };
+    checkReport: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                year: number;
+                month: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseMapStringBoolean"];
+                };
+            };
+        };
+    };
     remindExpenses: {
         parameters: {
             query?: never;
@@ -1411,8 +1630,7 @@ export interface operations {
             query: {
                 start: string;
                 end: string;
-                weekRange: string;
-                emotionType: "기분전환" | "그냥저냥" | "필수템" | "홀린듯이" | "살기위해";
+                emotionType: "기분 전환" | "그냥저냥" | "필수템" | "홀린 듯이" | "살기 위해";
             };
             header?: never;
             path?: never;
@@ -1431,10 +1649,12 @@ export interface operations {
             };
         };
     };
-    getWeeklyDetailReport: {
+    getMonthlyExpenseDetails: {
         parameters: {
             query: {
-                date: string;
+                year: number;
+                month: number;
+                emotionType: "기분 전환" | "그냥저냥" | "필수템" | "홀린 듯이" | "살기 위해";
             };
             header?: never;
             path?: never;
@@ -1448,7 +1668,53 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "*/*": components["schemas"]["ApiResponseWeeklyDetailReportResponse"];
+                    "*/*": components["schemas"]["ApiResponseMonthlyExpenseDetailResponse"];
+                };
+            };
+        };
+    };
+    getWeeklyDetailReport: {
+        parameters: {
+            query: {
+                year: number;
+                month: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseListWeeklyDetailReportResponse"];
+                };
+            };
+        };
+    };
+    getTotalOpenStatus: {
+        parameters: {
+            query: {
+                year: number;
+                month: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseTotalOpenStatusResponse"];
                 };
             };
         };
@@ -1495,6 +1761,26 @@ export interface operations {
             };
         };
     };
+    getReportArrivals: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseListMonthlyReportArrivalResponse"];
+                };
+            };
+        };
+    };
     getMonthlyTotalList: {
         parameters: {
             query?: never;
@@ -1511,6 +1797,29 @@ export interface operations {
                 };
                 content: {
                     "*/*": components["schemas"]["ApiResponseListMonthlyReportSummaryResponse"];
+                };
+            };
+        };
+    };
+    getMonthlyDetailReport: {
+        parameters: {
+            query: {
+                year: number;
+                month: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ApiResponseMonthlyDetailReportResponse"];
                 };
             };
         };

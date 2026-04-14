@@ -148,6 +148,8 @@ export const Default: Story = {
             justifyContent: 'center',
             alignItems: 'center',
             height: '100vh',
+            maxWidth: '430px',
+            margin: '0 auto',
           }}>
           <Button variant='brand' onClick={openModal}>
             소비 입력 열기
@@ -211,6 +213,8 @@ export const EmptyForm: Story = {
             justifyContent: 'center',
             alignItems: 'center',
             height: '100vh',
+            maxWidth: '430px',
+            margin: '0 auto',
           }}>
           <Button variant='brand' onClick={openModal}>
             새 소비 입력

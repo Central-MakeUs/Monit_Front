@@ -1,0 +1,1 @@
+export { ReportDetailLoadingSkeleton } from './ReportDetailLoadingSkeleton';

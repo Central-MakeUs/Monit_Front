@@ -24,7 +24,7 @@ const mockExpenses: ExpenseListDTO[] = [
     categoryIconType: 'coffee',
     categoryName: '카페',
     amount: 5000,
-    emotionType: '기분전환',
+    emotionType: '기분 전환',
     evaluationType: 'SATISFIED',
   },
   {
@@ -33,7 +33,7 @@ const mockExpenses: ExpenseListDTO[] = [
     categoryIconType: 'shopping',
     categoryName: '편의점',
     amount: 12000,
-    emotionType: '살기위해',
+    emotionType: '살기 위해',
     evaluationType: 'NORMAL',
   },
   {
@@ -42,7 +42,7 @@ const mockExpenses: ExpenseListDTO[] = [
     categoryIconType: 'shopping',
     categoryName: '교통',
     amount: 8500,
-    emotionType: '기분전환',
+    emotionType: '기분 전환',
     evaluationType: 'SATISFIED',
   },
 ];
@@ -69,7 +69,7 @@ export const ManyExpenses: Story = {
         categoryIconType: 'beauty',
         categoryName: '쇼핑',
         amount: 15000,
-        emotionType: '홀린듯이',
+        emotionType: '홀린 듯이',
         evaluationType: 'VERY_SATISFIED',
       },
       {

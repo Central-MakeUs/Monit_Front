@@ -1,0 +1,8 @@
+/* Override global.css.ts body constraints for Storybook.
+   The mobile container is handled by MobileDecorator instead of body styles. */
+body {
+  max-width: 100% !important;
+  min-width: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}

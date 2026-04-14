@@ -99,6 +99,8 @@ export const Default: Story = {
             justifyContent: 'center',
             alignItems: 'center',
             height: '100vh',
+            maxWidth: '430px',
+            margin: '0 auto',
           }}>
           <Button variant='brand' onClick={() => setIsOpen(true)}>
             BottomSheet 열기
@@ -148,6 +150,8 @@ export const Transparent: Story = {
             justifyContent: 'center',
             alignItems: 'center',
             height: '100vh',
+            maxWidth: '430px',
+            margin: '0 auto',
           }}>
           <Button variant='brand' onClick={() => setIsOpen(true)}>
             투명 백드롭 열기
