@@ -20,6 +20,10 @@ type EmotionDetailSummary = components['schemas']['EmotionDetailSummary'];
 /** 주간/월간 상세 리포트 응답 공통 타입 (필드명만 다른 구조를 union으로 흡수) */
 export type ReportDetailLikeResponse = WeeklyDetailReportResponse | MonthlyDetailReportResponse;
 
+/** 주간/월간 응답 판별 타입 가드 — 주간 응답 전용 필드가 있으면 주간으로 간주 */
+const isWeeklyDetail = (data: ReportDetailLikeResponse): data is WeeklyDetailReportResponse =>
+  'weekRange' in data || 'weekStartDate' in data || 'weeklyTotalAmount' in data;
+
 /** API emotionDescription → 화면 표시용 카테고리명 */
 const EMOTION_DESCRIPTION_TO_NAME: Record<string, string> = {
   '살기 위해': '살기 위한 소비',
@@ -82,11 +86,17 @@ export function toWeeklyReportDetailVM(
   data: ReportDetailLikeResponse,
   fallbackPeriodLabel?: string
 ): ReportDetailVM {
-  const weeklyLike = data as WeeklyDetailReportResponse;
-  const monthlyLike = data as MonthlyDetailReportResponse;
-  const periodLabel = weeklyLike.weekRange ?? monthlyLike.monthTitle ?? fallbackPeriodLabel ?? '';
-  const totalCount = weeklyLike.weeklyTotalCount ?? monthlyLike.monthlyTotalCount ?? 0;
-  const totalAmount = weeklyLike.weeklyTotalAmount ?? monthlyLike.monthlyTotalAmount ?? 0;
+  const { periodLabel, totalCount, totalAmount } = isWeeklyDetail(data)
+    ? {
+        periodLabel: data.weekRange ?? fallbackPeriodLabel ?? '',
+        totalCount: data.weeklyTotalCount ?? 0,
+        totalAmount: data.weeklyTotalAmount ?? 0,
+      }
+    : {
+        periodLabel: data.monthTitle ?? fallbackPeriodLabel ?? '',
+        totalCount: data.monthlyTotalCount ?? 0,
+        totalAmount: data.monthlyTotalAmount ?? 0,
+      };
   const topDescription = data.topEmotion?.emotionDescription ?? '';
 
   // 1위 감정의 만족도 breakdown은 emotionDetails[0].evaluationSummaries를 쓴다.

@@ -9,6 +9,11 @@ import type { CategoryDetailVM, CategoryDetailGroupVM } from './categoryDetailTy
 /** 주간/월간 회고별 소비 상세 응답 공통 타입 */
 export type CategoryDetailLikeResponse = WeeklyExpenseDetailResponse | MonthlyExpenseDetailResponse;
 
+/** 주간/월간 응답 판별 타입 가드 — 주간 응답 전용 필드가 있으면 주간으로 간주 */
+const isWeeklyExpenseDetail = (
+  data: CategoryDetailLikeResponse
+): data is WeeklyExpenseDetailResponse => 'weekRange' in data;
+
 /** API 원본 감정 표현 → 화면 표시용 관형형 */
 const EMOTION_TO_DISPLAY: Record<string, string> = {
   '홀린 듯이': '홀린 듯한',
@@ -46,9 +51,9 @@ export function toCategoryDetailVM(
   categoryIconMap?: Map<string, string>,
   fallbackPeriodLabel?: string
 ): CategoryDetailVM {
-  const weeklyLike = data as WeeklyExpenseDetailResponse;
-  const monthlyLike = data as MonthlyExpenseDetailResponse;
-  const periodLabel = weeklyLike.weekRange ?? monthlyLike.monthTitle ?? fallbackPeriodLabel ?? '';
+  const periodLabel = isWeeklyExpenseDetail(data)
+    ? (data.weekRange ?? fallbackPeriodLabel ?? '')
+    : (data.monthTitle ?? fallbackPeriodLabel ?? '');
 
   const groups: CategoryDetailGroupVM[] = (data.evaluationGroups ?? []).map((g) => ({
     level: (STEP_TO_LEVEL[g.stepNumber ?? 1] ?? 3) as SatisfactionLevel,
