@@ -46,20 +46,32 @@ export const ctaButton = style({
   flexShrink: 0,
 });
 
-export const chevronDown = style({
+export const chevron = style({
   width: '1.6rem',
   height: '1.6rem',
   flexShrink: 0,
   fill: vars.color.icon.tertiary,
   transform: 'rotate(90deg)',
+  transition: 'transform 420ms cubic-bezier(0.22, 0.61, 0.36, 1)',
 });
 
-export const chevronUp = style({
-  width: '1.6rem',
-  height: '1.6rem',
-  flexShrink: 0,
-  fill: vars.color.icon.tertiary,
+export const chevronExpanded = style({
   transform: 'rotate(-90deg)',
+});
+
+export const listCollapser = style({
+  display: 'grid',
+  gridTemplateRows: '0fr',
+  transition: 'grid-template-rows 260ms cubic-bezier(0.22, 0.61, 0.36, 1)',
+});
+
+export const listCollapserExpanded = style({
+  gridTemplateRows: '1fr',
+});
+
+export const listInner = style({
+  overflow: 'hidden',
+  minHeight: 0,
 });
 
 export const listContainer = style({

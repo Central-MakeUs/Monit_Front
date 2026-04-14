@@ -168,7 +168,7 @@ export const ExpenseEditBottomSheet = ({
       expendedAt: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`, // YYYY-MM-DD (Local Time) to prevent UTC offset issues
       categoryId: Number(selectedCategoryId ?? 1),
       usageHistory: usage,
-      emotionType: (expense.emotionType as UpdateExpenseRequest['emotionType']) || '기분전환',
+      emotionType: (expense.emotionType as UpdateExpenseRequest['emotionType']) || '기분 전환',
     };
 
     updateMutation.mutate({

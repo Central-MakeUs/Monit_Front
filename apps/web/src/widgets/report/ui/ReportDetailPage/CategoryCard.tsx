@@ -82,41 +82,46 @@ export const CategoryCard = ({ vm, onViewDetail }: CategoryCardProps) => {
         )}
       </div>
 
-      {isOpen && !isDisabled && hasData && (
+      {isOpen && !isDisabled && (
         <div className={styles.body}>
           {vm.description && <p className={styles.description}>{vm.description}</p>}
 
           <div className={styles.tableSection}>
-            {/* Column header */}
-            <div className={styles.tableHeaderRow}>
-              <span className={styles.tableHeaderLabel}>만족도</span>
-              <div className={styles.tableHeaderRight}>
-                <span className={styles.tableHeaderCount}>개수</span>
-                <span className={styles.tableHeaderAmount}>총 금액</span>
-              </div>
-            </div>
-
-            <Divider />
-
-            {/* Data rows */}
-            {vm.satisfactionRows.map((row) => {
-              const rowDisabled = row.count === 0;
-              const EmojiIcon = rowDisabled ? EMOJI_GRAY[row.level] : EMOJI_ACTIVE[row.level];
-              return (
-                <div key={row.level} className={styles.tableRow}>
-                  <div className={styles.rowLeft}>
-                    <EmojiIcon className={styles.emoji} aria-hidden />
-                    <span className={styles.satisfactionLabel}>{row.label}</span>
-                  </div>
-                  <div className={styles.rowRight}>
-                    <span className={styles.rowCount}>{row.count}</span>
-                    <span className={styles.rowAmount}>{formatCurrency(row.totalAmount)}</span>
+            {hasData && (
+              <>
+                {/* Column header */}
+                <div className={styles.tableHeaderRow}>
+                  <span className={styles.tableHeaderLabel}>만족도</span>
+                  <div className={styles.tableHeaderRight}>
+                    <span className={styles.tableHeaderCount}>개수</span>
+                    <span className={styles.tableHeaderAmount}>총 금액</span>
                   </div>
                 </div>
-              );
-            })}
 
-            <Divider />
+                <Divider />
+              </>
+            )}
+
+            {/* Data rows */}
+            {hasData &&
+              vm.satisfactionRows.map((row) => {
+                const rowDisabled = row.count === 0;
+                const EmojiIcon = rowDisabled ? EMOJI_GRAY[row.level] : EMOJI_ACTIVE[row.level];
+                return (
+                  <div key={row.level} className={styles.tableRow}>
+                    <div className={styles.rowLeft}>
+                      <EmojiIcon className={styles.emoji} aria-hidden />
+                      <span className={styles.satisfactionLabel}>{row.label}</span>
+                    </div>
+                    <div className={styles.rowRight}>
+                      <span className={styles.rowCount}>{row.count}</span>
+                      <span className={styles.rowAmount}>{formatCurrency(row.totalAmount)}</span>
+                    </div>
+                  </div>
+                );
+              })}
+
+            {hasData && <Divider />}
 
             <div className={styles.bottomSection}>
               <div className={styles.totalRow}>

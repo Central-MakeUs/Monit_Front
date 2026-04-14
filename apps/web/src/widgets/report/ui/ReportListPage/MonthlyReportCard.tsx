@@ -16,14 +16,23 @@ export interface MonthlyReportCardProps {
   /** 포맷된 금액 문자열 (예: "240,000원") */
   amountText: string;
   reportItems: ReportItem[];
+  /** 펼침 상태 변경 콜백 (지연 페칭용) */
+  onExpandedChange?: (expanded: boolean) => void;
 }
 
 export const MonthlyReportCard = ({
   monthLabel,
   amountText,
   reportItems,
+  onExpandedChange,
 }: MonthlyReportCardProps): React.JSX.Element => {
   const [isExpanded, setIsExpanded] = useState(false);
+
+  const handleToggle = () => {
+    const next = !isExpanded;
+    setIsExpanded(next);
+    onExpandedChange?.(next);
+  };
 
   return (
     <div className={styles.card}>
@@ -41,32 +50,40 @@ export const MonthlyReportCard = ({
         </div>
       </div>
 
-      {isExpanded && (
-        <ul className={styles.listContainer}>
-          {reportItems.map((item) => (
-            <li key={item.label}>
-              <button type='button' className={styles.listItem} onClick={item.onClick}>
-                <Text variant='b2' color={vars.color.text.secondary}>
-                  {item.label}
-                </Text>
-                <IcRightChevron className={styles.listItemChevron} aria-hidden />
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
+      <div
+        className={`${styles.listCollapser} ${isExpanded ? styles.listCollapserExpanded : ''}`}
+        aria-hidden={!isExpanded}>
+        <div className={styles.listInner}>
+          <ul className={styles.listContainer}>
+            {reportItems.map((item) => (
+              <li key={item.label}>
+                <button
+                  type='button'
+                  className={styles.listItem}
+                  onClick={item.onClick}
+                  tabIndex={isExpanded ? 0 : -1}>
+                  <Text variant='b2' color={vars.color.text.secondary}>
+                    {item.label}
+                  </Text>
+                  <IcRightChevron className={styles.listItemChevron} aria-hidden />
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
 
       <button
         type='button'
         className={styles.ctaButton}
-        onClick={() => setIsExpanded((prev) => !prev)}
+        onClick={handleToggle}
         aria-expanded={isExpanded}
         aria-label={`${monthLabel} 리포트 ${isExpanded ? '닫기' : '전체보기'}`}>
         <Text variant='b2' color={vars.color.text.secondary}>
           {isExpanded ? '리포트 닫기' : '리포트 전체보기'}
         </Text>
         <IcRightChevron
-          className={isExpanded ? styles.chevronUp : styles.chevronDown}
+          className={`${styles.chevron} ${isExpanded ? styles.chevronExpanded : ''}`}
           aria-hidden
         />
       </button>

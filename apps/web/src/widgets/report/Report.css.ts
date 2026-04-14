@@ -22,3 +22,25 @@ export const cardSection = style({
   flexDirection: 'column',
   gap: vars.spacing.md,
 });
+
+export const errorState = style({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: vars.spacing.md,
+  padding: vars.spacing.xl,
+  fontSize: vars.font.size.b2,
+  color: vars.color.text.secondary,
+  textAlign: 'center',
+});
+
+export const retryButton = style({
+  padding: `${vars.spacing.sm} ${vars.spacing.lg}`,
+  border: `1px solid ${vars.color.border.default}`,
+  borderRadius: vars.radius.md,
+  background: vars.color.bg.surface.primary.default,
+  color: vars.color.text.primary,
+  fontSize: vars.font.size.b3,
+  cursor: 'pointer',
+});

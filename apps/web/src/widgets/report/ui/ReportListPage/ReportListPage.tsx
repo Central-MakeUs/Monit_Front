@@ -1,12 +1,17 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { TopBar, Text, vars } from '@/shared/ui';
 import { IcLeftChevron } from 'public/icons';
 import { formatCurrency } from '@/shared/lib/formatCurrency';
-import { MOCK_MONTHLY_REPORT_LIST } from '../../model/mockMonthlyReportList';
+import { expenseReportQueries, type MonthlyReportSummaryResponse } from '@/entities/expenseReport';
 import { MonthlyReportCard } from './MonthlyReportCard';
+import { ReportListLoadingSkeleton } from '../ReportListLoadingSkeleton';
+import { useReportListCacheStore } from '../../model/reportListCacheStore';
 import * as styles from './ReportListPage.css';
+
+const DEFAULT_SKELETON_COUNT = 3;
 
 export interface ReportListPageProps {
   onBack: () => void;
@@ -22,46 +27,104 @@ function formatMonthLabel(year: number, month: number): string {
   return `${yy}년 ${month}월`;
 }
 
-/**
- * year, month → 해당 월의 주 수
- * 규칙: 1일이 월~목이면 그 주가 1주차, 1일이 금~일이면 그 주는 전달의 마지막 주
- * = 해당 월에 목요일이 몇 번 있는지로 계산
- * TODO: 백엔드 source of truth라면 프론트에서 월 기준으로 직접 주차를 계산하지 않는 방향이 안전할 것 같아 이후 리팩토링
- */
-function getWeeksInMonth(year: number, month: number): number {
-  const daysInMonth = new Date(year, month, 0).getDate();
-  // getDay(): 0=일, 1=월, ..., 4=목, 5=금, 6=토
-  const firstDayOfWeek = new Date(year, month - 1, 1).getDay();
-  const firstThursday = 1 + ((4 - firstDayOfWeek + 7) % 7);
-  return Math.floor((daysInMonth - firstThursday) / 7) + 1;
+interface MonthlyReportCardItemProps {
+  report: MonthlyReportSummaryResponse;
+  onViewWeeklyReport?: (year: number, month: number, week: number) => void;
+  onViewMonthlyReport?: (year: number, month: number) => void;
 }
+
+/**
+ * 카드 펼침 시점에만 total_open_status를 조회해서
+ * isOpened=true인 주차/월간 항목만 노출
+ */
+const MonthlyReportCardItem = ({
+  report,
+  onViewWeeklyReport,
+  onViewMonthlyReport,
+}: MonthlyReportCardItemProps): React.JSX.Element => {
+  const rawYear = Number(report.year);
+  const y = rawYear < 100 ? 2000 + rawYear : rawYear;
+  const m = Number(report.month);
+
+  const [enabled, setEnabled] = useState(false);
+  const { data } = useQuery({
+    ...expenseReportQueries.totalOpenStatusQuery(y, m),
+    enabled,
+  });
+
+  const weeklyItems =
+    data?.weeklyReports
+      ?.filter((w) => w.isOpened && w.week != null)
+      .map((w) => ({
+        label: `${m}월 ${w.week}주차 리포트`,
+        onClick: () => onViewWeeklyReport?.(y, m, w.week as number),
+      })) ?? [];
+
+  const reportItems = data?.monthlyIsOpened
+    ? [
+        ...weeklyItems,
+        {
+          label: `${m}월 월간 리포트`,
+          onClick: () => onViewMonthlyReport?.(y, m),
+        },
+      ]
+    : weeklyItems;
+
+  return (
+    <MonthlyReportCard
+      monthLabel={formatMonthLabel(y, m)}
+      amountText={formatCurrency(report.totalAmount ?? 0)}
+      reportItems={reportItems}
+      onExpandedChange={(expanded) => {
+        if (expanded) setEnabled(true);
+      }}
+    />
+  );
+};
 
 export const ReportListPage = ({
   onBack,
   onViewWeeklyReport,
   onViewMonthlyReport,
 }: ReportListPageProps): React.JSX.Element => {
-  const reports = MOCK_MONTHLY_REPORT_LIST;
+  const { data: reports = [], isLoading } = useQuery(expenseReportQueries.monthlyListQuery());
+
+  const lastSeenCount = useReportListCacheStore((s) => s.lastSeenCount);
+  const setLastSeenCount = useReportListCacheStore((s) => s.setLastSeenCount);
+
+  // year가 "26" / "2026" 양쪽으로 올 수 있어 4자리로 정규화
+  const normalizeYear = (y: string | number | undefined): number => {
+    const n = Number(y ?? 0);
+    return n < 100 ? 2000 + n : n;
+  };
 
   const sorted = [...reports]
     .filter((r) => r.year != null && r.month != null)
     .sort((a, b) => {
-      const ay = a.year ?? 0,
-        by = b.year ?? 0;
+      const ay = normalizeYear(a.year),
+        by = normalizeYear(b.year);
       if (ay !== by) return by - ay;
-      return (b.month ?? 0) - (a.month ?? 0);
+      return Number(b.month ?? 0) - Number(a.month ?? 0);
     });
 
   const grouped = sorted.reduce<Record<number, typeof sorted>>((acc, report) => {
-    const y = report.year as number;
-    if (!acc[y]) acc[y] = [];
-    (acc[y] as typeof sorted).push(report);
+    const yearKey = normalizeYear(report.year);
+    if (!acc[yearKey]) acc[yearKey] = [];
+    (acc[yearKey] as typeof sorted).push(report);
     return acc;
   }, {});
 
   const years = Object.keys(grouped)
     .map(Number)
     .sort((a, b) => b - a);
+
+  useEffect(() => {
+    if (!isLoading && sorted.length > 0 && sorted.length !== lastSeenCount) {
+      setLastSeenCount(sorted.length);
+    }
+  }, [isLoading, sorted.length, lastSeenCount, setLastSeenCount]);
+
+  const skeletonCount = lastSeenCount ?? DEFAULT_SKELETON_COUNT;
 
   return (
     <div className={styles.container}>
@@ -83,34 +146,25 @@ export const ReportListPage = ({
       />
 
       <div className={styles.scrollArea}>
-        {years.map((year) => (
-          <section key={year} className={styles.yearGroup}>
-            <Text variant='b2' color={vars.color.text.secondary} className={styles.yearLabel}>
-              {year}년
-            </Text>
-            {(grouped[year] ?? []).map((report) => {
-              const y = report.year as number;
-              const m = report.month as number;
-              const weekCount = getWeeksInMonth(y, m);
-              const weeklyItems = Array.from({ length: weekCount }, (_, i) => ({
-                label: `${m}월 ${i + 1}주차 리포트`,
-                onClick: () => onViewWeeklyReport?.(y, m, i + 1),
-              }));
-              const monthlyItem = {
-                label: `${m}월 월간 리포트`,
-                onClick: () => onViewMonthlyReport?.(y, m),
-              };
-              return (
-                <MonthlyReportCard
-                  key={`${y}-${m}`}
-                  monthLabel={formatMonthLabel(y, m)}
-                  amountText={formatCurrency(report.totalAmount ?? 0)}
-                  reportItems={[...weeklyItems, monthlyItem]}
+        {isLoading ? (
+          <ReportListLoadingSkeleton count={skeletonCount} />
+        ) : (
+          years.map((year) => (
+            <section key={year} className={styles.yearGroup}>
+              <Text variant='b2' color={vars.color.text.secondary} className={styles.yearLabel}>
+                {year}년
+              </Text>
+              {(grouped[year] ?? []).map((report) => (
+                <MonthlyReportCardItem
+                  key={`${report.year}-${report.month}`}
+                  report={report}
+                  onViewWeeklyReport={onViewWeeklyReport}
+                  onViewMonthlyReport={onViewMonthlyReport}
                 />
-              );
-            })}
-          </section>
-        ))}
+              ))}
+            </section>
+          ))
+        )}
       </div>
     </div>
   );

@@ -58,21 +58,21 @@ MONIT는 단순히 금액만 기록하는 가계부가 아니라,
 
 ## 🛠 기술 스택
 
-| 영역 | 기술 |
-| --- | --- |
-| **Web** | Next.js 16.1.0, React 19, TypeScript 5.9.2 |
-| **Mobile** | Expo 54, React Native 0.81, Expo Router |
-| **Architecture** | Monorepo, Hybrid WebView, FSD |
-| **State Management** | TanStack Query, Zustand |
-| **Validation** | Zod |
-| **Styling** | Vanilla Extract |
-| **HTTP Client** | Ky, Axios |
-| **Bridge** | `@repo/bridge`, `@webview-bridge/web`, `@webview-bridge/react-native` |
-| **Package Manager** | pnpm 9 |
-| **Monorepo Tooling** | Turborepo |
-| **Design / Docs** | Storybook |
-| **Lint / Format** | ESLint, Prettier |
-| **Git Hooks** | Lefthook |
-| **CI/CD** | GitHub Actions, Vercel, EAS Build |
+| 영역                 | 기술                                                                  |
+| -------------------- | --------------------------------------------------------------------- |
+| **Web**              | Next.js 16.1.0, React 19, TypeScript 5.9.2                            |
+| **Mobile**           | Expo 54, React Native 0.81, Expo Router                               |
+| **Architecture**     | Monorepo, Hybrid WebView, FSD                                         |
+| **State Management** | TanStack Query, Zustand                                               |
+| **Validation**       | Zod                                                                   |
+| **Styling**          | Vanilla Extract                                                       |
+| **HTTP Client**      | Ky, Axios                                                             |
+| **Bridge**           | `@repo/bridge`, `@webview-bridge/web`, `@webview-bridge/react-native` |
+| **Package Manager**  | pnpm 9                                                                |
+| **Monorepo Tooling** | Turborepo                                                             |
+| **Design / Docs**    | Storybook                                                             |
+| **Lint / Format**    | ESLint, Prettier                                                      |
+| **Git Hooks**        | Lefthook                                                              |
+| **CI/CD**            | GitHub Actions, Vercel, EAS Build                                     |
 
 <br />

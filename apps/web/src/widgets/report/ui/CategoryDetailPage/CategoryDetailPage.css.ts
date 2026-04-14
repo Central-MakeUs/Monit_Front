@@ -78,6 +78,18 @@ export const groupList = style({
   gap: vars.spacing.md, // 12px between sections
 });
 
+export const emptyState = style({
+  flex: 1,
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: vars.spacing.xl,
+  fontSize: vars.font.size.b2,
+  color: vars.color.text.secondary,
+  textAlign: 'center',
+  whiteSpace: 'pre-wrap',
+});
+
 export const iconButton = style({
   width: '3.2rem',
   height: '3.2rem',
