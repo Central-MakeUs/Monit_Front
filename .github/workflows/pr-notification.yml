@@ -13,12 +13,18 @@ jobs:
 
     steps:
       - name: Send Slack Notification
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+          EVENT_NAME: ${{ github.event_name }}
+          REVIEW_STATE: ${{ github.event.review.state }}
+          REVIEWER: ${{ github.event.review.user.login }}
+          REQUESTED_REVIEWER: ${{ github.event.requested_reviewer.login }}
+          REQUESTED_TEAM: ${{ github.event.requested_team.name }}
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
-          PR_NUMBER=${{ github.event.pull_request.number }}
-          PR_TITLE="${{ github.event.pull_request.title }}"
-          PR_URL="${{ github.event.pull_request.html_url }}"
-          PR_AUTHOR="${{ github.event.pull_request.user.login }}"
-          EVENT_NAME="${{ github.event_name }}"
 
           # GitHub 유저네임 -> Slack User ID 매핑
           get_slack_user_id() {
@@ -36,10 +42,8 @@ jobs:
           }
 
           if [ "$EVENT_NAME" == "pull_request_review" ]; then
-            REVIEW_STATE="${{ github.event.review.state }}"
             # approved일 때만 알림
             if [ "$REVIEW_STATE" == "approved" ]; then
-              REVIEWER="${{ github.event.review.user.login }}"
               PR_AUTHOR_SLACK_ID=$(get_slack_user_id "$PR_AUTHOR")
               MESSAGE="✅ *PR 승인! 리뷰 확인하러 와주세요*\n\n<@${PR_AUTHOR_SLACK_ID}> *승인자:* ${REVIEWER}\n*제목:* ${PR_TITLE} (#${PR_NUMBER})\n*링크:* ${PR_URL}"
             else
@@ -47,10 +51,8 @@ jobs:
             fi
           else
             # 리뷰 요청된 사람 정보 가져오기
-            REQUESTED_REVIEWER="${{ github.event.requested_reviewer.login }}"
             if [ -z "$REQUESTED_REVIEWER" ]; then
               # 팀이 요청된 경우
-              REQUESTED_TEAM="${{ github.event.requested_team.name }}"
               MESSAGE="👀 *리뷰 요청!*\n\n*요청 대상:* @${REQUESTED_TEAM} 팀\n*제목:* ${PR_TITLE} (#${PR_NUMBER})\n*작성자:* ${PR_AUTHOR}\n*링크:* ${PR_URL}"
             else
               SLACK_USER_ID=$(get_slack_user_id "$REQUESTED_REVIEWER")
@@ -63,4 +65,4 @@ jobs:
             --data "{
               \"text\": \"${MESSAGE}\"
             }" \
-            ${{ secrets.SLACK_WEBHOOK_URL }}
+            "$SLACK_WEBHOOK"
