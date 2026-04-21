@@ -154,7 +154,6 @@ export const AddCategoryStep = ({ onBack }: AddCategoryStepProps) => {
           selectedId={tempIcon?.id}
           onSelect={setTempIcon}
           onConfirm={handleConfirm}
-          onClose={closeBottomSheet}
         />
       </BottomSheet>
       <BottomFixedArea zIndex={1}>

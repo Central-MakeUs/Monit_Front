@@ -198,7 +198,6 @@ export const AddCategory = () => {
           selectedId={tempIcon?.id}
           onSelect={setTempIcon}
           onConfirm={handleConfirm}
-          onClose={closeBottomSheet}
         />
       </BottomSheet>
       <BottomFixedArea zIndex={1}>

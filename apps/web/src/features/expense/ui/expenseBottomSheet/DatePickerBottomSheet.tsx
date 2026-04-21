@@ -10,8 +10,6 @@ export interface DatePickerBottomSheetTemplateProps {
   initialMonth: number;
   /** 선택 버튼 클릭 시 콜백 */
   onConfirm?: (year: number, month: number) => void;
-  /** X 버튼 클릭 시 콜백 */
-  onClose?: () => void;
   /** 미래 날짜 선택 허용 여부 (기본값: false) */
   allowFuture?: boolean;
 }
@@ -20,7 +18,6 @@ export const DatePickerBottomSheetTemplate = ({
   initialYear,
   initialMonth,
   onConfirm,
-  onClose,
   allowFuture = false,
 }: DatePickerBottomSheetTemplateProps) => {
   const [tempValue, setTempValue] = useState({ year: initialYear, month: initialMonth });
@@ -59,7 +56,7 @@ export const DatePickerBottomSheetTemplate = ({
 
   return (
     <BaseBottomSheetTemplate>
-      <BaseBottomSheetTemplate.Header type='close' text='월 선택' onClose={onClose} />
+      <BaseBottomSheetTemplate.Header type='close' text='월 선택' />
       <div className={styles.pickerWrapper}>
         <DatePicker
           value={tempValue}

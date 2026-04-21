@@ -44,7 +44,6 @@ export const AmountDateStep = ({ onNext, defaultAmount, defaultDate }: AmountDat
           onSelectDate={(date) => {
             if (date) setSelectedDate(date);
           }}
-          onClose={closeModal}
           onConfirm={closeModal}
         />
       </BottomSheet>

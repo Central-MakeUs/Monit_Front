@@ -11,8 +11,6 @@ export interface IconPickerBottomSheetTemplateProps {
   onSelect?: (category: CategoryItem) => void;
   /** 선택 버튼 클릭 시 콜백 */
   onConfirm?: () => void;
-  /** X 버튼 클릭 시 콜백 */
-  onClose?: () => void;
 }
 
 export const IconPickerBottomSheetTemplate = ({
@@ -20,11 +18,10 @@ export const IconPickerBottomSheetTemplate = ({
   selectedId,
   onSelect,
   onConfirm,
-  onClose,
 }: IconPickerBottomSheetTemplateProps) => {
   return (
     <BaseBottomSheetTemplate>
-      <BaseBottomSheetTemplate.Header type='close' text='아이콘' onClose={onClose} />
+      <BaseBottomSheetTemplate.Header type='close' text='아이콘' />
       <BaseBottomSheetTemplate.Content>
         <div className={styles.categoryGrid}>
           {categories.map((category) => (

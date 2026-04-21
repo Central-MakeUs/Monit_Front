@@ -46,7 +46,6 @@ const meta = {
           '  selectedCategoryId={selectedCategoryId}',
           '  onCategorySelect={(category) => setSelectedCategoryId(category.id)}',
           '  onConfirm={() => {}}',
-          '  onClose={() => {}}',
           '/>',
           '```',
         ].join('\n'),
@@ -119,12 +118,6 @@ const meta = {
         type: { summary: '() => void' },
       },
     },
-    onClose: {
-      description: '닫기 버튼 클릭 시 콜백',
-      table: {
-        type: { summary: '() => void' },
-      },
-    },
   },
 } satisfies Meta<typeof ExpenseFormBottomSheet>;
 
@@ -169,7 +162,6 @@ export const Default: Story = {
               satisfactionLabel='만족도 낮음'
               satisfactionEmoji='😒'
               onDelete={() => alert('삭제')}
-              onClose={closeModal}
               onConfirm={() => {
                 alert('소비 입력 완료');
                 closeModal();
@@ -232,7 +224,6 @@ export const EmptyForm: Story = {
               onCategorySelect={(category) => setSelectedCategoryId(category.id)}
               onMoreCategoryClick={() => alert('더보기 클릭')}
               onDelete={() => alert('삭제')}
-              onClose={closeModal}
               onConfirm={() => {
                 alert('소비 입력 완료');
                 closeModal();
