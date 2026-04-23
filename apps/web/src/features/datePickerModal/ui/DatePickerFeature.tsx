@@ -44,7 +44,6 @@ export const DatePickerFeature = ({
           initialYear={currentDate.getFullYear()}
           initialMonth={currentDate.getMonth() + 1}
           onConfirm={handleConfirm}
-          onClose={closeModal}
           allowFuture={false}
         />
       </BottomSheet>

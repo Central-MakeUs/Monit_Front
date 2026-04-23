@@ -14,14 +14,12 @@ interface CalendarBottomSheetTemplateProps {
   selectedDate?: Date;
   onSelectDate?: (date: Date | null) => void;
   onConfirm?: () => void;
-  onClose?: () => void;
 }
 
 export const CalendarBottomSheetTemplate = ({
   selectedDate: initialDate,
   onSelectDate,
   onConfirm,
-  onClose,
 }: CalendarBottomSheetTemplateProps) => {
   const [selectedDate, setSelectedDate] = useState<Date | null | undefined>(initialDate);
   const [currentDate, setCurrentDate] = useState<Date>(initialDate || new Date());
@@ -43,7 +41,7 @@ export const CalendarBottomSheetTemplate = ({
 
   return (
     <BaseBottomSheetTemplate>
-      <BaseBottomSheetTemplate.Header type='close' text='소비일 수정' onClose={onClose} />
+      <BaseBottomSheetTemplate.Header type='close' text='소비일 수정' />
       <div>
         <MonthlyCalendar
           currentDate={currentDate}

@@ -223,7 +223,6 @@ export const ExpenseEditBottomSheet = ({
         onCategorySelect={(cat) => setSelectedCategoryId(cat.id)}
         onConfirm={handleConfirm}
         onDelete={handleDelete}
-        onClose={onClose}
         selectedDate={date}
         onDateClick={() => setIsCalendarOpen(true)}
         onMoreCategoryClick={() => setIsCategorySheetOpen(true)}
@@ -251,7 +250,6 @@ export const ExpenseEditBottomSheet = ({
             if (newDate) setDate(newDate);
           }}
           onConfirm={() => setIsCalendarOpen(false)}
-          onClose={() => setIsCalendarOpen(false)}
         />
       </BottomSheet>
       <BottomSheet isOpen={isCategorySheetOpen} onClose={() => setIsCategorySheetOpen(false)}>

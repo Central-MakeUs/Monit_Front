@@ -51,8 +51,6 @@ export interface ExpenseFormBottomSheetProps {
   onDelete?: () => void;
   /** 선택 버튼 클릭 시 콜백 */
   onConfirm?: () => void;
-  /** X 버튼 클릭 시 콜백 */
-  onClose?: () => void;
   /** 확인 버튼 비활성화 여부 */
   confirmDisabled?: boolean;
   /** 소비 금액 에러 메세지 */
@@ -79,7 +77,6 @@ export const ExpenseFormBottomSheet = ({
   satisfactionEvaluationType,
   onDelete,
   onConfirm,
-  onClose,
   confirmDisabled,
   amountErrorMessage,
   isAmountError,
@@ -98,7 +95,7 @@ export const ExpenseFormBottomSheet = ({
 
   return (
     <BaseBottomSheetTemplate>
-      <BaseBottomSheetTemplate.Header type='close' onClose={onClose} />
+      <BaseBottomSheetTemplate.Header type='close' />
 
       {/* 소비금액 */}
       <InputField label='소비금액'>

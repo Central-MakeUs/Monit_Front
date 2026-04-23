@@ -12,6 +12,7 @@ import { Text } from '../../text';
 import { vars } from '../../theme.css';
 import { IcClear, IcPlusSimple } from 'public/icons';
 import { Button } from '../../button';
+import { useBottomSheetContext } from '../BottomSheetContext';
 
 interface BottomSheetButtonProps {
   label: string;
@@ -23,7 +24,6 @@ interface BottomSheetHeaderProps {
   text?: string;
   type?: headerType;
   onClickAddBtn?: () => void;
-  onClose?: () => void;
 }
 
 const BaseBottomSheetTemplate = ({ children }: { children: React.ReactNode }) => {
@@ -40,12 +40,8 @@ const BottomSheetContent = ({
   return <div className={className}>{children}</div>;
 };
 
-const BottomSheetHeader = ({
-  text,
-  type = 'close',
-  onClickAddBtn,
-  onClose,
-}: BottomSheetHeaderProps) => {
+const BottomSheetHeader = ({ text, type = 'close', onClickAddBtn }: BottomSheetHeaderProps) => {
+  const { onClose } = useBottomSheetContext();
   return (
     <div className={bottomSheetHeaderWrapper}>
       <Text variant='t1' color={vars.color.text.primary}>

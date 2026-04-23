@@ -39,7 +39,6 @@ const meta = {
           '  selectedId={selectedId}',
           '  onSelect={(category) => setSelectedId(category.id)}',
           '  onConfirm={() => {}}',
-          '  onClose={() => {}}',
           '/>',
           '```',
         ].join('\n'),
@@ -68,12 +67,6 @@ const meta = {
     },
     onConfirm: {
       description: '선택 버튼 클릭 시 콜백',
-      table: {
-        type: { summary: '() => void' },
-      },
-    },
-    onClose: {
-      description: '닫기 버튼 클릭 시 콜백',
       table: {
         type: { summary: '() => void' },
       },
@@ -134,7 +127,6 @@ export const Default: Story = {
               categories={mockCategories}
               selectedId={selectedId}
               onSelect={(category) => setSelectedId(category.id)}
-              onClose={closeModal}
               onConfirm={() => {
                 alert(`선택된 아이콘: ${selectedId}`);
                 closeModal();

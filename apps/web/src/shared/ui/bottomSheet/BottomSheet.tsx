@@ -3,6 +3,7 @@
 import { PropsWithChildren, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
+import { BottomSheetContext } from './BottomSheetContext';
 import * as styles from './BottomSheet.css';
 
 export interface BottomSheetProps {
@@ -67,7 +68,7 @@ export const BottomSheet = ({
       <div
         className={styles.sheet({ animating: isAnimating })}
         onClick={(e) => e.stopPropagation()}>
-        {children}
+        <BottomSheetContext.Provider value={{ onClose }}>{children}</BottomSheetContext.Provider>
       </div>
     </div>,
     document.body

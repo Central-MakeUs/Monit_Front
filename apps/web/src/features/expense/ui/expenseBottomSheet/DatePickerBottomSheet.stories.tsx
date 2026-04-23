@@ -35,7 +35,6 @@ const meta = {
           '  selectedDate={selectedDate}',
           '  onSelectDate={setSelectedDate}',
           '  onConfirm={() => {}}',
-          '  onClose={() => {}}',
           '/>',
           '```',
         ].join('\n'),
@@ -61,12 +60,6 @@ const meta = {
       description: '선택 버튼 클릭 시 콜백',
       table: {
         type: { summary: '(year: number, month: number) => void' },
-      },
-    },
-    onClose: {
-      description: '닫기 버튼 클릭 시 콜백',
-      table: {
-        type: { summary: '() => void' },
       },
     },
     allowFuture: {
@@ -110,7 +103,6 @@ export const Default: Story = {
           <BottomSheet isOpen={isOpen} onClose={closeModal}>
             <DatePickerBottomSheetTemplate
               {...args}
-              onClose={closeModal}
               onConfirm={(year, month) => {
                 alert(`선택된 월: ${year}년 ${month}월`);
                 closeModal();
