@@ -1,0 +1,14 @@
+name: Setup Node.js and pnpm
+description: Node.js와 pnpm을 설치하고 pnpm 캐시를 설정합니다
+
+runs:
+  using: composite
+  steps:
+    - name: pnpm 설치
+      uses: pnpm/action-setup@v4
+
+    - name: 노드 설치
+      uses: actions/setup-node@v4
+      with:
+        node-version-file: '.nvmrc'
+        cache: 'pnpm'

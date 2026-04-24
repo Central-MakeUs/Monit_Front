@@ -7,7 +7,7 @@ on:
 jobs:
   vercel-preview:
     if: |
-      github.actor == 'hyun907' || 
+      github.actor == 'hyun907' ||
       github.actor == 'ssilver01'
 
     runs-on: ubuntu-latest
@@ -20,17 +20,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: pnpm 설치
-        uses: pnpm/action-setup@v4
+      - name: Node.js 및 pnpm 설치
+        uses: ./.github/actions/setup-node-pnpm
 
-      - name: 노드 설치
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'pnpm'
+      - name: 의존성 설치
+        run: pnpm install --frozen-lockfile
 
       - name: Vercel CLI 설치
-        run: npm install --global vercel@latest
+        run: pnpm add -g vercel@latest
 
       - name: Vercel 환경변수 가져오기
         run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
@@ -42,7 +39,7 @@ jobs:
         id: deploy
         run: |
           vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }} > vercel-output.txt
-          echo "preview_url=$(cat vercel-output.txt)" >> $GITHUB_OUTPUT
+          echo "preview_url=$(cat vercel-output.txt)" >> "$GITHUB_OUTPUT"
 
       - name: PR에 Preview URL 댓글 추가
         uses: thollander/actions-comment-pull-request@v2
