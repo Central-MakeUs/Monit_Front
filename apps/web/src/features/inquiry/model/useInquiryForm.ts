@@ -5,6 +5,7 @@ import { useModal } from '@/shared/hooks';
 import { isValidEmail, hasEmailError } from '@/shared/lib/validation';
 import { inquiryQueries } from './inquiryQueries';
 import { useToast } from '@/shared/ui';
+import { handleApiError } from '@/shared/api';
 
 /**
  * 문의 폼 상태 및 동작을 관리하는 커스텀 훅
@@ -25,8 +26,12 @@ export const useInquiryForm = () => {
       toast.success('등록 완료, 곧 답변드릴게요!');
       router.back();
     },
-    onError: () => {
-      toast.attention('문의 등록에 실패했어요. 다시 시도해주세요.');
+    onError: (error) => {
+      handleApiError(error, {
+        toast,
+        fallback: '문의 등록에 실패했어요. 다시 시도해 주세요.',
+        context: 'inquiry.send',
+      });
     },
   });
 

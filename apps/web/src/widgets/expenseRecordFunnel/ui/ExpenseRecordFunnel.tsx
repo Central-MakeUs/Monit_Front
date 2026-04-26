@@ -28,6 +28,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { expenseReportQueries } from '@/entities/expenseReport';
 import { expenseQueries as entityExpenseQueries } from '@/entities/expense';
 import { ROUTES } from '@/shared/constants';
+import { handleApiError } from '@/shared/api';
 
 const STEP_NUMBER = {
   금액날짜입력: 1,
@@ -86,7 +87,16 @@ export const ExpenseRecordFunnel = () => {
       history.push('만족도입력', { usageHistory, categoryId });
     };
 
-  const { mutate: submitExpense, isPending } = useMutation(expenseQueries.recordMutation());
+  const { mutate: submitExpense, isPending } = useMutation({
+    ...expenseQueries.recordMutation(),
+    onError: (error) => {
+      handleApiError(error, {
+        toast,
+        fallback: '저장에 실패했어요. 다시 시도해 주세요.',
+        context: 'expense.create',
+      });
+    },
+  });
 
   const handleSubmit = (emotionType: EmotionType) => {
     if (isPending) return;
@@ -105,9 +115,6 @@ export const ExpenseRecordFunnel = () => {
           formStore.reset();
           toast.success('소비 기록이 저장되었어요.');
           router.push(ROUTES.HOME);
-        },
-        onError: () => {
-          toast.attention('저장에 실패했어요. 다시 시도해 주세요.');
         },
       }
     );

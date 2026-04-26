@@ -6,6 +6,7 @@ import { useToast } from '@/shared/ui';
 import { clearAllUserStorage } from '@/shared/utils';
 import { authQueries } from './authQueries';
 import { useBridge } from '@/shared/lib/bridge';
+import { handleApiError } from '@/shared/api';
 
 export const useWithdraw = () => {
   const router = useRouter();
@@ -29,12 +30,13 @@ export const useWithdraw = () => {
       toast.success('회원탈퇴가 완료되었어요');
       router.replace('/login');
     },
-    onError: (error: Error) => {
-      const message =
-        error?.message && error.message !== 'Failed to fetch'
-          ? error.message
-          : '회원 탈퇴에 실패했어요. 다시 시도해주세요.';
-      toast.attention(message);
+    onError: (error) => {
+      handleApiError(error, {
+        toast,
+        fallback: '회원 탈퇴에 실패했어요. 다시 시도해 주세요.',
+        context: 'auth.withdraw',
+        preferServerMessage: true,
+      });
     },
   });
 

@@ -24,6 +24,7 @@ import {
 } from '@/entities/expense';
 import { expenseReportQueries } from '@/entities/expenseReport';
 import { expenseEditNavigation } from '@/features/expense/lib/expenseEditNavigation';
+import { handleApiError } from '@/shared/api';
 
 export interface ExpenseEditBottomSheetProps {
   isOpen: boolean;
@@ -88,8 +89,11 @@ export const ExpenseEditBottomSheet = ({
       onClose();
     },
     onError: (error) => {
-      console.error('지출 수정 실패:', error);
-      toast.attention('수정에 실패했어요. 다시 시도해 주세요.');
+      handleApiError(error, {
+        toast,
+        fallback: '수정에 실패했어요. 다시 시도해 주세요.',
+        context: 'expense.update',
+      });
     },
   });
   // 지출 삭제 mutation
@@ -105,8 +109,11 @@ export const ExpenseEditBottomSheet = ({
       onClose();
     },
     onError: (error) => {
-      console.error('지출 삭제 실패:', error);
-      toast.attention('삭제에 실패했어요. 다시 시도해 주세요.');
+      handleApiError(error, {
+        toast,
+        fallback: '삭제에 실패했어요. 다시 시도해 주세요.',
+        context: 'expense.delete',
+      });
     },
   });
 
