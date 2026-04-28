@@ -18,6 +18,10 @@ export const Notifications = ({ onBackClick }: NotificationsProps) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: notificationQueries.all });
     },
+    onError: (error) => {
+      // 읽음 처리는 백그라운드성 동작이라 토스트 없이 로그만 남긴다
+      console.error('[API Error] notification.readAll:', error);
+    },
   });
 
   const handleBackClick = () => {

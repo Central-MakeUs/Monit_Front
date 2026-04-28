@@ -11,6 +11,7 @@ import { ROUTES } from '@/shared/constants/routes';
 import { useRetrospectExpenses } from './useRetrospectExpenses';
 import { patchRemind } from '../api/patchRemind';
 import { useReviewCarousel, type UseReviewCarouselReturn } from './useReviewCarousel';
+import { handleApiError } from '@/shared/api';
 
 type UseSpendingReviewReturn = Pick<
   UseReviewCarouselReturn,
@@ -62,6 +63,13 @@ export const useSpendingReview = ({ date }: UseSpendingReviewParams): UseSpendin
       queryClient.invalidateQueries({ queryKey: ['dailyAverageSatisfaction'] });
       toast.success('만족도 기록이 잘 저장되었어요!');
       router.push(ROUTES.HOME);
+    },
+    onError: (error) => {
+      handleApiError(error, {
+        toast,
+        fallback: '저장에 실패했어요. 다시 시도해 주세요.',
+        context: 'review.saveRemind',
+      });
     },
   });
 

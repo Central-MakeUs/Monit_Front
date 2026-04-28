@@ -81,10 +81,12 @@ export const apiClient = ky.create({
         }
         if (error.response) {
           try {
-            const body = await error.response.text();
-            error.message = `${error.message}: ${body}`;
+            const body = (await error.response.clone().json()) as { message?: string };
+            if (body?.message) {
+              error.message = body.message;
+            }
           } catch {
-            // 응답 본문 읽기 실패 시 무시
+            // JSON 파싱 실패 시 원본 message 유지
           }
         }
         return error;

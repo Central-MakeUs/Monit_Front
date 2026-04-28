@@ -25,6 +25,7 @@ import { useExpenseFormStore } from '@/widgets/expenseRecordFunnel/model/store';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { categoryQueries } from '@/features/expense/model/categoryQueries';
 import { CategoryDetailsDTO } from '@/features/expense/model/types';
+import { handleApiError } from '@/shared/api';
 
 const VALID_NAME_REGEX = /^[가-힣ㄱ-ㅎㅏ-ㅣa-zA-Z0-9]*$/;
 
@@ -68,6 +69,13 @@ export const AddCategory = () => {
       }
       toast.success('카테고리가 추가되었어요!');
     },
+    onError: (error) => {
+      handleApiError(error, {
+        toast,
+        fallback: '카테고리 추가에 실패했어요. 다시 시도해 주세요.',
+        context: 'category.create',
+      });
+    },
   });
 
   const { mutate: updateCategory, isPending: isUpdatePending } = useMutation({
@@ -77,6 +85,13 @@ export const AddCategory = () => {
       await queryClient.invalidateQueries({ queryKey: ['expense'] });
       toast.success('수정한 내용이 저장되었어요!');
       router.back();
+    },
+    onError: (error) => {
+      handleApiError(error, {
+        toast,
+        fallback: '카테고리 수정에 실패했어요. 다시 시도해 주세요.',
+        context: 'category.update',
+      });
     },
   });
 
