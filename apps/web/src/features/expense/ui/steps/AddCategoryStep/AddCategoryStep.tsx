@@ -48,27 +48,9 @@ export const AddCategoryStep = ({ onBack }: AddCategoryStepProps) => {
   const { data: categoryData } = useQuery(categoryQueries.listQuery());
   const categories = useMemo(() => categoryData?.result ?? [], [categoryData?.result]);
 
-  const { mutate: createCategory, isPending } = useMutation({
-    ...categoryQueries.createMutation(queryClient),
-    onSuccess: (response) => {
-      queryClient.invalidateQueries({ queryKey: categoryQueries.all });
-      const newId = response.result?.id;
-      if (newId) {
-        selectCategory(newId);
-        setCategoryId(newId);
-      }
-      toast.success('카테고리가 추가되었어요!');
-      useExpenseFormStore.setState({ shouldOpenCategorySheet: false });
-      onBack();
-    },
-    onError: (error) => {
-      handleApiError(error, {
-        toast,
-        fallback: '카테고리 추가에 실패했어요. 다시 시도해 주세요.',
-        context: 'category.create',
-      });
-    },
-  });
+  const { mutate: createCategory, isPending } = useMutation(
+    categoryQueries.createMutation(queryClient)
+  );
 
   const [categoryName, setCategoryName] = useState('');
   const [selectedIcon, setSelectedIcon] = useState<CategoryItem | null>(null);
@@ -109,10 +91,31 @@ export const AddCategoryStep = ({ onBack }: AddCategoryStepProps) => {
 
   const handleSubmit = () => {
     if (!selectedIcon) return;
-    createCategory({
-      name: categoryName,
-      icon: selectedIcon.icon as CategoryDetailsDTO['icon'],
-    });
+    createCategory(
+      {
+        name: categoryName,
+        icon: selectedIcon.icon as CategoryDetailsDTO['icon'],
+      },
+      {
+        onSuccess: (response) => {
+          const newId = response.result?.id;
+          if (newId) {
+            selectCategory(newId);
+            setCategoryId(newId);
+          }
+          toast.success('카테고리가 추가되었어요!');
+          useExpenseFormStore.setState({ shouldOpenCategorySheet: false });
+          onBack();
+        },
+        onError: (error) => {
+          handleApiError(error, {
+            toast,
+            fallback: '카테고리 추가에 실패했어요. 다시 시도해 주세요.',
+            context: 'category.create',
+          });
+        },
+      }
+    );
   };
 
   const handleBack = () => {
