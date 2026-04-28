@@ -164,11 +164,12 @@ export const ExpenseEditBottomSheet = ({
   };
 
   const handleConfirmDelete = () => {
-    if (!expense?.expenseId) return;
+    if (!expense?.expenseId || deleteMutation.isPending) return;
     const expenseId = expense.expenseId;
     deleteMutation.mutate(expenseId, {
       onSuccess: () => {
         toast.success('소비 기록이 삭제되었어요.');
+        setIsDeleteDialogOpen(false);
         onDelete?.(expenseId);
         onClose();
       },
@@ -180,7 +181,6 @@ export const ExpenseEditBottomSheet = ({
         });
       },
     });
-    setIsDeleteDialogOpen(false);
   };
 
   // CategoryListDTO를 ExpenseFormBottomSheet의 Category 타입으로 변환 및 정렬
@@ -235,6 +235,8 @@ export const ExpenseEditBottomSheet = ({
         confirmText='삭제하기'
         cancelText='취소'
         onConfirm={handleConfirmDelete}
+        autoCloseOnConfirm={false}
+        isConfirmDisabled={deleteMutation.isPending}
       />
       <BottomSheet isOpen={isCalendarOpen} onClose={() => setIsCalendarOpen(false)}>
         <CalendarBottomSheetTemplate

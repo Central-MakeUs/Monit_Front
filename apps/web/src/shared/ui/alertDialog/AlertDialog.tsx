@@ -30,6 +30,8 @@ export interface AlertDialogProps {
   onCancel?: () => void;
   /** 확인 버튼 비활성화 */
   isConfirmDisabled?: boolean;
+  /** 확인 버튼 클릭 시 자동으로 다이얼로그를 닫을지 여부. 비동기 작업의 결과(성공/실패)에 따라 닫기 시점을 직접 제어해야 할 때 false로 지정. (기본값: true) */
+  autoCloseOnConfirm?: boolean;
   /** 인라인 모드 (overlay 없이 다이얼로그만 렌더링, Storybook 미리보기용) */
   inline?: boolean;
   /** overlay 클래스 커스터마이징 (위치 조정 등) */
@@ -110,6 +112,7 @@ export const AlertDialog = ({
   onConfirm,
   onCancel,
   isConfirmDisabled = false,
+  autoCloseOnConfirm = true,
   inline = false,
   overlayClassName,
 }: AlertDialogProps): React.JSX.Element | null => {
@@ -118,7 +121,7 @@ export const AlertDialog = ({
   // 이벤트 핸들러
   const handleConfirm = () => {
     onConfirm?.();
-    onClose();
+    if (autoCloseOnConfirm) onClose();
   };
 
   const handleCancel = () => {
