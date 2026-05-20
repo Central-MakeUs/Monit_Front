@@ -25,8 +25,6 @@ import {
 import { expenseQueries } from '@/features/expense/model/expenseQueries';
 import type { EmotionType } from '@/features/expense/model/types';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { expenseReportQueries } from '@/entities/expenseReport';
-import { expenseQueries as entityExpenseQueries } from '@/entities/expense';
 import { ROUTES } from '@/shared/constants';
 import { handleApiError } from '@/shared/api';
 
@@ -87,16 +85,9 @@ export const ExpenseRecordFunnel = () => {
       history.push('만족도입력', { usageHistory, categoryId });
     };
 
-  const { mutate: submitExpense, isPending } = useMutation({
-    ...expenseQueries.recordMutation(),
-    onError: (error) => {
-      handleApiError(error, {
-        toast,
-        fallback: '저장에 실패했어요. 다시 시도해 주세요.',
-        context: 'expense.create',
-      });
-    },
-  });
+  const { mutate: submitExpense, isPending } = useMutation(
+    expenseQueries.recordMutation(queryClient)
+  );
 
   const handleSubmit = (emotionType: EmotionType) => {
     if (isPending) return;
@@ -109,12 +100,16 @@ export const ExpenseRecordFunnel = () => {
       },
       {
         onSuccess: () => {
-          // 월별/일일 지출·요약 캐시 무효화 → 이번 달 지출 금액 등 즉시 반영
-          queryClient.invalidateQueries({ queryKey: entityExpenseQueries.all });
-          queryClient.invalidateQueries({ queryKey: expenseReportQueries.all });
           formStore.reset();
           toast.success('소비 기록이 저장되었어요.');
           router.push(ROUTES.HOME);
+        },
+        onError: (error) => {
+          handleApiError(error, {
+            toast,
+            fallback: '저장에 실패했어요. 다시 시도해 주세요.',
+            context: 'expense.create',
+          });
         },
       }
     );

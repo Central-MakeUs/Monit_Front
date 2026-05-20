@@ -11,18 +11,11 @@ import { CalendarBottomSheetTemplate } from '@/features/expense/ui/steps/AmountD
 import { ExpenseFormBottomSheet } from './expenseBottomSheet';
 import {
   categoryQueries,
+  expenseQueries,
   type CategoryListResponseDTO,
-  updateExpense,
-  deleteExpense,
   type UpdateExpenseRequest,
 } from '@/features/expense/model';
-import {
-  EXPENSE_CONSTANTS,
-  EXPENSE_ERROR_MESSAGES,
-  expenseQueries as entityExpenseQueries,
-  type ExpenseListDTO,
-} from '@/entities/expense';
-import { expenseReportQueries } from '@/entities/expenseReport';
+import { EXPENSE_CONSTANTS, EXPENSE_ERROR_MESSAGES, type ExpenseListDTO } from '@/entities/expense';
 import { expenseEditNavigation } from '@/features/expense/lib/expenseEditNavigation';
 import { handleApiError } from '@/shared/api';
 
@@ -74,48 +67,8 @@ export const ExpenseEditBottomSheet = ({
     return (categoryData?.result ?? []) as CategoryListResponseDTO[];
   }, [categoryData]);
 
-  const updateMutation = useMutation({
-    mutationFn: ({ expenseId, data }: { expenseId: number; data: UpdateExpenseRequest }) =>
-      updateExpense(expenseId, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: entityExpenseQueries.all });
-      queryClient.invalidateQueries({ queryKey: expenseReportQueries.all });
-      toast.success('소비 기록이 수정되었어요.');
-      onConfirm?.({
-        ...expense!,
-        amount,
-        usageHistory: usage,
-      });
-      onClose();
-    },
-    onError: (error) => {
-      handleApiError(error, {
-        toast,
-        fallback: '수정에 실패했어요. 다시 시도해 주세요.',
-        context: 'expense.update',
-      });
-    },
-  });
-  // 지출 삭제 mutation
-  const deleteMutation = useMutation({
-    mutationFn: (expenseId: number) => deleteExpense(expenseId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: entityExpenseQueries.all });
-      queryClient.invalidateQueries({ queryKey: expenseReportQueries.all });
-      toast.success('소비 기록이 삭제되었어요.');
-      if (expense?.expenseId) {
-        onDelete?.(expense.expenseId);
-      }
-      onClose();
-    },
-    onError: (error) => {
-      handleApiError(error, {
-        toast,
-        fallback: '삭제에 실패했어요. 다시 시도해 주세요.',
-        context: 'expense.delete',
-      });
-    },
-  });
+  const updateMutation = useMutation(expenseQueries.updateMutation(queryClient));
+  const deleteMutation = useMutation(expenseQueries.deleteMutation(queryClient));
 
   useEffect(() => {
     if (!isOpen || !expense) return;
@@ -178,10 +131,30 @@ export const ExpenseEditBottomSheet = ({
       emotionType: (expense.emotionType as UpdateExpenseRequest['emotionType']) || '기분 전환',
     };
 
-    updateMutation.mutate({
-      expenseId: expense.expenseId,
-      data: requestData,
-    });
+    updateMutation.mutate(
+      {
+        expenseId: expense.expenseId,
+        data: requestData,
+      },
+      {
+        onSuccess: () => {
+          toast.success('소비 기록이 수정되었어요.');
+          onConfirm?.({
+            ...expense,
+            amount,
+            usageHistory: usage,
+          });
+          onClose();
+        },
+        onError: (error) => {
+          handleApiError(error, {
+            toast,
+            fallback: '수정에 실패했어요. 다시 시도해 주세요.',
+            context: 'expense.update',
+          });
+        },
+      }
+    );
   };
 
   const handleDelete = () => {
@@ -191,10 +164,23 @@ export const ExpenseEditBottomSheet = ({
   };
 
   const handleConfirmDelete = () => {
-    if (expense?.expenseId) {
-      deleteMutation.mutate(expense.expenseId);
-      setIsDeleteDialogOpen(false);
-    }
+    if (!expense?.expenseId || deleteMutation.isPending) return;
+    const expenseId = expense.expenseId;
+    deleteMutation.mutate(expenseId, {
+      onSuccess: () => {
+        toast.success('소비 기록이 삭제되었어요.');
+        setIsDeleteDialogOpen(false);
+        onDelete?.(expenseId);
+        onClose();
+      },
+      onError: (error) => {
+        handleApiError(error, {
+          toast,
+          fallback: '삭제에 실패했어요. 다시 시도해 주세요.',
+          context: 'expense.delete',
+        });
+      },
+    });
   };
 
   // CategoryListDTO를 ExpenseFormBottomSheet의 Category 타입으로 변환 및 정렬
@@ -249,6 +235,8 @@ export const ExpenseEditBottomSheet = ({
         confirmText='삭제하기'
         cancelText='취소'
         onConfirm={handleConfirmDelete}
+        autoCloseOnConfirm={false}
+        isConfirmDisabled={deleteMutation.isPending}
       />
       <BottomSheet isOpen={isCalendarOpen} onClose={() => setIsCalendarOpen(false)}>
         <CalendarBottomSheetTemplate

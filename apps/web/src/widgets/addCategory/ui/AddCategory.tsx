@@ -52,48 +52,13 @@ export const AddCategory = () => {
   const { data: categoryData } = useQuery(categoryQueries.listQuery());
   const categories = useMemo(() => categoryData?.result ?? [], [categoryData?.result]);
 
-  const { mutate: createCategory, isPending: isCreatePending } = useMutation({
-    ...categoryQueries.createMutation(queryClient),
-    onSuccess: async (response) => {
-      setSubmitSuccess(true);
-      await queryClient.invalidateQueries({ queryKey: categoryQueries.all });
-      const newId = response.result?.id;
-      if (newId && !isFromMypage) {
-        selectCategory(newId);
-        setCategoryId(newId);
-      }
-      if (isFromEdit) {
-        router.push('/');
-      } else {
-        router.back();
-      }
-      toast.success('카테고리가 추가되었어요!');
-    },
-    onError: (error) => {
-      handleApiError(error, {
-        toast,
-        fallback: '카테고리 추가에 실패했어요. 다시 시도해 주세요.',
-        context: 'category.create',
-      });
-    },
-  });
+  const { mutate: createCategory, isPending: isCreatePending } = useMutation(
+    categoryQueries.createMutation(queryClient)
+  );
 
-  const { mutate: updateCategory, isPending: isUpdatePending } = useMutation({
-    ...categoryQueries.updateMutation(queryClient),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: categoryQueries.all });
-      await queryClient.invalidateQueries({ queryKey: ['expense'] });
-      toast.success('수정한 내용이 저장되었어요!');
-      router.back();
-    },
-    onError: (error) => {
-      handleApiError(error, {
-        toast,
-        fallback: '카테고리 수정에 실패했어요. 다시 시도해 주세요.',
-        context: 'category.update',
-      });
-    },
-  });
+  const { mutate: updateCategory, isPending: isUpdatePending } = useMutation(
+    categoryQueries.updateMutation(queryClient)
+  );
 
   const isPending = isCreatePending || isUpdatePending;
 
@@ -163,15 +128,55 @@ export const AddCategory = () => {
   const handleSubmit = () => {
     if (!selectedIcon) return;
     if (isEditMode && editId) {
-      updateCategory({
-        categoryId: editId,
-        data: { name: categoryName, icon: selectedIcon.icon as CategoryDetailsDTO['icon'] },
-      });
+      updateCategory(
+        {
+          categoryId: editId,
+          data: { name: categoryName, icon: selectedIcon.icon as CategoryDetailsDTO['icon'] },
+        },
+        {
+          onSuccess: () => {
+            toast.success('수정한 내용이 저장되었어요!');
+            router.back();
+          },
+          onError: (error) => {
+            handleApiError(error, {
+              toast,
+              fallback: '카테고리 수정에 실패했어요. 다시 시도해 주세요.',
+              context: 'category.update',
+            });
+          },
+        }
+      );
     } else {
-      createCategory({
-        name: categoryName,
-        icon: selectedIcon.icon as CategoryDetailsDTO['icon'],
-      });
+      createCategory(
+        {
+          name: categoryName,
+          icon: selectedIcon.icon as CategoryDetailsDTO['icon'],
+        },
+        {
+          onSuccess: (response) => {
+            setSubmitSuccess(true);
+            const newId = response.result?.id;
+            if (newId && !isFromMypage) {
+              selectCategory(newId);
+              setCategoryId(newId);
+            }
+            if (isFromEdit) {
+              router.push('/');
+            } else {
+              router.back();
+            }
+            toast.success('카테고리가 추가되었어요!');
+          },
+          onError: (error) => {
+            handleApiError(error, {
+              toast,
+              fallback: '카테고리 추가에 실패했어요. 다시 시도해 주세요.',
+              context: 'category.create',
+            });
+          },
+        }
+      );
     }
   };
 
